@@ -1,0 +1,20 @@
+{
+  "version": "0.1.0",
+  "configurations": [
+    {
+      "name": "Game Tracker Staging",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "args": [
+        "-d",
+        "chrome",
+        "--dart-define=socket_url=wss://integration-api.simplebet.io/play-by-play/socket/websocket",
+        "--dart-define=api_key=RhN2NCQplF8oFugrA9AJlBl/nStzN/dhWl/sNCFxoAiQGPFhRzTlMPzjuPHCkS5H",
+        "--dart-define=partner_origin=http://localhost:8000",
+        "--web-port=8000",
+        "--web-renderer=canvaskit"
+      ],
+    }
+  ]
+}
