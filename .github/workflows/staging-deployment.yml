@@ -1,0 +1,32 @@
+name: staging deploy
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+      - name: Build
+        run: >
+          flutter build web 
+          --dart-define=socket_url=${{ vars.SOCKET_URL }}
+          --dart-define=api_key=${{secrets.API_KEY}}
+          --dart-define=partner_origin=${{secrets.PARTNER_ORIGIN}}
+          --web-renderer=canvaskit
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: game-tracker-staging
+          directory: build/web
+          branch: main
