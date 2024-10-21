@@ -196,20 +196,20 @@ class FootballTrackerMatchStateWidgetState
 
               /// away team logo and name
               FootballTeamLogoNameWidget(
-                  primaryColor:
-                      widget.match.awayTeam?.primaryColor ?? Colors.black,
-                  logoUrl: widget.match.awayTeam!.logoUrl,
-                  matchStatus: widget.match.status,
-                  score: widget.match.awayScore,
-                  shortName: widget.match.awayTeam!.matchStateName,
-                  homeOrAway: HomeOrAway.away,
-                  maxWidth: widget.maxWidth,
-                  maxHeight: widget.maxHeight,
-                  homeTeamTimeoutsLeft:
-                      widget.match.sportData?.homeTeamTimeoutsLeft,
-                  awayTeamTimeoutsLeft:
-                      widget.match.sportData?.awayTeamTimeoutsLeft,
-                ),
+                primaryColor:
+                    widget.match.awayTeam?.primaryColor ?? Colors.black,
+                logoUrl: widget.match.awayTeam!.logoUrl,
+                matchStatus: widget.match.status,
+                score: widget.match.awayScore,
+                shortName: widget.match.awayTeam!.matchStateName,
+                homeOrAway: HomeOrAway.away,
+                maxWidth: widget.maxWidth,
+                maxHeight: widget.maxHeight,
+                homeTeamTimeoutsLeft:
+                    widget.match.sportData?.homeTeamTimeoutsLeft,
+                awayTeamTimeoutsLeft:
+                    widget.match.sportData?.awayTeamTimeoutsLeft,
+              ),
 
               /// match details
               Container(
@@ -335,20 +335,20 @@ class FootballTrackerMatchStateWidgetState
 
               /// home team logo and name
               FootballTeamLogoNameWidget(
-                  primaryColor:
-                      widget.match.homeTeam?.primaryColor ?? Colors.black,
-                  logoUrl: widget.match.homeTeam!.logoUrl,
-                  matchStatus: widget.match.status,
-                  score: widget.match.homeScore,
-                  shortName: widget.match.homeTeam!.matchStateName,
-                  homeOrAway: HomeOrAway.home,
-                  maxWidth: widget.maxWidth,
-                  maxHeight: widget.maxHeight,
-                  homeTeamTimeoutsLeft:
-                      widget.match.sportData?.homeTeamTimeoutsLeft,
-                  awayTeamTimeoutsLeft:
-                      widget.match.sportData?.awayTeamTimeoutsLeft,
-                  ),
+                primaryColor:
+                    widget.match.homeTeam?.primaryColor ?? Colors.black,
+                logoUrl: widget.match.homeTeam!.logoUrl,
+                matchStatus: widget.match.status,
+                score: widget.match.homeScore,
+                shortName: widget.match.homeTeam!.matchStateName,
+                homeOrAway: HomeOrAway.home,
+                maxWidth: widget.maxWidth,
+                maxHeight: widget.maxHeight,
+                homeTeamTimeoutsLeft:
+                    widget.match.sportData?.homeTeamTimeoutsLeft,
+                awayTeamTimeoutsLeft:
+                    widget.match.sportData?.awayTeamTimeoutsLeft,
+              ),
 
               /// possession indicator
               Container(

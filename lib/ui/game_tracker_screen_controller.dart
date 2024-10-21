@@ -38,13 +38,11 @@ class GameTrackerScreenController
   @override
   GameTrackerScreenState build() {
     state = const GameTrackerScreenState();
-    // const localUuid = String.fromEnvironment('uuid');
-    // final uuid = getParameterValue('uuid') ?? localUuid;
+    const localUuid = String.fromEnvironment('uuid');
+    final uuid = getParameterValue('uuid') ?? localUuid;
 
-    //todo: pass in from initParams
-    subscribeToMatch('0f5fc021-95af-5664-b9e7-81649451223c');
+    subscribeToMatch(uuid);
 
-    // '7d5674c5-51ad-5a84-a726-24b595bbc582'
     return state;
   }
 
@@ -55,9 +53,10 @@ class GameTrackerScreenController
 
     _matchListSubscription = repo.matchesStreamController.listen((matches) {
       state = state.copyWith(
-          allMatches: matches.matches
-              ?.where((match) => match.status == MatchStatus.active)
-              .toList());
+        allMatches: matches.matches
+            ?.where((match) => match.status == MatchStatus.active)
+            .toList(),
+      );
     });
   }
 
@@ -112,7 +111,8 @@ class GameTrackerScreenController
   }
 
   void filterFootballPlaysByCurrentDriveId(
-      FootballMatchIncidentModel? lastPlay) {
+    FootballMatchIncidentModel? lastPlay,
+  ) {
     final currentDriveId = lastPlay?.driveId;
     // print('lastFootballPlay $lastFootballPlay');
     // print('currentDriveId $currentDriveId');

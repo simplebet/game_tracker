@@ -11,43 +11,42 @@ part of 'football_match_incident_drive_list_model.dart';
 
 T _$identity<T>(T value) => value;
 
+final _privateConstructorUsedError = UnsupportedError(
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
-final _privateConstructorUsedError = UnsupportedError('It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-FootballMatchIncidentDriveListModel _$FootballMatchIncidentDriveListModelFromJson(Map<String, dynamic> json) {
-return _FootballMatchIncidentDriveListModel.fromJson(json);
+FootballMatchIncidentDriveListModel
+    _$FootballMatchIncidentDriveListModelFromJson(Map<String, dynamic> json) {
+  return _FootballMatchIncidentDriveListModel.fromJson(json);
 }
 
 /// @nodoc
 mixin _$FootballMatchIncidentDriveListModel {
+  String get driveId => throw _privateConstructorUsedError;
+  List<FootballMatchIncidentModel> get plays =>
+      throw _privateConstructorUsedError;
 
- String get driveId => throw _privateConstructorUsedError; List<FootballMatchIncidentModel> get plays => throw _privateConstructorUsedError;
-
-
-
-
-
-
-Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-@JsonKey(ignore: true)
-$FootballMatchIncidentDriveListModelCopyWith<FootballMatchIncidentDriveListModel> get copyWith => throw _privateConstructorUsedError;
-
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  @JsonKey(ignore: true)
+  $FootballMatchIncidentDriveListModelCopyWith<
+          FootballMatchIncidentDriveListModel>
+      get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $FootballMatchIncidentDriveListModelCopyWith<$Res>  {
-  factory $FootballMatchIncidentDriveListModelCopyWith(FootballMatchIncidentDriveListModel value, $Res Function(FootballMatchIncidentDriveListModel) then) = _$FootballMatchIncidentDriveListModelCopyWithImpl<$Res, FootballMatchIncidentDriveListModel>;
-@useResult
-$Res call({
- String driveId, List<FootballMatchIncidentModel> plays
-});
-
-
-
+abstract class $FootballMatchIncidentDriveListModelCopyWith<$Res> {
+  factory $FootballMatchIncidentDriveListModelCopyWith(
+          FootballMatchIncidentDriveListModel value,
+          $Res Function(FootballMatchIncidentDriveListModel) then) =
+      _$FootballMatchIncidentDriveListModelCopyWithImpl<$Res,
+          FootballMatchIncidentDriveListModel>;
+  @useResult
+  $Res call({String driveId, List<FootballMatchIncidentModel> plays});
 }
 
 /// @nodoc
-class _$FootballMatchIncidentDriveListModelCopyWithImpl<$Res,$Val extends FootballMatchIncidentDriveListModel> implements $FootballMatchIncidentDriveListModelCopyWith<$Res> {
+class _$FootballMatchIncidentDriveListModelCopyWithImpl<$Res,
+        $Val extends FootballMatchIncidentDriveListModel>
+    implements $FootballMatchIncidentDriveListModelCopyWith<$Res> {
   _$FootballMatchIncidentDriveListModelCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
@@ -55,104 +54,142 @@ class _$FootballMatchIncidentDriveListModelCopyWithImpl<$Res,$Val extends Footba
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-@pragma('vm:prefer-inline') @override $Res call({Object? driveId = null,Object? plays = null,}) {
-  return _then(_value.copyWith(
-driveId: null == driveId ? _value.driveId : driveId // ignore: cast_nullable_to_non_nullable
-as String,plays: null == plays ? _value.plays : plays // ignore: cast_nullable_to_non_nullable
-as List<FootballMatchIncidentModel>,
-  )as $Val);
-}
-
-}
-
-
-/// @nodoc
-abstract class _$$FootballMatchIncidentDriveListModelImplCopyWith<$Res> implements $FootballMatchIncidentDriveListModelCopyWith<$Res> {
-  factory _$$FootballMatchIncidentDriveListModelImplCopyWith(_$FootballMatchIncidentDriveListModelImpl value, $Res Function(_$FootballMatchIncidentDriveListModelImpl) then) = __$$FootballMatchIncidentDriveListModelImplCopyWithImpl<$Res>;
-@override @useResult
-$Res call({
- String driveId, List<FootballMatchIncidentModel> plays
-});
-
-
-
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? driveId = null,
+    Object? plays = null,
+  }) {
+    return _then(_value.copyWith(
+      driveId: null == driveId
+          ? _value.driveId
+          : driveId // ignore: cast_nullable_to_non_nullable
+              as String,
+      plays: null == plays
+          ? _value.plays
+          : plays // ignore: cast_nullable_to_non_nullable
+              as List<FootballMatchIncidentModel>,
+    ) as $Val);
+  }
 }
 
 /// @nodoc
-class __$$FootballMatchIncidentDriveListModelImplCopyWithImpl<$Res> extends _$FootballMatchIncidentDriveListModelCopyWithImpl<$Res, _$FootballMatchIncidentDriveListModelImpl> implements _$$FootballMatchIncidentDriveListModelImplCopyWith<$Res> {
-  __$$FootballMatchIncidentDriveListModelImplCopyWithImpl(_$FootballMatchIncidentDriveListModelImpl _value, $Res Function(_$FootballMatchIncidentDriveListModelImpl) _then)
+abstract class _$$FootballMatchIncidentDriveListModelImplCopyWith<$Res>
+    implements $FootballMatchIncidentDriveListModelCopyWith<$Res> {
+  factory _$$FootballMatchIncidentDriveListModelImplCopyWith(
+          _$FootballMatchIncidentDriveListModelImpl value,
+          $Res Function(_$FootballMatchIncidentDriveListModelImpl) then) =
+      __$$FootballMatchIncidentDriveListModelImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String driveId, List<FootballMatchIncidentModel> plays});
+}
+
+/// @nodoc
+class __$$FootballMatchIncidentDriveListModelImplCopyWithImpl<$Res>
+    extends _$FootballMatchIncidentDriveListModelCopyWithImpl<$Res,
+        _$FootballMatchIncidentDriveListModelImpl>
+    implements _$$FootballMatchIncidentDriveListModelImplCopyWith<$Res> {
+  __$$FootballMatchIncidentDriveListModelImplCopyWithImpl(
+      _$FootballMatchIncidentDriveListModelImpl _value,
+      $Res Function(_$FootballMatchIncidentDriveListModelImpl) _then)
       : super(_value, _then);
 
-
-@pragma('vm:prefer-inline') @override $Res call({Object? driveId = null,Object? plays = null,}) {
-  return _then(_$FootballMatchIncidentDriveListModelImpl(
-driveId: null == driveId ? _value.driveId : driveId // ignore: cast_nullable_to_non_nullable
-as String,plays: null == plays ? _value._plays : plays // ignore: cast_nullable_to_non_nullable
-as List<FootballMatchIncidentModel>,
-  ));
-}
-
-
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? driveId = null,
+    Object? plays = null,
+  }) {
+    return _then(_$FootballMatchIncidentDriveListModelImpl(
+      driveId: null == driveId
+          ? _value.driveId
+          : driveId // ignore: cast_nullable_to_non_nullable
+              as String,
+      plays: null == plays
+          ? _value._plays
+          : plays // ignore: cast_nullable_to_non_nullable
+              as List<FootballMatchIncidentModel>,
+    ));
+  }
 }
 
 /// @nodoc
 @JsonSerializable()
+class _$FootballMatchIncidentDriveListModelImpl
+    implements _FootballMatchIncidentDriveListModel {
+  const _$FootballMatchIncidentDriveListModelImpl(
+      {required this.driveId,
+      required final List<FootballMatchIncidentModel> plays})
+      : _plays = plays;
 
-class _$FootballMatchIncidentDriveListModelImpl  implements _FootballMatchIncidentDriveListModel {
-  const _$FootballMatchIncidentDriveListModelImpl({required this.driveId, required final  List<FootballMatchIncidentModel> plays}): _plays = plays;
+  factory _$FootballMatchIncidentDriveListModelImpl.fromJson(
+          Map<String, dynamic> json) =>
+      _$$FootballMatchIncidentDriveListModelImplFromJson(json);
 
-  factory _$FootballMatchIncidentDriveListModelImpl.fromJson(Map<String, dynamic> json) => _$$FootballMatchIncidentDriveListModelImplFromJson(json);
+  @override
+  final String driveId;
+  final List<FootballMatchIncidentModel> _plays;
+  @override
+  List<FootballMatchIncidentModel> get plays {
+    if (_plays is EqualUnmodifiableListView) return _plays;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_plays);
+  }
 
-@override final  String driveId;
- final  List<FootballMatchIncidentModel> _plays;
-@override List<FootballMatchIncidentModel> get plays {
-  if (_plays is EqualUnmodifiableListView) return _plays;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_plays);
+  @override
+  String toString() {
+    return 'FootballMatchIncidentDriveListModel(driveId: $driveId, plays: $plays)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$FootballMatchIncidentDriveListModelImpl &&
+            (identical(other.driveId, driveId) || other.driveId == driveId) &&
+            const DeepCollectionEquality().equals(other._plays, _plays));
+  }
+
+  @JsonKey(ignore: true)
+  @override
+  int get hashCode => Object.hash(
+      runtimeType, driveId, const DeepCollectionEquality().hash(_plays));
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$FootballMatchIncidentDriveListModelImplCopyWith<
+          _$FootballMatchIncidentDriveListModelImpl>
+      get copyWith => __$$FootballMatchIncidentDriveListModelImplCopyWithImpl<
+          _$FootballMatchIncidentDriveListModelImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$FootballMatchIncidentDriveListModelImplToJson(
+      this,
+    );
+  }
 }
 
+abstract class _FootballMatchIncidentDriveListModel
+    implements FootballMatchIncidentDriveListModel {
+  const factory _FootballMatchIncidentDriveListModel(
+          {required final String driveId,
+          required final List<FootballMatchIncidentModel> plays}) =
+      _$FootballMatchIncidentDriveListModelImpl;
 
-@override
-String toString() {
-  return 'FootballMatchIncidentDriveListModel(driveId: $driveId, plays: $plays)';
-}
+  factory _FootballMatchIncidentDriveListModel.fromJson(
+          Map<String, dynamic> json) =
+      _$FootballMatchIncidentDriveListModelImpl.fromJson;
 
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _$FootballMatchIncidentDriveListModelImpl&&(identical(other.driveId, driveId) || other.driveId == driveId)&&const DeepCollectionEquality().equals(other._plays, _plays));
-}
-
-@JsonKey(ignore: true)
-@override
-int get hashCode => Object.hash(runtimeType,driveId,const DeepCollectionEquality().hash(_plays));
-
-@JsonKey(ignore: true)
-@override
-@pragma('vm:prefer-inline')
-_$$FootballMatchIncidentDriveListModelImplCopyWith<_$FootballMatchIncidentDriveListModelImpl> get copyWith => __$$FootballMatchIncidentDriveListModelImplCopyWithImpl<_$FootballMatchIncidentDriveListModelImpl>(this, _$identity);
-
-
-
-
-
-
-
-@override
-Map<String, dynamic> toJson() {
-  return _$$FootballMatchIncidentDriveListModelImplToJson(this, );
-}
-}
-
-
-abstract class _FootballMatchIncidentDriveListModel implements FootballMatchIncidentDriveListModel {
-  const factory _FootballMatchIncidentDriveListModel({required final  String driveId, required final  List<FootballMatchIncidentModel> plays}) = _$FootballMatchIncidentDriveListModelImpl;
-  
-
-  factory _FootballMatchIncidentDriveListModel.fromJson(Map<String, dynamic> json) = _$FootballMatchIncidentDriveListModelImpl.fromJson;
-
-@override  String get driveId;@override  List<FootballMatchIncidentModel> get plays;
-@override @JsonKey(ignore: true)
-_$$FootballMatchIncidentDriveListModelImplCopyWith<_$FootballMatchIncidentDriveListModelImpl> get copyWith => throw _privateConstructorUsedError;
-
+  @override
+  String get driveId;
+  @override
+  List<FootballMatchIncidentModel> get plays;
+  @override
+  @JsonKey(ignore: true)
+  _$$FootballMatchIncidentDriveListModelImplCopyWith<
+          _$FootballMatchIncidentDriveListModelImpl>
+      get copyWith => throw _privateConstructorUsedError;
 }

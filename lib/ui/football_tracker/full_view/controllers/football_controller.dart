@@ -8,7 +8,8 @@ class FootballController {
         controller.findInput<bool>('idleVertical')! as SMITrigger;
     _idleForwardTrigger =
         controller.findInput<bool>('idleForward')! as SMITrigger;
-    _idleAngledTrigger = controller.findInput<bool>('idleAngled')! as SMITrigger;
+    _idleAngledTrigger =
+        controller.findInput<bool>('idleAngled')! as SMITrigger;
     _spiralTrigger = controller.findInput<bool>('spiral')! as SMITrigger;
     _flipTrigger = controller.findInput<bool>('flip')! as SMITrigger;
     _fumbleTrigger = controller.findInput<bool>('fumble')! as SMITrigger;

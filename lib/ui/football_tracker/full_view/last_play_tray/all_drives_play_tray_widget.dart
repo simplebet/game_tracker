@@ -1,27 +1,30 @@
-
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:game_tracker/core/models/match_incidents/football_match_incident_model.dart';
+import 'package:game_tracker/init_params.dart';
+import 'package:game_tracker/ui/basketball_tracker/util/helper.dart';
 import 'package:game_tracker/ui/game_tracker_screen_controller.dart';
 import 'package:game_tracker/ui/skin/game_tracker_skin.dart';
+import 'package:universal_html/html.dart' as html;
 
-
-import '../../../shared/constants.dart';
-import '../../../shared/football_last_play_tray_formatter.dart';
-import '../../../shared/scalable_text_widget.dart';
-import '../../state_nofitifiers/last_play_tray_state_notifier.dart';
-import 'last_play_tray_all_drives_widget.dart';
-import 'last_play_tray_list_widget.dart';
+import 'package:game_tracker/ui/shared/constants.dart';
+import 'package:game_tracker/ui/shared/football_last_play_tray_formatter.dart';
+import 'package:game_tracker/ui/shared/scalable_text_widget.dart';
+import 'package:game_tracker/ui/football_tracker/state_nofitifiers/last_play_tray_state_notifier.dart';
+import 'package:game_tracker/ui/football_tracker/full_view/last_play_tray/last_play_tray_all_drives_widget.dart';
+import 'package:game_tracker/ui/football_tracker/full_view/last_play_tray/last_play_tray_list_widget.dart';
 
 class AllDrivesPlayTrayWidget extends ConsumerStatefulWidget {
-  const AllDrivesPlayTrayWidget(
-      {super.key,
-      required this.maxWidth,
-      required this.maxHeight});
+  const AllDrivesPlayTrayWidget({
+    super.key,
+    required this.maxWidth,
+    required this.maxHeight,
+  });
 
   final double maxWidth;
   final double maxHeight;
@@ -44,118 +47,119 @@ class AllDrivesPlayTrayWidgetState
   @override
   Widget build(BuildContext context) {
     final skin = GameTrackerSkin();
-    final stateNotifier = ref.watch(gameTrackerScreenControllerProvider.notifier);
+    final stateNotifier =
+        ref.watch(gameTrackerScreenControllerProvider.notifier);
     final state = ref.watch(gameTrackerScreenControllerProvider);
-    final lastPlay = ref.watch(lastPlayTrayStateProvider).lastPlay ?? state.footballIncidents?.last;
+    final lastPlay = ref.watch(lastPlayTrayStateProvider).lastPlay ??
+        state.footballIncidents?.last;
 
-    // if (homeTeam.isNotNull && awayTeam.isNotNull) {
+    final homeTeam = state.match!.homeTeam;
+    final awayTeam = state.match!.awayTeam;
+    if (homeTeam != null && awayTeam != null) {
       formatter = FootballLastPlayTrayFormatter(
-          homeTeam: state.match!.homeTeam,
-          awayTeam: state.match!.awayTeam!);
-    // }
-          final lastPlayFromSelectedDrive =
-              state.selectedFootballPlaysList?.plays.last;
-          final possession =
-              (isAllDrivesViewOpened ? lastPlay : lastPlayFromSelectedDrive)
-                  ?.start
-                  ?.possession;
-          final driveNumber =
-              (isAllDrivesViewOpened ? lastPlay : lastPlayFromSelectedDrive)
-                  ?.driveNumber;
-          final isExpansionDisabled = !isExpanded &&
-              lastPlay == null &&
-              lastPlayFromSelectedDrive == null;
-          final selectedDriveTitle = lastPlayFromSelectedDrive == null ||
-                  lastPlayFromSelectedDrive.isStandAloneEvent
-              ? ''
-              : formatter.formatDriveNumberWithName(possession, driveNumber);
+        homeTeam: homeTeam,
+        awayTeam: awayTeam,
+      );
+    }
+    final lastPlayFromSelectedDrive =
+        state.selectedFootballPlaysList?.plays.last;
+    final possession =
+        (isAllDrivesViewOpened ? lastPlay : lastPlayFromSelectedDrive)
+            ?.start
+            ?.possession;
+    final driveNumber =
+        (isAllDrivesViewOpened ? lastPlay : lastPlayFromSelectedDrive)
+            ?.driveNumber;
+    final isExpansionDisabled =
+        !isExpanded && lastPlay == null && lastPlayFromSelectedDrive == null;
+    final selectedDriveTitle = lastPlayFromSelectedDrive == null ||
+            lastPlayFromSelectedDrive.isStandAloneEvent
+        ? ''
+        : formatter.formatDriveNumberWithName(possession, driveNumber);
 
-          return SingleChildScrollView(
-            child: ExpansionTile(
-              tilePadding: const EdgeInsets.all(0),
-              backgroundColor: skin.colors.background,
-              collapsedBackgroundColor: skin.colors.background,
-              onExpansionChanged: (value) {
-                // if (kIsWeb) {
-                //   final tracker = jsonEncode({
-                //     'status': 'active',
-                //     'uuid': gameInitParameters['uuid'] ?? '',
-                //     'tray': value ? 'open' : 'closed',
-                //     'view_mode': 'full',
-                //   });
-                //   html.window.dispatchEvent(
-                //       html.CustomEvent('tracker', detail: tracker));
-                //   if (html.window.parent != null) {
-                //     html.window.parent!.postMessage(tracker, '*');
-                //   }
-            
-                //   // Used for communicating with native iOS
-                //   postMessageToWebkit('tracker', tracker);
-                // }
-                setState(() {
-                  isExpanded = value;
-                });
-            
-                /// reset selected drive to current drive
-                stateNotifier.filterFootballPlaysByCurrentDriveId(state.footballIncidents?.last);
-            
-        
-              },
-              trailing:
-                  _LastPlayTrayTrailingWidget(isExpanded, isExpansionDisabled),
-              title: Container(
-                /// set a fixed height for collapsed last play tray
-                height: isExpanded
-                    ? null
-                    : widget.maxHeight * kLastPlayTrayHeightFactor,
-                padding: EdgeInsets.symmetric(
-                    horizontal: 10, vertical: isExpanded ? 10 : 0),
-                child: isExpanded
-                    ? _LastPlayTrayExpandedHeaderWidget(
-                        isAllDrivesViewOpened: isAllDrivesViewOpened,
-                        maxWidth: widget.maxWidth,
-                        selectedDriveTitle: selectedDriveTitle,
-                        viewAllDrivesCallback: () {
-                          setState(() {
-                            isAllDrivesViewOpened = !isAllDrivesViewOpened;
-                          
-                          });
-                        },
-                      )
-                    : _LastPlayTrayCollapsedWidget(
-                        maxWidth: widget.maxWidth,
-                        lastFootballPlay: lastPlay,
-                        formatter: formatter,
-                      ),
-              ),
-              children: [
-                isAllDrivesViewOpened
-                    ? LastPlayTrayAllDrivesWidget(
-                            maxWidth: widget.maxWidth,
-                            maxHeight: widget.maxHeight,
-                            allDrivesList: stateNotifier
-                                .footballPlaysListGroupedByDriveId,
-                            formatter: formatter,
-                            currentDriveId:
-                                state.footballIncidents?.last.driveId ?? '',
-                            changeDriveCallback: (driveId) {
-                              stateNotifier
-                                  .filterFootballPlaysByDriveId(driveId);
-                              setState(() {
-                                isAllDrivesViewOpened = false;
-                              });
-                            })
-                    : LastPlayTrayListWidget(
-                          maxWidth: widget.maxWidth,
-                          maxHeight: widget.maxHeight,
-                          isExpanded: isExpanded,
-                          driveList:
-                              state.selectedFootballPlaysList,
-                          formatter: formatter,
-                        )
-              ],
-            ),
-          );
+    return SingleChildScrollView(
+      child: ExpansionTile(
+        tilePadding: const EdgeInsets.all(0),
+        backgroundColor: skin.colors.background,
+        collapsedBackgroundColor: skin.colors.background,
+        onExpansionChanged: (value) {
+          if (kIsWeb) {
+            final tracker = jsonEncode({
+              'status': 'active',
+              'uuid': initParameters['uuid'] ?? '',
+              'tray': value ? 'open' : 'closed',
+              'view_mode': 'full',
+            });
+            html.window.dispatchEvent(
+              html.CustomEvent('tracker', detail: tracker),
+            );
+            if (html.window.parent != null) {
+              html.window.parent!.postMessage(tracker, '*');
+            }
+
+            // Used for communicating with native iOS
+            postMessageToWebkit('tracker', tracker);
+          }
+          setState(() {
+            isExpanded = value;
+          });
+
+          /// reset selected drive to current drive
+          stateNotifier.filterFootballPlaysByCurrentDriveId(
+              state.footballIncidents?.last);
+        },
+        trailing: _LastPlayTrayTrailingWidget(isExpanded, isExpansionDisabled),
+        title: Container(
+          /// set a fixed height for collapsed last play tray
+          height:
+              isExpanded ? null : widget.maxHeight * kLastPlayTrayHeightFactor,
+          padding: EdgeInsets.symmetric(
+            horizontal: 10,
+            vertical: isExpanded ? 10 : 0,
+          ),
+          child: isExpanded
+              ? _LastPlayTrayExpandedHeaderWidget(
+                  isAllDrivesViewOpened: isAllDrivesViewOpened,
+                  maxWidth: widget.maxWidth,
+                  selectedDriveTitle: selectedDriveTitle,
+                  viewAllDrivesCallback: () {
+                    setState(() {
+                      isAllDrivesViewOpened = !isAllDrivesViewOpened;
+                    });
+                  },
+                )
+              : _LastPlayTrayCollapsedWidget(
+                  maxWidth: widget.maxWidth,
+                  lastFootballPlay: lastPlay,
+                  formatter: formatter,
+                ),
+        ),
+        children: [
+          isAllDrivesViewOpened
+              ? LastPlayTrayAllDrivesWidget(
+                  maxWidth: widget.maxWidth,
+                  maxHeight: widget.maxHeight,
+                  allDrivesList:
+                      stateNotifier.footballPlaysListGroupedByDriveId,
+                  formatter: formatter,
+                  currentDriveId: state.footballIncidents?.last.driveId ?? '',
+                  changeDriveCallback: (driveId) {
+                    stateNotifier.filterFootballPlaysByDriveId(driveId);
+                    setState(() {
+                      isAllDrivesViewOpened = false;
+                    });
+                  },
+                )
+              : LastPlayTrayListWidget(
+                  maxWidth: widget.maxWidth,
+                  maxHeight: widget.maxHeight,
+                  isExpanded: isExpanded,
+                  driveList: state.selectedFootballPlaysList,
+                  formatter: formatter,
+                ),
+        ],
+      ),
+    );
   }
 }
 
@@ -177,9 +181,10 @@ class _LastPlayTrayTrailingWidget extends ConsumerWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Padding(
-            padding: const EdgeInsets.only(right: 10),
-            child: (isExpanded ? skin.icons.basketballMiss : skin.icons.chevron)
-                .asImage(width: 16, height: 16, color: skin.colors.grey1))
+          padding: const EdgeInsets.only(right: 10),
+          child: (isExpanded ? skin.icons.basketballMiss : skin.icons.chevron)
+              .asImage(width: 16, height: 16, color: skin.colors.grey1),
+        ),
       ],
     );
   }
@@ -220,11 +225,13 @@ class _LastPlayTrayExpandedHeaderWidget extends ConsumerWidget {
                 bottom: 0.3,
               ),
               decoration: BoxDecoration(
-                  border: Border(
-                      bottom: BorderSide(
-                color: skin.colors.playTrayTitleColor,
-                width: 2.0,
-              ))),
+                border: Border(
+                  bottom: BorderSide(
+                    color: skin.colors.playTrayTitleColor,
+                    width: 2.0,
+                  ),
+                ),
+              ),
               child: ScalableTextWidget(
                 text: 'VIEW ALL DRIVES',
                 textStyle: skin.textStyles.body5Medium.copyWith(
@@ -233,7 +240,7 @@ class _LastPlayTrayExpandedHeaderWidget extends ConsumerWidget {
                 maxWidth: maxWidth,
               ),
             ),
-          )
+          ),
       ],
     );
   }
@@ -322,10 +329,12 @@ class _LastPlayTrayCollapsedWidgetState
             key: UniqueKey(),
             isRepeatingAnimation: false,
             animatedTexts: [
-              TyperAnimatedText(subtitleText,
-                  speed: const Duration(milliseconds: 20),
-                  textStyle: skin.textStyles.footballPlayTraySubtitle
-                      .copyWith(color: skin.colors.grey1, height: 1))
+              TyperAnimatedText(
+                subtitleText,
+                speed: const Duration(milliseconds: 20),
+                textStyle: skin.textStyles.footballPlayTraySubtitle
+                    .copyWith(color: skin.colors.grey1, height: 1),
+              ),
             ],
           )
         else
@@ -333,7 +342,7 @@ class _LastPlayTrayCollapsedWidgetState
             subtitleText,
             style: skin.textStyles.footballPlayTraySubtitle
                 .copyWith(color: skin.colors.grey1, height: 1),
-          )
+          ),
       ],
     );
   }

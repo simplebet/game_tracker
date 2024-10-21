@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:game_tracker/ui/skin/game_tracker_skin.dart';
 
-
 class MatchStatusScreenBackground extends ConsumerWidget {
   const MatchStatusScreenBackground({
     Key? key,

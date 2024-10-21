@@ -54,14 +54,15 @@ class _FootballTrackerState extends ConsumerState<FootballTracker> {
               ),
             ),
           ),
-        Positioned.fill(
-          child: Align(
-            child: FootballTrackerSkewedView(
-              maxWidth: widget.size.width,
-              maxHeight: widget.size.height,
+        if (state.match != null)
+          Positioned.fill(
+            child: Align(
+              child: FootballTrackerSkewedView(
+                maxWidth: widget.size.width,
+                maxHeight: widget.size.height,
+              ),
             ),
           ),
-        ),
         if (state.match?.status == MatchStatus.preMatch)
           Positioned.fill(
             child: Align(
@@ -71,14 +72,15 @@ class _FootballTrackerState extends ConsumerState<FootballTracker> {
               ),
             ),
           ),
-        Positioned.fill(
-          child: Align(
-            alignment: Alignment.bottomCenter,
-            child: LastPlayTray(
-              size: widget.size,
+        if (state.match != null)
+          Positioned.fill(
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: LastPlayTray(
+                size: widget.size,
+              ),
             ),
           ),
-        ),
       ],
     );
   }

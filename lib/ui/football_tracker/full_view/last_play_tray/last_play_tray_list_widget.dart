@@ -5,7 +5,6 @@ import 'package:game_tracker/core/models/match_incidents/football_match_incident
 import 'package:game_tracker/core/models/match_incidents/football_match_incident_model.dart';
 import 'package:game_tracker/ui/skin/game_tracker_skin.dart';
 
-
 import '../../../shared/football_last_play_tray_formatter.dart';
 import '../../../shared/scalable_text_widget.dart';
 

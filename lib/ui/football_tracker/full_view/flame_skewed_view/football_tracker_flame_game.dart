@@ -110,10 +110,10 @@ class FootballTrackerFlameGame extends FlameGame
 
     add(flagRiveComponent);
 
-        final stateNotifier = ref.read(gameTrackerScreenControllerProvider.notifier);
+    final stateNotifier =
+        ref.read(gameTrackerScreenControllerProvider.notifier);
     final state = ref.read(gameTrackerScreenControllerProvider);
-    if (state.match!.awayTeam != null &&
-        state.match!.homeTeam != null) {
+    if (state.match!.awayTeam != null && state.match!.homeTeam != null) {
       add(FootballFieldComponent(
         skin: skin,
         width: screenWidth,
@@ -142,6 +142,7 @@ class FootballTrackerFlameGame extends FlameGame
     }
 
     final repo = ref.read(gameTrackerRepositoryProvider).requireValue;
+
     /// render the upcoming incidents
     repo.footballIncidentStreamController.listen((value) {
       final incident = value as FootballMatchIncidentModel;

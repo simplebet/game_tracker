@@ -105,7 +105,8 @@ class SolidLineComponent extends PositionComponent
           paint: paint,
           distance: distance,
           screenWidth: screenWidth,
-          arrowDirection: arrowDirection)..y = -0.5);
+          arrowDirection: arrowDirection)
+        ..y = -0.5);
     } else {
       component.add(CircleComponent(
           radius: kCircleComponentRadius, paint: paint, priority: 2)

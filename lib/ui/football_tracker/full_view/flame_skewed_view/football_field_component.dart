@@ -5,7 +5,6 @@ import 'package:game_tracker/core/models/enums.dart';
 import 'package:game_tracker/core/models/team_model.dart';
 import 'package:game_tracker/ui/skin/game_tracker_skin.dart';
 
-
 import '../../../shared/constants.dart';
 import '../../../shared/team_name_formatter.dart';
 import '../../../shared/util.dart';

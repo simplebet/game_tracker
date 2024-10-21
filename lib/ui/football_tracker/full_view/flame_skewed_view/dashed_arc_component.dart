@@ -7,7 +7,6 @@ import 'package:game_tracker/ui/shared/enums.dart';
 import 'package:game_tracker/ui/skin/game_tracker_skin.dart';
 import 'package:path_drawing/path_drawing.dart';
 
-
 import '../../../shared/completable_mixin.dart';
 import '../../../shared/constants.dart';
 import '../../../shared/util.dart';

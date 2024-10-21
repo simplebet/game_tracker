@@ -8,12 +8,11 @@ import 'package:game_tracker/ui/skin/game_tracker_skin.dart';
 import '../../../shared/scalable_text_widget.dart';
 
 class PreMatchPlayTrayWidget extends ConsumerWidget {
-  const PreMatchPlayTrayWidget(
-      {Key? key,
-      required this.maxWidth,
-      required this.match,
-      })
-      : super(key: key);
+  const PreMatchPlayTrayWidget({
+    Key? key,
+    required this.maxWidth,
+    required this.match,
+  }) : super(key: key);
 
   final double maxWidth;
   final Match<FootballData> match;

@@ -31,7 +31,8 @@ class TransitionOverlaysController {
     _sackTrigger = _controller.findInput<bool>('sack')! as SMITrigger;
     _interceptionTrigger =
         _controller.findInput<bool>('interception')! as SMITrigger;
-    _fairCatchTrigger = _controller.findInput<bool>('fair_catch')! as SMITrigger;
+    _fairCatchTrigger =
+        _controller.findInput<bool>('fair_catch')! as SMITrigger;
     _fieldGoalMissedTrigger =
         _controller.findInput<bool>('field_goal_missed')! as SMITrigger;
     _fieldGoalMadeTrigger =
@@ -41,8 +42,8 @@ class TransitionOverlaysController {
     _extraPointMadeTrigger =
         _controller.findInput<bool>('extra_point_made')! as SMITrigger;
 
-    _previousPlayUnderReviewTrigger =
-        _controller.findInput<bool>('previous_play_under_review')! as SMITrigger;
+    _previousPlayUnderReviewTrigger = _controller
+        .findInput<bool>('previous_play_under_review')! as SMITrigger;
     _previousPlayStandsTrigger =
         _controller.findInput<bool>('previous_play_stands')! as SMITrigger;
     _previousPlayOverturnedTrigger =

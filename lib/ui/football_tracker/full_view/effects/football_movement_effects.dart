@@ -17,7 +17,12 @@ MoveAlongPathEffect createFootballArcEffect({
   VoidCallback? afterDelay,
 }) {
   double deltaX = getDeltaX(
-      startingYardline, endingYardline, startingSide, endingSide, screenWidth,);
+    startingYardline,
+    endingYardline,
+    startingSide,
+    endingSide,
+    screenWidth,
+  );
 
   final double yardsTraveled = getYardsTraveled(deltaX, screenWidth);
   final double duration = 1 + (yardsTraveled.abs() / 10) * 0.15;
@@ -27,11 +32,16 @@ MoveAlongPathEffect createFootballArcEffect({
   }
 
   Future.delayed(
-      Duration(milliseconds: (startDelay * 1000).toInt()), afterDelay,);
+    Duration(milliseconds: (startDelay * 1000).toInt()),
+    afterDelay,
+  );
   final effect = MoveAlongPathEffect(
     Path()..quadraticBezierTo(deltaX / 2, -yardsTraveled * 1.5, deltaX, 0),
     EffectController(
-        duration: duration, curve: Curves.easeIn, startDelay: startDelay,),
+      duration: duration,
+      curve: Curves.easeIn,
+      startDelay: startDelay,
+    ),
     oriented: oriented,
     onComplete: onComplete,
   );
@@ -50,7 +60,12 @@ MoveAlongPathEffect createFootballHalfArcEffect({
   VoidCallback? afterDelay,
 }) {
   double deltaX = getDeltaX(
-      startingYardline, endingYardline, startingSide, endingSide, screenWidth,);
+    startingYardline,
+    endingYardline,
+    startingSide,
+    endingSide,
+    screenWidth,
+  );
 
   final double yardsTraveled = getYardsTraveled(deltaX, screenWidth);
 
@@ -64,7 +79,10 @@ MoveAlongPathEffect createFootballHalfArcEffect({
   final effect = MoveAlongPathEffect(
     Path()..lineTo(deltaX, -yardsTraveled * 2),
     EffectController(
-        duration: duration, curve: Curves.easeInOut, startDelay: startDelay,),
+      duration: duration,
+      curve: Curves.easeInOut,
+      startDelay: startDelay,
+    ),
     oriented: true,
     onComplete: onComplete,
   );
@@ -82,7 +100,12 @@ MoveAlongPathEffect createFootballStraightLineEffect({
   VoidCallback? onComplete,
 }) {
   double deltaX = getDeltaX(
-      startingYardline, endingYardline, startingSide, endingSide, screenWidth,);
+    startingYardline,
+    endingYardline,
+    startingSide,
+    endingSide,
+    screenWidth,
+  );
 
   final double yardsTraveled = getYardsTraveled(deltaX, screenWidth);
 

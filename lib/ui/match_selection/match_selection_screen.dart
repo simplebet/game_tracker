@@ -4,15 +4,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:game_tracker/core/models/enums.dart';
 import 'package:game_tracker/ui/game_tracker_screen_controller.dart';
 
-class MatchSelectionScreen extends ConsumerStatefulWidget {
-  const MatchSelectionScreen({super.key});
+class MatchesScreen extends ConsumerStatefulWidget {
+  const MatchesScreen({super.key});
 
   @override
-  ConsumerState<MatchSelectionScreen> createState() =>
-      _MatchSelectionScreenState();
+  ConsumerState<MatchesScreen> createState() => _MatchesScreenState();
 }
 
-class _MatchSelectionScreenState extends ConsumerState<MatchSelectionScreen> {
+class _MatchesScreenState extends ConsumerState<MatchesScreen> {
   late GameTrackerScreenController controller;
 
   @override
@@ -22,7 +21,6 @@ class _MatchSelectionScreenState extends ConsumerState<MatchSelectionScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       controller = ref.watch(gameTrackerScreenControllerProvider.notifier);
       controller.fetchMatchesByLeague(SportLeague.cfb);
-      // todo: setup incidentStreamController listener
     });
   }
 
@@ -45,48 +43,58 @@ class _MatchSelectionScreenState extends ConsumerState<MatchSelectionScreen> {
                 child: Text(
                   'CFB',
                   style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: state.league?.displayedTitle == 'CFB'
-                          ? Colors.black
-                          : Colors.grey),
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: state.league?.displayedTitle == 'CFB'
+                        ? Colors.black
+                        : Colors.grey,
+                  ),
                 ),
               ),
               GestureDetector(
                 onTap: () {
                   controller.fetchMatchesByLeague(SportLeague.nfl);
                 },
-                child: Text('NFL',
-                    style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: state.league?.displayedTitle == 'NFL'
-                            ? Colors.black
-                            : Colors.grey)),
+                child: Text(
+                  'NFL',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: state.league?.displayedTitle == 'NFL'
+                        ? Colors.black
+                        : Colors.grey,
+                  ),
+                ),
               ),
               GestureDetector(
                 onTap: () {
                   controller.fetchMatchesByLeague(SportLeague.nba);
                 },
-                child: Text('NBA',
-                    style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: state.league?.displayedTitle == 'NBA'
-                            ? Colors.black
-                            : Colors.grey)),
+                child: Text(
+                  'NBA',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: state.league?.displayedTitle == 'NBA'
+                        ? Colors.black
+                        : Colors.grey,
+                  ),
+                ),
               ),
               GestureDetector(
                 onTap: () {
                   controller.fetchMatchesByLeague(SportLeague.cbb);
                 },
-                child: Text('CBB',
-                    style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: state.league?.displayedTitle == 'CBB'
-                            ? Colors.black
-                            : Colors.grey)),
+                child: Text(
+                  'CBB',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: state.league?.displayedTitle == 'CBB'
+                        ? Colors.black
+                        : Colors.grey,
+                  ),
+                ),
               ),
             ],
           ),
@@ -102,13 +110,15 @@ class _MatchSelectionScreenState extends ConsumerState<MatchSelectionScreen> {
                 return Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                      border: Border(
-                          bottom:
-                              BorderSide(color: Colors.grey.withOpacity(0.5)))),
+                    border: Border(
+                      bottom: BorderSide(color: Colors.grey.withOpacity(0.5)),
+                    ),
+                  ),
                   child: GestureDetector(
                     onTap: () {
-                      print(state.allMatches?[index].id);
-                      // controller.subscribeToMatch(state.allMatches?[index].id ?? '');
+                      controller
+                          .subscribeToMatch(state.allMatches?[index].id ?? '');
+                      Navigator.pop(context);
                     },
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -122,16 +132,24 @@ class _MatchSelectionScreenState extends ConsumerState<MatchSelectionScreen> {
                               width: 30,
                               height: 30,
                             ),
-                            Text(state.allMatches?[index].awayTeam?.shortName ??
-                                ''),
+                            Text(
+                              state.allMatches?[index].awayTeam?.shortName ??
+                                  '',
+                            ),
                             const Padding(
                               padding: EdgeInsets.symmetric(horizontal: 6),
-                              child: Text('VS',
-                                  style: TextStyle(
-                                      fontSize: 12, color: Colors.grey)),
+                              child: Text(
+                                'VS',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey,
+                                ),
+                              ),
                             ),
-                            Text(state.allMatches?[index].homeTeam?.shortName ??
-                                ''),
+                            Text(
+                              state.allMatches?[index].homeTeam?.shortName ??
+                                  '',
+                            ),
                             CachedNetworkImage(
                               imageUrl:
                                   state.allMatches?[index].homeTeam?.logoUrl ??

@@ -25,33 +25,33 @@ class LastPlayTray extends ConsumerWidget {
     final state = ref.watch(gameTrackerScreenControllerProvider);
 
     if (state.match?.status == MatchStatus.preMatch) {
-        return LastPlayTrayWidgetWrapper(
-          maxWidth: size.width,
-          maxHeight: size.height,
-          child: PreMatchPlayTrayWidget(
-            match: state.match as Match<FootballData>,
-            maxWidth: size.width,
-          ),
-        );
-      }
-      if (state.footballIncidents?.last.event ==
-          FootballMatchIncidentEventType.matchEnded) {
-        return LastPlayTrayWidgetWrapper(
-          maxWidth: size.width,
-          maxHeight: size.height,
-          child: Center(
-            child: Text(
-              'MATCH ENDED',
-              style: skin.textStyles.body1.copyWith(color: skin.colors.grey1),
-            ),
-          ),
-        );
-      }
-
-      return AllDrivesPlayTrayWidget(
+      return LastPlayTrayWidgetWrapper(
         maxWidth: size.width,
         maxHeight: size.height,
+        child: PreMatchPlayTrayWidget(
+          match: state.match as Match<FootballData>,
+          maxWidth: size.width,
+        ),
       );
+    }
+    if (state.footballIncidents?.last.event ==
+        FootballMatchIncidentEventType.matchEnded) {
+      return LastPlayTrayWidgetWrapper(
+        maxWidth: size.width,
+        maxHeight: size.height,
+        child: Center(
+          child: Text(
+            'MATCH ENDED',
+            style: skin.textStyles.body1.copyWith(color: skin.colors.grey1),
+          ),
+        ),
+      );
+    }
+
+    return AllDrivesPlayTrayWidget(
+      maxWidth: size.width,
+      maxHeight: size.height,
+    );
   }
 }
 

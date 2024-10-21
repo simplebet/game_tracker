@@ -90,7 +90,6 @@ class _LastPlayTrayAllDrivesItemWidget extends ConsumerWidget {
     var subtitle = isInProgress ? 'In Progress' : 'Drive Ended';
     var driveTitleStyle = skin.textStyles.footballPlayTrayTitle;
 
-
     return GestureDetector(
       onTap:
           play!.isStandAloneEvent ? null : () => changeDriveCallback(driveId),

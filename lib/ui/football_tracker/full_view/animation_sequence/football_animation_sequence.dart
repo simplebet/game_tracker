@@ -38,7 +38,9 @@ import 'package:game_tracker/ui/skin/game_tracker_skin.dart';
 import 'package:rive/rive.dart';
 
 typedef FootballPlayAnimationCallback = Future<void> Function(
-    FootballMatchIncidentModel incident, double driveComponentHeight,);
+  FootballMatchIncidentModel incident,
+  double driveComponentHeight,
+);
 
 class FootballAnimationSequence {
   FootballAnimationSequence();
@@ -88,7 +90,7 @@ class FootballAnimationSequence {
   double driveComponentHeight = 0;
 
   void renderLastDriveIncidents(List<FootballMatchIncidentModel>? incidents) {
-    if (incidents != null && incidents.isNotEmpty ) {
+    if (incidents != null && incidents.isNotEmpty) {
       for (var incident in incidents) {
         /// position past plays vertically renders on the field
         if (incident.event.isPersistingEvent) {
@@ -177,7 +179,9 @@ class FootballAnimationSequence {
         if (incident.event ==
             FootballMatchIncidentEventType.touchdownFromScoopAndScore) {
           touchdownFromScoopAndScoreDashedArcLine(
-              incident, driveComponentHeight,);
+            incident,
+            driveComponentHeight,
+          );
         }
 
         if (incident.event ==
@@ -257,7 +261,8 @@ class FootballAnimationSequence {
   }
 
   Future<void> renderUpcomingIncidents(
-      FootballMatchIncidentModel incident,) async {
+    FootballMatchIncidentModel incident,
+  ) async {
     /// update last play tray
     if (incident.event.isDelayingEvents) {
       Future.delayed(const Duration(seconds: 5), () {
@@ -279,14 +284,20 @@ class FootballAnimationSequence {
 
         /// reset the DriveComponent to its original position if user scrolled
         if (driveComponentOffset != driveComponentYCoordinate) {
-          driveComponent.add(MoveEffect.to(
+          driveComponent.add(
+            MoveEffect.to(
               Vector2(0, -(driveComponentOffset + kComponentMoveUpDistance)),
-              LinearEffectController(kDriveScrollUpSpeed),),);
+              LinearEffectController(kDriveScrollUpSpeed),
+            ),
+          );
         } else {
           /// move the whole drive component up after each new incident animation sequence finish
-          driveComponent.add(MoveEffect.by(
+          driveComponent.add(
+            MoveEffect.by(
               Vector2(0, -kComponentMoveUpDistance),
-              LinearEffectController(kDriveScrollUpSpeed),),);
+              LinearEffectController(kDriveScrollUpSpeed),
+            ),
+          );
         }
       }
     }
@@ -317,20 +328,26 @@ class FootballAnimationSequence {
   }
 
   Future<void> coinTossAnimation(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) async {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) async {
     final homeTeamWonCoinToss = incident.coinTossWinner == HomeOrAway.home;
 
     _transitionOverlaysController.setCoinTossColor(
-        homeTeamWonCoinToss ? _homeTeam.primaryColor : _awayTeam.primaryColor,);
+      homeTeamWonCoinToss ? _homeTeam.primaryColor : _awayTeam.primaryColor,
+    );
     _transitionOverlaysController.setCoinTossText(
-        teamTricode:
-            (homeTeamWonCoinToss ? _homeTeam.abbrv : _awayTeam.abbrv) ?? '',);
+      teamTricode:
+          (homeTeamWonCoinToss ? _homeTeam.abbrv : _awayTeam.abbrv) ?? '',
+    );
 
     await _transitionOverlaysController.coinToss();
   }
 
   Future<void> touchdownFromReturnedFieldGoalAnimation(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) async {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) async {
     final endingSide = incident.start!.possession!.opposite;
     final startPossession = incident.start!.possession!;
     final endPossession = incident.end!.possession!;
@@ -338,14 +355,15 @@ class FootballAnimationSequence {
     final startingSide = incident.start!.side!;
 
     final playRibbon = PlayRibbonComponent(
-        text: 'FG ATT',
-        color: incident.start!.possession == HomeOrAway.home
-            ? _homeTeam.primaryColor
-            : _awayTeam.primaryColor,
-        yardline: incident.start!.yardline!,
-        side: incident.start!.side!,
-        direction: incident.start!.possession!.opposite,
-        skin: _skin,);
+      text: 'FG ATT',
+      color: incident.start!.possession == HomeOrAway.home
+          ? _homeTeam.primaryColor
+          : _awayTeam.primaryColor,
+      yardline: incident.start!.yardline!,
+      side: incident.start!.side!,
+      direction: incident.start!.possession!.opposite,
+      skin: _skin,
+    );
 
     _game.add(playRibbon);
 
@@ -364,15 +382,17 @@ class FootballAnimationSequence {
     _game.add(starSprite);
 
     final footballAnimation =
-        FootballRiveComponent.touchdownFromReturnedFieldGoal(_footballArtboard,
-            startingYardline: startingYardline,
-            startingSide: startingSide,
-            possession: startPossession,
-            footballController: _footballController,
-            starSprite: starSprite,
-            screenWidth: screenWidth,
-            endingSide: endingSide,
-            screenHeight: screenHeight,);
+        FootballRiveComponent.touchdownFromReturnedFieldGoal(
+      _footballArtboard,
+      startingYardline: startingYardline,
+      startingSide: startingSide,
+      possession: startPossession,
+      footballController: _footballController,
+      starSprite: starSprite,
+      screenWidth: screenWidth,
+      endingSide: endingSide,
+      screenHeight: screenHeight,
+    );
 
     _game.add(footballAnimation);
 
@@ -396,28 +416,30 @@ class FootballAnimationSequence {
     await Future.delayed(const Duration(milliseconds: 500));
 
     final solidArc = SolidArcComponent.cross(
-        skin: _skin,
-        distance: 0,
-        screenWidth: screenWidth,
-        yardline: incident.start!.yardline!.toDouble(),
-        side: incident.start!.side!,
-        possession: incident.start!.possession!,
-        driveComponentHeight: driveComponentHeight,);
+      skin: _skin,
+      distance: 0,
+      screenWidth: screenWidth,
+      yardline: incident.start!.yardline!.toDouble(),
+      side: incident.start!.side!,
+      possession: incident.start!.possession!,
+      driveComponentHeight: driveComponentHeight,
+    );
 
     final distanceFromEndzone =
         getYardageInBetween(startingSide.opposite, -5, endingSide, -5)
             .toDouble();
 
     final solidLineComponent = SolidLineComponent.combo(
-        skin: _skin,
-        yardline: distanceFromEndzone - 5,
-        distance: distanceFromEndzone,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        side: startingSide.opposite,
-        possession: startPossession,
-        driveComponentHeight: driveComponentHeight,
-        bottomPadding: 36,);
+      skin: _skin,
+      yardline: distanceFromEndzone - 5,
+      distance: distanceFromEndzone,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      side: startingSide.opposite,
+      possession: startPossession,
+      driveComponentHeight: driveComponentHeight,
+      bottomPadding: 36,
+    );
 
     driveComponent.add(solidArc);
     driveComponent.add(solidLineComponent);
@@ -426,7 +448,9 @@ class FootballAnimationSequence {
   }
 
   Future<void> touchdownFromFumbledPuntAnimation(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) async {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) async {
     final startingYardline = incident.start!.yardline!;
     final startingSide = incident.start!.side!;
     final startPossession = incident.start!.possession!;
@@ -463,18 +487,22 @@ class FootballAnimationSequence {
     await Future.delayed(const Duration(milliseconds: 500));
 
     final distance = getYardageInBetween(
-            startingSide, startingYardline, endSide, endYardline,)
-        .toDouble();
+      startingSide,
+      startingYardline,
+      endSide,
+      endYardline,
+    ).toDouble();
 
     final dashedArc = DashedArcComponent.combo(
-        skin: _skin,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        yardline: startingYardline.toDouble(),
-        distance: distance,
-        side: startingSide,
-        possession: incident.start!.possession!,
-        driveComponentHeight: driveComponentHeight,);
+      skin: _skin,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      yardline: startingYardline.toDouble(),
+      distance: distance,
+      side: startingSide,
+      possession: incident.start!.possession!,
+      driveComponentHeight: driveComponentHeight,
+    );
 
     final fumbleArc = DashedDoubleArcComponent.fumble(
       skin: _skin,
@@ -491,16 +519,17 @@ class FootballAnimationSequence {
         getYardageInBetween(endSide, endYardline + 12, endSide, -5).toDouble();
 
     final solidLineComponent = SolidLineComponent.combo(
-        skin: _skin,
-        yardline: endYardline.toDouble() + 14,
-        distance: distanceToEndzone,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        side: endSide,
-        possession: endSide,
-        driveComponentHeight: driveComponentHeight,
-        extraPaddingForMoveUpDistance: 18,
-        bottomPadding: 7,);
+      skin: _skin,
+      yardline: endYardline.toDouble() + 14,
+      distance: distanceToEndzone,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      side: endSide,
+      possession: endSide,
+      driveComponentHeight: driveComponentHeight,
+      extraPaddingForMoveUpDistance: 18,
+      bottomPadding: 7,
+    );
 
     driveComponent.add(dashedArc);
     driveComponent.add(fumbleArc);
@@ -514,7 +543,9 @@ class FootballAnimationSequence {
   }
 
   Future<void> touchdownFromFumbledKickoffAnimation(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) async {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) async {
     final startingYardline = incident.start!.yardline!;
     final startingSide = incident.start!.side!;
     final startPossession = incident.start!.possession!;
@@ -557,19 +588,23 @@ class FootballAnimationSequence {
     await Future.delayed(const Duration(milliseconds: 500));
 
     final distance = getYardageInBetween(
-            startingSide, startingYardline, endSide, endYardline,)
-        .toDouble();
+      startingSide,
+      startingYardline,
+      endSide,
+      endYardline,
+    ).toDouble();
 
     final dashedArc = DashedArcComponent.combo(
-        skin: _skin,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        yardline: startingYardline.toDouble(),
-        distance: distance,
-        side: startingSide,
-        possession: incident.start!.possession!,
-        shouldMoveUp: false,
-        driveComponentHeight: driveComponentHeight,);
+      skin: _skin,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      yardline: startingYardline.toDouble(),
+      distance: distance,
+      side: startingSide,
+      possession: incident.start!.possession!,
+      shouldMoveUp: false,
+      driveComponentHeight: driveComponentHeight,
+    );
 
     final fumbleArc = DashedDoubleArcComponent.fumble(
       skin: _skin,
@@ -587,17 +622,18 @@ class FootballAnimationSequence {
         getYardageInBetween(endSide, endYardline + 12, endSide, -8).toDouble();
 
     final solidLineComponent = SolidLineComponent.combo(
-        skin: _skin,
-        yardline: endYardline.toDouble() + 14,
-        distance: distanceToEndzone,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        side: endSide,
-        possession: endSide,
-        driveComponentHeight: driveComponentHeight,
-        extraPaddingForMoveUpDistance: 18,
-        shouldMoveUp: false,
-        bottomPadding: 7,);
+      skin: _skin,
+      yardline: endYardline.toDouble() + 14,
+      distance: distanceToEndzone,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      side: endSide,
+      possession: endSide,
+      driveComponentHeight: driveComponentHeight,
+      extraPaddingForMoveUpDistance: 18,
+      shouldMoveUp: false,
+      bottomPadding: 7,
+    );
 
     driveComponent.add(dashedArc);
     driveComponent.add(fumbleArc);
@@ -611,24 +647,32 @@ class FootballAnimationSequence {
   }
 
   Future<void> safetyFromBlockedPuntAnimation(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) async {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) async {
     await puntBlockedAnimation(incident, driveComponentHeight);
     setTransitionOverlayColor(incident);
     await _transitionOverlaysController.safety();
   }
 
   Future<void> awaitinOtAnimation(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) async {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) async {
     await _transitionOverlaysController.overtime();
   }
 
   Future<void> timeoutAnimation(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) async {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) async {
     await _transitionOverlaysController.timeOut();
   }
 
   Future<void> periodEndAnimation(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) async {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) async {
     final period = incident.meta!.period;
 
     switch (period) {
@@ -648,7 +692,9 @@ class FootballAnimationSequence {
   }
 
   Future<void> doubleTurnoverAnimation(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) async {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) async {
     final starSprite = StarSprite();
 
     final startYardline = incident.start!.yardline!;
@@ -692,11 +738,14 @@ class FootballAnimationSequence {
   }
 
   Future<void> driveStartedAnimation(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) async {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) async {
     /// clear the drive if the new drive comes in before the 10 seconds drive ended delay
     // clearDrive();
 
-    _game.add(TimerComponent(
+    _game.add(
+      TimerComponent(
         period: 0.1,
         onTick: () {
           renderDriveStartLine(incident);
@@ -705,7 +754,9 @@ class FootballAnimationSequence {
           driveComponentHeight = 0;
 
           driveComponent.y = 0;
-        },),);
+        },
+      ),
+    );
   }
 
   void renderDriveStartLine(FootballMatchIncidentModel incident) {
@@ -724,7 +775,8 @@ class FootballAnimationSequence {
     );
 
     final Component? latestDriveStartLine = _game.children.firstWhereOrNull(
-        (component) => component.runtimeType == DriveStartLineComponent,);
+      (component) => component.runtimeType == DriveStartLineComponent,
+    );
 
     if (latestDriveStartLine != null) {
       _game.remove(latestDriveStartLine);
@@ -733,24 +785,31 @@ class FootballAnimationSequence {
   }
 
   Future<void> driveEndedAnimation(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) async {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) async {
     /// clear past drive incidents on field after 20 seconds
-    _game.add(TimerComponent(
+    _game.add(
+      TimerComponent(
         period: 20,
         onTick: () {
           clearDrive();
-        },),);
+        },
+      ),
+    );
   }
 
   void clearDrive() {
     /// clear the Components from past drive on the field
-    driveComponent.removeWhere((component) =>
-        component is SolidLineComponent ||
-            component is SolidArcComponent ||
-            component is DashedArcComponent ||
-            component is PenaltyFlagArrowComponent ||
-            component is DashedDoubleArcComponent ||
-            component is CrossComponent,);
+    driveComponent.removeWhere(
+      (component) =>
+          component is SolidLineComponent ||
+          component is SolidArcComponent ||
+          component is DashedArcComponent ||
+          component is PenaltyFlagArrowComponent ||
+          component is DashedDoubleArcComponent ||
+          component is CrossComponent,
+    );
 
     _game.removeWhere((component) => component is DriveStartLineComponent);
 
@@ -791,17 +850,19 @@ class FootballAnimationSequence {
         : startYardline - distance;
 
     final startDownLine = DownLineComponent.start(
-        skin: _skin,
-        yardline: startYardline,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        side: side,);
+      skin: _skin,
+      yardline: startYardline,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      side: side,
+    );
     final endDownLine = DownLineComponent.end(
-        skin: _skin,
-        yardline: endYardLine,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        side: side,);
+      skin: _skin,
+      yardline: endYardLine,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      side: side,
+    );
 
     _game.add(startDownLine);
     _game.add(endDownLine);
@@ -828,22 +889,25 @@ class FootballAnimationSequence {
 
     if (showPlayStartRibbon) {
       final playRibbonComponent = PlayRibbonComponent(
-          yardline: incident.start!.yardline ?? 0,
-          text: yardlineLabel.toUpperCase(),
-          teamAbbreviation: sideTeamAbbrv.toUpperCase(),
-          side: side,
-          color: possession == HomeOrAway.away
-              ? _awayTeam.primaryColor
-              : _homeTeam.primaryColor,
-          direction: incident.start?.possession?.opposite ?? HomeOrAway.none,
-          skin: _skin,);
+        yardline: incident.start!.yardline ?? 0,
+        text: yardlineLabel.toUpperCase(),
+        teamAbbreviation: sideTeamAbbrv.toUpperCase(),
+        side: side,
+        color: possession == HomeOrAway.away
+            ? _awayTeam.primaryColor
+            : _homeTeam.primaryColor,
+        direction: incident.start?.possession?.opposite ?? HomeOrAway.none,
+        skin: _skin,
+      );
       _game.add(playRibbonComponent);
       await playRibbonComponent.onCompleted;
     }
   }
 
   Future<void> passAnimation(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) async {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) async {
     _footballController.spiral();
 
     final startingSide = incident.start!.side!;
@@ -896,15 +960,16 @@ class FootballAnimationSequence {
           incident.event.isLosesYardEvent ? possession : possession.opposite;
 
       final arrowPath = PlayRibbonComponent(
-          side: startingSide,
-          color: possession == HomeOrAway.away
-              ? _awayTeam.primaryColor
-              : _homeTeam.primaryColor,
-          yardline: startYardline,
-          text: '${incident.meta?.netYards ?? 0}YD',
-          playType: convertTypeToRushOrPass(incident.event),
-          direction: direction,
-          skin: _skin,);
+        side: startingSide,
+        color: possession == HomeOrAway.away
+            ? _awayTeam.primaryColor
+            : _homeTeam.primaryColor,
+        yardline: startYardline,
+        text: '${incident.meta?.netYards ?? 0}YD',
+        playType: convertTypeToRushOrPass(incident.event),
+        direction: direction,
+        skin: _skin,
+      );
 
       _game.add(arrowPath);
 
@@ -913,7 +978,9 @@ class FootballAnimationSequence {
   }
 
   void passEventsDashedArc(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) {
     final side = incident.start!.side!;
     final possession = incident.start!.possession!;
     final yardline = incident.start!.yardline!;
@@ -939,7 +1006,9 @@ class FootballAnimationSequence {
   }
 
   Future<void> passIncompleteAnimation(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) async {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) async {
     final startSide = incident.start!.side!;
     final startPossession = incident.start!.possession!;
     final startYardline = incident.start!.yardline!;
@@ -956,16 +1025,18 @@ class FootballAnimationSequence {
 
     _footballController.spiral();
 
-    final footballArc = FootballRiveComponent.passIncomplete(_footballArtboard,
-        startingYardline: startYardline,
-        endingYardline: footballEndYardline,
-        startingSide: startSide,
-        endingSide: endSide,
-        possession: startPossession,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        controller: _footballController,
-        starSprite: starSprite,);
+    final footballArc = FootballRiveComponent.passIncomplete(
+      _footballArtboard,
+      startingYardline: startYardline,
+      endingYardline: footballEndYardline,
+      startingSide: startSide,
+      endingSide: endSide,
+      possession: startPossession,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      controller: _footballController,
+      starSprite: starSprite,
+    );
 
     _game.add(footballArc);
 
@@ -989,7 +1060,9 @@ class FootballAnimationSequence {
   }
 
   Future<void> rushAnimation(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) async {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) async {
     _footballController.idleAngled();
 
     final side = incident.start!.side!;
@@ -1032,15 +1105,16 @@ class FootballAnimationSequence {
         incident.event.isLosesYardEvent ? possession : possession.opposite;
 
     final arrowPath = PlayRibbonComponent(
-        color: possession == HomeOrAway.away
-            ? _awayTeam.primaryColor
-            : _homeTeam.primaryColor,
-        side: side,
-        yardline: yardline,
-        direction: direction,
-        text: '${incident.meta?.netYards ?? 0}YD',
-        playType: convertTypeToRushOrPass(incident.event),
-        skin: _skin,);
+      color: possession == HomeOrAway.away
+          ? _awayTeam.primaryColor
+          : _homeTeam.primaryColor,
+      side: side,
+      yardline: yardline,
+      direction: direction,
+      text: '${incident.meta?.netYards ?? 0}YD',
+      playType: convertTypeToRushOrPass(incident.event),
+      skin: _skin,
+    );
 
     _game.add(arrowPath);
 
@@ -1048,20 +1122,23 @@ class FootballAnimationSequence {
   }
 
   void rushEventsSolidLine(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) {
     final side = incident.start!.side!;
     final possession = incident.start!.possession!;
     final yardline = incident.start!.yardline!;
 
     final solidLineComponent = SolidLineComponent.regular(
-        skin: _skin,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        yardline: yardline.toDouble(),
-        distance: incident.meta!.netYards!.toDouble(),
-        side: side,
-        possession: possession,
-        arrowHeadType: ArrowHeadType.arrow,);
+      skin: _skin,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      yardline: yardline.toDouble(),
+      distance: incident.meta!.netYards!.toDouble(),
+      side: side,
+      possession: possession,
+      arrowHeadType: ArrowHeadType.arrow,
+    );
 
     solidLineComponent.y = driveComponentHeight - 16;
 
@@ -1093,7 +1170,9 @@ class FootballAnimationSequence {
   }
 
   Future<void> kickoffWithTouchbackAnimation(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) async {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) async {
     const int kickToYardline = -5;
     final startSide = incident.start!.side!;
     final possession = incident.start!.possession!;
@@ -1134,7 +1213,9 @@ class FootballAnimationSequence {
   }
 
   Future<void> kickoffReturnAnimation(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) async {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) async {
     final startSide = incident.start!.side!;
     final endSide = incident.end!.side!;
     final possession = incident.start!.possession!;
@@ -1142,54 +1223,60 @@ class FootballAnimationSequence {
     final endYardline = incident.end!.yardline!;
 
     final footballComponent = FootballRiveComponent.kickoffReturn(
-        _footballArtboard,
-        startingYardline: startYardline,
-        endingYardline: endYardline,
-        startingSide: startSide,
-        possession: possession,
-        screenWidth: screenWidth,
-        controller: _footballController,);
+      _footballArtboard,
+      startingYardline: startYardline,
+      endingYardline: endYardline,
+      startingSide: startSide,
+      possession: possession,
+      screenWidth: screenWidth,
+      controller: _footballController,
+    );
 
     _game.add(footballComponent);
 
     await footballComponent.onCompleted;
 
     final dashedArcComponent = DashedArcComponent.combo(
-        skin: _skin,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        yardline: startYardline.toDouble(),
-        distance: (100 - startYardline + 5).toDouble(),
-        side: startSide,
-        possession: possession,
-        shouldMoveUp: false,
-        driveComponentHeight: driveComponentHeight,);
+      skin: _skin,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      yardline: startYardline.toDouble(),
+      distance: (100 - startYardline + 5).toDouble(),
+      side: startSide,
+      possession: possession,
+      shouldMoveUp: false,
+      driveComponentHeight: driveComponentHeight,
+    );
 
     final distanceFromEndzone =
         getYardageInBetween(startSide.opposite, -5, endSide, endYardline)
             .toDouble();
 
     final solidLineComponent = SolidLineComponent.combo(
-        skin: _skin,
-        yardline: -5,
-        distance: distanceFromEndzone,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        side: startSide.opposite,
-        possession: possession,
-        driveComponentHeight: driveComponentHeight,
-        shouldMoveUp: false,
-        bottomPadding: 0,);
+      skin: _skin,
+      yardline: -5,
+      distance: distanceFromEndzone,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      side: startSide.opposite,
+      possession: possession,
+      driveComponentHeight: driveComponentHeight,
+      shouldMoveUp: false,
+      bottomPadding: 0,
+    );
 
     driveComponent.add(dashedArcComponent);
     driveComponent.add(solidLineComponent);
 
     await Future.wait(
-        [dashedArcComponent.onCompleted, solidLineComponent.onCompleted],);
+      [dashedArcComponent.onCompleted, solidLineComponent.onCompleted],
+    );
   }
 
   Future<void> onsideKickFailsAnimation(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) async {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) async {
     final endingYardline = incident.end!.yardline!;
     final startingSide = incident.start!.side!;
     final endingSide = incident.end!.side!;
@@ -1197,8 +1284,11 @@ class FootballAnimationSequence {
     final startingYardline = incident.start!.yardline!;
 
     final distance = getYardageInBetween(
-            startingSide, startingYardline, endingSide, endingYardline,)
-        .toDouble();
+      startingSide,
+      startingYardline,
+      endingSide,
+      endingYardline,
+    ).toDouble();
 
     final kickoff = buildBaseKickoff(
       startingYardline: startingYardline,
@@ -1217,41 +1307,48 @@ class FootballAnimationSequence {
     _game.add(xIcon);
 
     await xIcon.trigger(
-        position: Vector2(kickoff.x, kickoff.y + kickoff.height), duration: 1,);
+      position: Vector2(kickoff.x, kickoff.y + kickoff.height),
+      duration: 1,
+    );
 
     final dashedArcComponent = DashedArcComponent.combo(
-        skin: _skin,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        yardline: startingYardline.toDouble(),
-        distance: distance + 2,
-        side: startingSide,
-        possession: startPossession,
-        shouldMoveUp: false,
-        driveComponentHeight: driveComponentHeight,);
+      skin: _skin,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      yardline: startingYardline.toDouble(),
+      distance: distance + 2,
+      side: startingSide,
+      possession: startPossession,
+      shouldMoveUp: false,
+      driveComponentHeight: driveComponentHeight,
+    );
 
     final solidLineComponent = SolidLineComponent.combo(
-        skin: _skin,
-        yardline: endingYardline.toDouble() + 2,
-        distance: 2,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        side: endingSide,
-        possession: startPossession,
-        driveComponentHeight: driveComponentHeight,
-        arrowHeadType: ArrowHeadType.arrow,
-        shouldMoveUp: false,
-        bottomPadding: 0,);
+      skin: _skin,
+      yardline: endingYardline.toDouble() + 2,
+      distance: 2,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      side: endingSide,
+      possession: startPossession,
+      driveComponentHeight: driveComponentHeight,
+      arrowHeadType: ArrowHeadType.arrow,
+      shouldMoveUp: false,
+      bottomPadding: 0,
+    );
 
     driveComponent.add(dashedArcComponent);
     driveComponent.add(solidLineComponent);
 
     await Future.wait(
-        [dashedArcComponent.onCompleted, solidLineComponent.onCompleted],);
+      [dashedArcComponent.onCompleted, solidLineComponent.onCompleted],
+    );
   }
 
   Future<void> onsideKickSucceedsAnimation(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) async {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) async {
     final endingYardline = incident.end!.yardline!;
     final startingSide = incident.start!.side!;
     final endingSide = incident.end!.side!;
@@ -1259,8 +1356,11 @@ class FootballAnimationSequence {
     final startingYardline = incident.start!.yardline!;
 
     final distance = getYardageInBetween(
-            startingSide, startingYardline, endingSide, endingYardline,)
-        .toDouble();
+      startingSide,
+      startingYardline,
+      endingSide,
+      endingYardline,
+    ).toDouble();
 
     final kickoff = buildBaseKickoff(
       startingYardline: startingYardline,
@@ -1275,47 +1375,53 @@ class FootballAnimationSequence {
     await kickoff.onCompleted;
 
     final dashedArcComponent = DashedArcComponent.combo(
-        skin: _skin,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        yardline: startingYardline.toDouble(),
-        distance: distance - 2,
-        side: startingSide,
-        possession: startPossession,
-        shouldMoveUp: false,
-        driveComponentHeight: driveComponentHeight,);
+      skin: _skin,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      yardline: startingYardline.toDouble(),
+      distance: distance - 2,
+      side: startingSide,
+      possession: startPossession,
+      shouldMoveUp: false,
+      driveComponentHeight: driveComponentHeight,
+    );
 
     final solidLineComponent = SolidLineComponent.combo(
-        skin: _skin,
-        yardline: endingYardline.toDouble() - 2,
-        distance: -2,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        side: endingSide,
-        possession: startPossession,
-        driveComponentHeight: driveComponentHeight,
-        arrowHeadType: ArrowHeadType.arrow,
-        shouldMoveUp: false,
-        bottomPadding: 0,);
+      skin: _skin,
+      yardline: endingYardline.toDouble() - 2,
+      distance: -2,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      side: endingSide,
+      possession: startPossession,
+      driveComponentHeight: driveComponentHeight,
+      arrowHeadType: ArrowHeadType.arrow,
+      shouldMoveUp: false,
+      bottomPadding: 0,
+    );
 
     driveComponent.add(dashedArcComponent);
     driveComponent.add(solidLineComponent);
 
     await Future.wait(
-        [dashedArcComponent.onCompleted, solidLineComponent.onCompleted],);
+      [dashedArcComponent.onCompleted, solidLineComponent.onCompleted],
+    );
   }
 
   Future<void> fieldGoalMadeAnimation(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) async {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) async {
     final playRibbon = PlayRibbonComponent(
-        text: incident.event.isExtraPointEvents ? 'PAT' : 'FG ATT',
-        color: incident.start!.possession == HomeOrAway.home
-            ? _homeTeam.primaryColor
-            : _awayTeam.primaryColor,
-        yardline: incident.start!.yardline!,
-        side: incident.start!.side!,
-        direction: incident.start!.possession!.opposite,
-        skin: _skin,);
+      text: incident.event.isExtraPointEvents ? 'PAT' : 'FG ATT',
+      color: incident.start!.possession == HomeOrAway.home
+          ? _homeTeam.primaryColor
+          : _awayTeam.primaryColor,
+      yardline: incident.start!.yardline!,
+      side: incident.start!.side!,
+      direction: incident.start!.possession!.opposite,
+      skin: _skin,
+    );
 
     _game.add(playRibbon);
 
@@ -1368,12 +1474,15 @@ class FootballAnimationSequence {
   }
 
   void fieldGoalMadeSolidArc(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) {
     final solidArc = SolidArcComponent(
-        skin: _skin,
-        yardline: incident.start!.yardline!.toDouble(),
-        side: incident.start!.side!,
-        possession: incident.start!.possession!,);
+      skin: _skin,
+      yardline: incident.start!.yardline!.toDouble(),
+      side: incident.start!.side!,
+      possession: incident.start!.possession!,
+    );
 
     solidArc.y = driveComponentHeight;
 
@@ -1381,16 +1490,19 @@ class FootballAnimationSequence {
   }
 
   Future<void> fieldGoalMissedAnimation(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) async {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) async {
     final playRibbon = PlayRibbonComponent(
-        text: incident.event.isExtraPointEvents ? 'PAT' : 'FG ATT',
-        color: incident.start!.possession == HomeOrAway.home
-            ? _homeTeam.primaryColor
-            : _awayTeam.primaryColor,
-        yardline: incident.start!.yardline!,
-        side: incident.start!.side!,
-        direction: incident.start!.possession!.opposite,
-        skin: _skin,);
+      text: incident.event.isExtraPointEvents ? 'PAT' : 'FG ATT',
+      color: incident.start!.possession == HomeOrAway.home
+          ? _homeTeam.primaryColor
+          : _awayTeam.primaryColor,
+      yardline: incident.start!.yardline!,
+      side: incident.start!.side!,
+      direction: incident.start!.possession!.opposite,
+      skin: _skin,
+    );
 
     _game.add(playRibbon);
 
@@ -1410,14 +1522,16 @@ class FootballAnimationSequence {
 
     _game.add(starSprite);
 
-    final fieldGoal = FootballRiveComponent.fieldGoalMissed(_footballArtboard,
-        startingYardline: incident.start!.yardline!,
-        startingSide: incident.start!.side!,
-        endingSide: endingSide,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        controller: _footballController,
-        starSprite: starSprite,);
+    final fieldGoal = FootballRiveComponent.fieldGoalMissed(
+      _footballArtboard,
+      startingYardline: incident.start!.yardline!,
+      startingSide: incident.start!.side!,
+      endingSide: endingSide,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      controller: _footballController,
+      starSprite: starSprite,
+    );
 
     _game.add(fieldGoal);
 
@@ -1435,13 +1549,14 @@ class FootballAnimationSequence {
     }
 
     final solidArc = SolidArcComponent.cross(
-        skin: _skin,
-        distance: 0,
-        screenWidth: screenWidth,
-        yardline: incident.start!.yardline!.toDouble(),
-        side: incident.start!.side!,
-        possession: incident.start!.possession!,
-        driveComponentHeight: driveComponentHeight,);
+      skin: _skin,
+      distance: 0,
+      screenWidth: screenWidth,
+      yardline: incident.start!.yardline!.toDouble(),
+      side: incident.start!.side!,
+      possession: incident.start!.possession!,
+      driveComponentHeight: driveComponentHeight,
+    );
 
     driveComponent.add(solidArc);
 
@@ -1449,14 +1564,17 @@ class FootballAnimationSequence {
   }
 
   void fieldGoalMissedSolidArc(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) {
     final solidArc = SolidArcComponent.cross(
-        skin: _skin,
-        distance: 0,
-        screenWidth: screenWidth,
-        yardline: incident.start!.yardline!.toDouble(),
-        side: incident.start!.side!,
-        possession: incident.start!.possession!,);
+      skin: _skin,
+      distance: 0,
+      screenWidth: screenWidth,
+      yardline: incident.start!.yardline!.toDouble(),
+      side: incident.start!.side!,
+      possession: incident.start!.possession!,
+    );
 
     solidArc.y = driveComponentHeight;
 
@@ -1464,7 +1582,9 @@ class FootballAnimationSequence {
   }
 
   Future<void> penaltyAnimation(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) async {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) async {
     final side = incident.start!.side!;
     final possession = incident.start!.possession!;
     final yardline = incident.start!.yardline!;
@@ -1487,14 +1607,15 @@ class FootballAnimationSequence {
     await _transitionOverlaysController.flag();
 
     final penaltyFlagArrow = PenaltyFlagArrowComponent(
-        skin: _skin,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        yardline: yardline.toDouble(),
-        side: side,
-        possession: possession,
-        netYards: netYards.toDouble(),
-        driveComponentHeight: driveComponentHeight,);
+      skin: _skin,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      yardline: yardline.toDouble(),
+      side: side,
+      possession: possession,
+      netYards: netYards.toDouble(),
+      driveComponentHeight: driveComponentHeight,
+    );
 
     driveComponent.add(penaltyFlagArrow);
 
@@ -1502,7 +1623,9 @@ class FootballAnimationSequence {
   }
 
   void penaltyFlag(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) {
     final side = incident.start!.side!;
     final possession = incident.start!.possession!;
     final yardline = incident.start!.yardline!;
@@ -1524,7 +1647,9 @@ class FootballAnimationSequence {
   }
 
   Future<void> sackAnimation(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) async {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) async {
     _footballController.idleAngled();
 
     final int endYardline =
@@ -1533,12 +1658,13 @@ class FootballAnimationSequence {
             : incident.end!.yardline!;
 
     final footballAnimation = FootballRiveComponent.sackEffect(
-        _footballArtboard,
-        startingYardline: incident.start!.yardline!,
-        endingYardline: endYardline,
-        startingSide: incident.start!.side!,
-        endingSide: incident.end!.side!,
-        screenWidth: screenWidth,);
+      _footballArtboard,
+      startingYardline: incident.start!.yardline!,
+      endingYardline: endYardline,
+      startingSide: incident.start!.side!,
+      endingSide: incident.end!.side!,
+      screenWidth: screenWidth,
+    );
 
     _game.add(footballAnimation);
 
@@ -1559,9 +1685,10 @@ class FootballAnimationSequence {
     final Vector2 textPosition = starPosition + textOffset;
 
     final text = CustomTextComponent(
-        text: 'SACK',
-        position: textPosition,
-        angle: startPossession == HomeOrAway.home ? -math.pi / 6 : math.pi / 6,);
+      text: 'SACK',
+      position: textPosition,
+      angle: startPossession == HomeOrAway.home ? -math.pi / 6 : math.pi / 6,
+    );
     _game.add(text);
 
     text.scaleIn();
@@ -1590,14 +1717,15 @@ class FootballAnimationSequence {
     }
 
     final solidLineComponent = SolidLineComponent.regular(
-        skin: _skin,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        yardline: yardline.toDouble(),
-        distance: distance,
-        side: side,
-        possession: startPossession,
-        driveComponentHeight: driveComponentHeight,);
+      skin: _skin,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      yardline: yardline.toDouble(),
+      distance: distance,
+      side: side,
+      possession: startPossession,
+      driveComponentHeight: driveComponentHeight,
+    );
 
     driveComponent.add(solidLineComponent);
 
@@ -1605,19 +1733,22 @@ class FootballAnimationSequence {
   }
 
   void sackSolidLine(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) {
     final side = incident.start!.side!;
     final yardline = incident.start!.yardline!;
     final possession = incident.start!.possession!;
 
     final solidLineComponent = SolidLineComponent.regular(
-        skin: _skin,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        yardline: yardline.toDouble(),
-        distance: incident.meta!.netYards!.toDouble(),
-        side: side,
-        possession: possession,);
+      skin: _skin,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      yardline: yardline.toDouble(),
+      distance: incident.meta!.netYards!.toDouble(),
+      side: side,
+      possession: possession,
+    );
 
     solidLineComponent.y = driveComponentHeight;
 
@@ -1625,7 +1756,9 @@ class FootballAnimationSequence {
   }
 
   Future<void> touchdownFromPassAnimation(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) async {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) async {
     final startSide = incident.start!.side!;
     final endSide = incident.end!.side!;
     final possession = incident.start!.possession!;
@@ -1652,14 +1785,15 @@ class FootballAnimationSequence {
     await _transitionOverlaysController.touchdown();
 
     final dashedArcComponent = DashedArcComponent.regular(
-        skin: _skin,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        yardline: yardline.toDouble(),
-        distance: incident.meta!.netYards!.toDouble(),
-        side: startSide,
-        possession: possession,
-        driveComponentHeight: driveComponentHeight,);
+      skin: _skin,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      yardline: yardline.toDouble(),
+      distance: incident.meta!.netYards!.toDouble(),
+      side: startSide,
+      possession: possession,
+      driveComponentHeight: driveComponentHeight,
+    );
 
     driveComponent.add(dashedArcComponent);
 
@@ -1667,19 +1801,22 @@ class FootballAnimationSequence {
   }
 
   void touchdownFromPassDashedArc(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) {
     final startSide = incident.start!.side!;
     final possession = incident.start!.possession!;
     final yardline = incident.start!.yardline!;
 
     final dashedArcComponent = DashedArcComponent.regular(
-        skin: _skin,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        yardline: yardline.toDouble(),
-        distance: incident.meta!.netYards!.toDouble(),
-        side: startSide,
-        possession: possession,);
+      skin: _skin,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      yardline: yardline.toDouble(),
+      distance: incident.meta!.netYards!.toDouble(),
+      side: startSide,
+      possession: possession,
+    );
 
     dashedArcComponent.y = driveComponentHeight;
 
@@ -1687,7 +1824,9 @@ class FootballAnimationSequence {
   }
 
   Future<void> touchdownFromRushAnimation(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) async {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) async {
     final startSide = incident.start!.side!;
     final endSide = incident.end!.side!;
     final possession = incident.start!.possession!;
@@ -1714,14 +1853,15 @@ class FootballAnimationSequence {
     await _transitionOverlaysController.touchdown();
 
     final solidLineComponent = SolidLineComponent.regular(
-        skin: _skin,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        yardline: yardline.toDouble(),
-        distance: incident.meta!.netYards!.toDouble() + 5,
-        side: startSide,
-        possession: possession,
-        driveComponentHeight: driveComponentHeight,);
+      skin: _skin,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      yardline: yardline.toDouble(),
+      distance: incident.meta!.netYards!.toDouble() + 5,
+      side: startSide,
+      possession: possession,
+      driveComponentHeight: driveComponentHeight,
+    );
 
     driveComponent.add(solidLineComponent);
 
@@ -1729,19 +1869,22 @@ class FootballAnimationSequence {
   }
 
   void touchdownFromRushLine(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) {
     final startSide = incident.start!.side!;
     final possession = incident.start!.possession!;
     final yardline = incident.start!.yardline!;
 
     final solidLineComponent = SolidLineComponent.regular(
-        skin: _skin,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        yardline: yardline.toDouble(),
-        distance: incident.meta!.netYards!.toDouble() + 5,
-        side: startSide,
-        possession: possession,);
+      skin: _skin,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      yardline: yardline.toDouble(),
+      distance: incident.meta!.netYards!.toDouble() + 5,
+      side: startSide,
+      possession: possession,
+    );
 
     solidLineComponent.y = driveComponentHeight;
 
@@ -1749,7 +1892,9 @@ class FootballAnimationSequence {
   }
 
   Future<void> puntBlockedAnimation(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) async {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) async {
     final startSide = incident.start!.side!;
     final endSide = incident.end!.side!;
     final startPossession = incident.start!.possession!;
@@ -1769,32 +1914,34 @@ class FootballAnimationSequence {
     _footballController.spiral();
 
     final footballComponent = FootballRiveComponent.puntBlocked(
-        _footballArtboard,
-        startingYardline: startYardline,
-        endingYardline: endYardline,
-        startingSide: startSide,
-        endingSide: endSide,
-        possession: startPossession,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        controller: _footballController,
-        starSprite: starSprite,);
+      _footballArtboard,
+      startingYardline: startYardline,
+      endingYardline: endYardline,
+      startingSide: startSide,
+      endingSide: endSide,
+      possession: startPossession,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      controller: _footballController,
+      starSprite: starSprite,
+    );
 
     _game.add(footballComponent);
 
     await footballComponent.onCompleted;
 
     final dashedArcComponent = DashedArcComponent.combo(
-        skin: _skin,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        yardline: startYardline.toDouble(),
+      skin: _skin,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      yardline: startYardline.toDouble(),
 
-        /// use a fixed number since we don't get yards for interception
-        distance: kInterceptionNetYards,
-        side: startSide,
-        possession: startPossession,
-        driveComponentHeight: driveComponentHeight,);
+      /// use a fixed number since we don't get yards for interception
+      distance: kInterceptionNetYards,
+      side: startSide,
+      possession: startPossession,
+      driveComponentHeight: driveComponentHeight,
+    );
 
     driveComponent.add(dashedArcComponent);
 
@@ -1804,14 +1951,15 @@ class FootballAnimationSequence {
             : kInterceptionNetYards);
 
     final solidLineComponent = SolidLineComponent.combo(
-        skin: _skin,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        yardline: solidLineStartYardline,
-        distance: (endYardline - startYardline).abs().toDouble() + 5,
-        side: endSide,
-        possession: startPossession,
-        driveComponentHeight: driveComponentHeight,);
+      skin: _skin,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      yardline: solidLineStartYardline,
+      distance: (endYardline - startYardline).abs().toDouble() + 5,
+      side: endSide,
+      possession: startPossession,
+      driveComponentHeight: driveComponentHeight,
+    );
 
     driveComponent.add(solidLineComponent);
 
@@ -1819,7 +1967,9 @@ class FootballAnimationSequence {
   }
 
   void puntBlockedDashedArcLine(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) {
     final startSide = incident.start!.side!;
     final endSide = incident.end!.side!;
     final startPossession = incident.start!.possession!;
@@ -1827,15 +1977,16 @@ class FootballAnimationSequence {
     final endYardline = incident.end!.yardline!;
 
     final dashedArcComponent = DashedArcComponent.combo(
-        skin: _skin,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        yardline: startYardline.toDouble(),
+      skin: _skin,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      yardline: startYardline.toDouble(),
 
-        /// use a fixed number since we don't get yards for interception
-        distance: kInterceptionNetYards,
-        side: startSide,
-        possession: startPossession,);
+      /// use a fixed number since we don't get yards for interception
+      distance: kInterceptionNetYards,
+      side: startSide,
+      possession: startPossession,
+    );
 
     final solidLineStartYardline = startYardline +
         (startSide != startPossession
@@ -1860,7 +2011,9 @@ class FootballAnimationSequence {
   }
 
   Future<void> puntAnimation(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) async {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) async {
     _footballController.spiral();
 
     int puntToYardline;
@@ -1928,7 +2081,9 @@ class FootballAnimationSequence {
   }
 
   void puntDashedArc(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) {
     final startSide = incident.start!.side!;
     final possession = incident.start!.possession!;
     final startYardline = incident.start!.yardline!;
@@ -1953,7 +2108,9 @@ class FootballAnimationSequence {
   }
 
   Future<void> touchdownFromBlockedPuntAnimation(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) async {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) async {
     final startSide = incident.start!.side!;
     final endSide = incident.end!.side!;
     final startPossession = incident.start!.possession!;
@@ -1968,15 +2125,16 @@ class FootballAnimationSequence {
     _footballController.spiral();
 
     final footballComponent = FootballRiveComponent.touchdownFromBlockedPunt(
-        _footballArtboard,
-        startingYardline: startYardline,
-        startingSide: startSide,
-        endingSide: endSide,
-        possession: startPossession,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        starSprite: starSprite,
-        controller: _footballController,);
+      _footballArtboard,
+      startingYardline: startYardline,
+      startingSide: startSide,
+      endingSide: endSide,
+      possession: startPossession,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      starSprite: starSprite,
+      controller: _footballController,
+    );
 
     _game.add(footballComponent);
 
@@ -1986,16 +2144,17 @@ class FootballAnimationSequence {
     await _transitionOverlaysController.touchdown();
 
     final dashedArcComponent = DashedArcComponent.combo(
-        skin: _skin,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        yardline: startYardline.toDouble(),
+      skin: _skin,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      yardline: startYardline.toDouble(),
 
-        /// use a fixed number since we don't get yards for interception
-        distance: kInterceptionNetYards,
-        side: startSide,
-        possession: startPossession,
-        driveComponentHeight: driveComponentHeight,);
+      /// use a fixed number since we don't get yards for interception
+      distance: kInterceptionNetYards,
+      side: startSide,
+      possession: startPossession,
+      driveComponentHeight: driveComponentHeight,
+    );
 
     driveComponent.add(dashedArcComponent);
 
@@ -2005,14 +2164,15 @@ class FootballAnimationSequence {
             : kInterceptionNetYards);
 
     final solidLineComponent = SolidLineComponent.combo(
-        skin: _skin,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        yardline: solidLineStartYardline,
-        distance: netYards.toDouble() + 10,
-        side: endSide,
-        possession: startPossession,
-        driveComponentHeight: driveComponentHeight,);
+      skin: _skin,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      yardline: solidLineStartYardline,
+      distance: netYards.toDouble() + 10,
+      side: endSide,
+      possession: startPossession,
+      driveComponentHeight: driveComponentHeight,
+    );
 
     driveComponent.add(solidLineComponent);
 
@@ -2020,7 +2180,9 @@ class FootballAnimationSequence {
   }
 
   void touchdownFromBlockedPuntDashedArcLine(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) {
     final startSide = incident.start!.side!;
     final endSide = incident.end!.side!;
     final startPossession = incident.start!.possession!;
@@ -2029,15 +2191,16 @@ class FootballAnimationSequence {
         startSide != startPossession ? 100 - startYardline : startYardline;
 
     final dashedArcComponent = DashedArcComponent.combo(
-        skin: _skin,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        yardline: startYardline.toDouble(),
+      skin: _skin,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      yardline: startYardline.toDouble(),
 
-        /// use a fixed number since we don't get yards for interception
-        distance: kInterceptionNetYards,
-        side: startSide,
-        possession: startPossession,);
+      /// use a fixed number since we don't get yards for interception
+      distance: kInterceptionNetYards,
+      side: startSide,
+      possession: startPossession,
+    );
 
     final solidLineStartYardline = startYardline +
         (startSide != startPossession
@@ -2045,13 +2208,14 @@ class FootballAnimationSequence {
             : kInterceptionNetYards);
 
     final solidLineComponent = SolidLineComponent.combo(
-        skin: _skin,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        yardline: solidLineStartYardline,
-        distance: netYards.toDouble() + 10,
-        side: endSide,
-        possession: startPossession,);
+      skin: _skin,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      yardline: solidLineStartYardline,
+      distance: netYards.toDouble() + 10,
+      side: endSide,
+      possession: startPossession,
+    );
 
     dashedArcComponent.y = driveComponentHeight;
     solidLineComponent.y = driveComponentHeight + 16;
@@ -2061,7 +2225,9 @@ class FootballAnimationSequence {
   }
 
   Future<void> touchdownFromPuntAnimation(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) async {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) async {
     final startSide = incident.start!.side!;
     final endSide = incident.end!.side!;
     final startPossession = incident.start!.possession!;
@@ -2074,14 +2240,15 @@ class FootballAnimationSequence {
     _footballController.spiral();
 
     final footballComponent = FootballRiveComponent.touchdownFromPunt(
-        _footballArtboard,
-        startingYardline: startYardline,
-        startingSide: startSide,
-        possession: startPossession,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        starSprite: starSprite,
-        controller: _footballController,);
+      _footballArtboard,
+      startingYardline: startYardline,
+      startingSide: startSide,
+      possession: startPossession,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      starSprite: starSprite,
+      controller: _footballController,
+    );
 
     _game.add(footballComponent);
 
@@ -2094,28 +2261,30 @@ class FootballAnimationSequence {
     final arcLength = (100 - startYardline) - kTouchdownFromPuntEndYardline;
 
     final dashedArcComponent = DashedArcComponent.combo(
-        skin: _skin,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        yardline: startYardline.toDouble(),
+      skin: _skin,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      yardline: startYardline.toDouble(),
 
-        /// use a fixed number since we don't get yards for interception
-        distance: arcLength,
-        side: startSide,
-        possession: startPossession,
-        driveComponentHeight: driveComponentHeight,);
+      /// use a fixed number since we don't get yards for interception
+      distance: arcLength,
+      side: startSide,
+      possession: startPossession,
+      driveComponentHeight: driveComponentHeight,
+    );
 
     driveComponent.add(dashedArcComponent);
 
     final solidLineComponent = SolidLineComponent.combo(
-        skin: _skin,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        yardline: startYardline + arcLength,
-        distance: (100 - kTouchdownFromPuntEndYardline) + 5,
-        side: endSide,
-        possession: startPossession,
-        driveComponentHeight: driveComponentHeight,);
+      skin: _skin,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      yardline: startYardline + arcLength,
+      distance: (100 - kTouchdownFromPuntEndYardline) + 5,
+      side: endSide,
+      possession: startPossession,
+      driveComponentHeight: driveComponentHeight,
+    );
 
     driveComponent.add(solidLineComponent);
 
@@ -2123,7 +2292,9 @@ class FootballAnimationSequence {
   }
 
   void touchdownFromPuntDashedArcLine(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) {
     final startSide = incident.start!.side!;
     final endSide = incident.end!.side!;
     final startPossession = incident.start!.possession!;
@@ -2131,15 +2302,16 @@ class FootballAnimationSequence {
     final arcLength = (100 - startYardline) - kTouchdownFromPuntEndYardline;
 
     final dashedArcComponent = DashedArcComponent.combo(
-        skin: _skin,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        yardline: startYardline.toDouble(),
+      skin: _skin,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      yardline: startYardline.toDouble(),
 
-        /// use a fixed number since we don't get yards for interception
-        distance: arcLength,
-        side: startSide,
-        possession: startPossession,);
+      /// use a fixed number since we don't get yards for interception
+      distance: arcLength,
+      side: startSide,
+      possession: startPossession,
+    );
 
     final solidLineComponent = SolidLineComponent.combo(
       skin: _skin,
@@ -2159,7 +2331,9 @@ class FootballAnimationSequence {
   }
 
   Future<void> interceptionAnimation(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) async {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) async {
     final startSide = incident.start!.side!;
     final endSide = incident.end!.side!;
     final startPossession = incident.start!.possession!;
@@ -2172,16 +2346,17 @@ class FootballAnimationSequence {
     _game.add(starSprite);
 
     final footballComponent = FootballRiveComponent.interception(
-        _footballArtboard,
-        startingYardline: startYardline,
-        endingYardline: endYardline,
-        startingSide: startSide,
-        endingSide: endSide,
-        possession: startPossession,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        controller: _footballController,
-        starSprite: starSprite,);
+      _footballArtboard,
+      startingYardline: startYardline,
+      endingYardline: endYardline,
+      startingSide: startSide,
+      endingSide: endSide,
+      possession: startPossession,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      controller: _footballController,
+      starSprite: starSprite,
+    );
 
     _game.add(footballComponent);
 
@@ -2227,7 +2402,9 @@ class FootballAnimationSequence {
   }
 
   void interceptionDashedArcLine(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) {
     final startSide = incident.start!.side!;
     final endSide = incident.end!.side!;
     final startPossession = incident.start!.possession!;
@@ -2235,15 +2412,16 @@ class FootballAnimationSequence {
     final netYards = incident.meta!.netYards!.abs().toDouble();
 
     final dashedArcComponent = DashedArcComponent.combo(
-        skin: _skin,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        yardline: startYardline.toDouble(),
+      skin: _skin,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      yardline: startYardline.toDouble(),
 
-        /// use a fixed number since we don't get yards for interception
-        distance: kInterceptionNetYards,
-        side: endSide,
-        possession: startPossession,);
+      /// use a fixed number since we don't get yards for interception
+      distance: kInterceptionNetYards,
+      side: endSide,
+      possession: startPossession,
+    );
 
     final solidLineStartYardline = startYardline +
         (startSide != startPossession
@@ -2268,7 +2446,9 @@ class FootballAnimationSequence {
   }
 
   Future<void> touchdownFromPickSixAnimation(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) async {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) async {
     final startSide = incident.start!.side!;
     final endSide = incident.end!.side!;
     final startYardline = incident.start!.yardline!;
@@ -2282,15 +2462,16 @@ class FootballAnimationSequence {
     _game.add(starSprite);
 
     final footballComponent = FootballRiveComponent.touchdownFromPickSix(
-        _footballArtboard,
-        startingYardline: startYardline,
-        startingSide: startSide,
-        endingSide: endSide,
-        possession: endZone,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        controller: _footballController,
-        starSprite: starSprite,);
+      _footballArtboard,
+      startingYardline: startYardline,
+      startingSide: startSide,
+      endingSide: endSide,
+      possession: endZone,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      controller: _footballController,
+      starSprite: starSprite,
+    );
 
     _game.add(footballComponent);
 
@@ -2300,16 +2481,17 @@ class FootballAnimationSequence {
     await _transitionOverlaysController.touchdown();
 
     final dashedArcComponent = DashedArcComponent.combo(
-        skin: _skin,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        yardline: startYardline.toDouble(),
+      skin: _skin,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      yardline: startYardline.toDouble(),
 
-        /// use a fixed number since we don't get yards for interception
-        distance: kInterceptionNetYards,
-        side: startSide,
-        possession: endZone,
-        driveComponentHeight: driveComponentHeight,);
+      /// use a fixed number since we don't get yards for interception
+      distance: kInterceptionNetYards,
+      side: startSide,
+      possession: endZone,
+      driveComponentHeight: driveComponentHeight,
+    );
 
     driveComponent.add(dashedArcComponent);
 
@@ -2317,14 +2499,15 @@ class FootballAnimationSequence {
         (startSide != endZone ? -kInterceptionNetYards : kInterceptionNetYards);
 
     final solidLineComponent = SolidLineComponent.combo(
-        skin: _skin,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        yardline: solidLineStartYardline,
-        distance: netYards.toDouble() + 10,
-        side: startSide,
-        possession: endZone,
-        driveComponentHeight: driveComponentHeight,);
+      skin: _skin,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      yardline: solidLineStartYardline,
+      distance: netYards.toDouble() + 10,
+      side: startSide,
+      possession: endZone,
+      driveComponentHeight: driveComponentHeight,
+    );
 
     driveComponent.add(solidLineComponent);
 
@@ -2332,7 +2515,9 @@ class FootballAnimationSequence {
   }
 
   void touchdownFromPickSixDashedArcLine(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) {
     final startSide = incident.start!.side!;
     final startYardline = incident.start!.yardline!;
 
@@ -2341,27 +2526,29 @@ class FootballAnimationSequence {
     final netYards = startSide != endZone ? 100 - startYardline : startYardline;
 
     final dashedArcComponent = DashedArcComponent.combo(
-        skin: _skin,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        yardline: startYardline.toDouble(),
+      skin: _skin,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      yardline: startYardline.toDouble(),
 
-        /// use a fixed number since we don't get yards for interception
-        distance: kInterceptionNetYards,
-        side: startSide,
-        possession: endZone,);
+      /// use a fixed number since we don't get yards for interception
+      distance: kInterceptionNetYards,
+      side: startSide,
+      possession: endZone,
+    );
 
     final solidLineStartYardline = startYardline +
         (startSide != endZone ? -kInterceptionNetYards : kInterceptionNetYards);
 
     final solidLineComponent = SolidLineComponent.combo(
-        skin: _skin,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        yardline: solidLineStartYardline,
-        distance: netYards.toDouble() + 10,
-        side: startSide,
-        possession: endZone,);
+      skin: _skin,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      yardline: solidLineStartYardline,
+      distance: netYards.toDouble() + 10,
+      side: startSide,
+      possession: endZone,
+    );
 
     dashedArcComponent.y = driveComponentHeight;
     solidLineComponent.y = driveComponentHeight + 16;
@@ -2371,7 +2558,9 @@ class FootballAnimationSequence {
   }
 
   Future<void> touchdownFromKickoffAnimation(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) async {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) async {
     final startSide = incident.start!.side!;
     final possession = incident.start!.possession!;
     final startYardline = incident.start!.yardline!;
@@ -2379,11 +2568,12 @@ class FootballAnimationSequence {
     _footballController.flip();
 
     final footballComponent = FootballRiveComponent.touchdownFromKickoff(
-        _footballArtboard,
-        startingYardline: startYardline,
-        startingSide: startSide,
-        screenWidth: screenWidth,
-        controller: _footballController,);
+      _footballArtboard,
+      startingYardline: startYardline,
+      startingSide: startSide,
+      screenWidth: screenWidth,
+      controller: _footballController,
+    );
 
     _game.add(footballComponent);
 
@@ -2393,37 +2583,42 @@ class FootballAnimationSequence {
     await _transitionOverlaysController.touchdown();
 
     final dashedArcComponent = DashedArcComponent.combo(
-        skin: _skin,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        yardline: startYardline.toDouble(),
-        distance: (100 - startYardline + 5).toDouble(),
-        side: startSide,
-        possession: possession,
-        shouldMoveUp: false,
-        driveComponentHeight: driveComponentHeight,);
+      skin: _skin,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      yardline: startYardline.toDouble(),
+      distance: (100 - startYardline + 5).toDouble(),
+      side: startSide,
+      possession: possession,
+      shouldMoveUp: false,
+      driveComponentHeight: driveComponentHeight,
+    );
 
     final solidLineComponent = SolidLineComponent.combo(
-        skin: _skin,
-        yardline: -5,
-        distance: 110,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        side: startSide.opposite,
-        possession: possession,
-        driveComponentHeight: driveComponentHeight,
-        shouldMoveUp: false,
-        bottomPadding: 12,);
+      skin: _skin,
+      yardline: -5,
+      distance: 110,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      side: startSide.opposite,
+      possession: possession,
+      driveComponentHeight: driveComponentHeight,
+      shouldMoveUp: false,
+      bottomPadding: 12,
+    );
 
     driveComponent.add(dashedArcComponent);
     driveComponent.add(solidLineComponent);
 
     await Future.wait(
-        [dashedArcComponent.onCompleted, solidLineComponent.onCompleted],);
+      [dashedArcComponent.onCompleted, solidLineComponent.onCompleted],
+    );
   }
 
   Future<void> touchdownFromScoopAndScoreAnimation(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) async {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) async {
     final startSide = incident.start!.side!;
     final endSide = incident.end!.side!;
     final startYardline = incident.start!.yardline!;
@@ -2436,13 +2631,14 @@ class FootballAnimationSequence {
         startSide != endPossession ? startYardline : 100 - startYardline;
 
     final riveComponent = FootballRiveComponent.touchdownFromScoopAndScore(
-        _footballArtboard,
-        startYardline: startYardline,
-        startSide: startSide,
-        endSide: endSide,
-        possession: startPossession,
-        screenWidth: screenWidth,
-        footballController: _footballController,);
+      _footballArtboard,
+      startYardline: startYardline,
+      startSide: startSide,
+      endSide: endSide,
+      possession: startPossession,
+      screenWidth: screenWidth,
+      footballController: _footballController,
+    );
 
     _game.add(riveComponent);
 
@@ -2452,14 +2648,15 @@ class FootballAnimationSequence {
     await _transitionOverlaysController.touchdown();
 
     final dashedDoubleArcComponent = DashedDoubleArcComponent.combo(
-        skin: _skin,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        yardline: startYardline.toDouble(),
-        netYards: kDoubleArcWidth,
-        side: startSide,
-        possession: endPossession,
-        driveComponentHeight: driveComponentHeight,);
+      skin: _skin,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      yardline: startYardline.toDouble(),
+      netYards: kDoubleArcWidth,
+      side: startSide,
+      possession: endPossession,
+      driveComponentHeight: driveComponentHeight,
+    );
 
     if (endZone == HomeOrAway.away) {
       dashedDoubleArcComponent.flipHorizontally();
@@ -2471,14 +2668,15 @@ class FootballAnimationSequence {
         (startSide != endZone ? kDoubleArcWidth : -kDoubleArcWidth);
 
     final solidLineComponent = SolidLineComponent.combo(
-        skin: _skin,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        yardline: solidLineStartYardline,
-        distance: netYards.toDouble() - 5,
-        side: startSide,
-        possession: endZone,
-        driveComponentHeight: driveComponentHeight - 16,);
+      skin: _skin,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      yardline: solidLineStartYardline,
+      distance: netYards.toDouble() - 5,
+      side: startSide,
+      possession: endZone,
+      driveComponentHeight: driveComponentHeight - 16,
+    );
 
     solidLineComponent.y -= 16;
 
@@ -2488,7 +2686,9 @@ class FootballAnimationSequence {
   }
 
   void touchdownFromScoopAndScoreDashedArcLine(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) {
     final startSide = incident.start!.side!;
     final startYardline = incident.start!.yardline!;
     final endPossession = incident.end!.possession;
@@ -2499,13 +2699,14 @@ class FootballAnimationSequence {
         startSide != endPossession ? startYardline : 100 - startYardline;
 
     final dashedDoubleArcComponent = DashedDoubleArcComponent.combo(
-        skin: _skin,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        yardline: startYardline.toDouble(),
-        netYards: kDoubleArcWidth,
-        side: startSide,
-        possession: endPossession,);
+      skin: _skin,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      yardline: startYardline.toDouble(),
+      netYards: kDoubleArcWidth,
+      side: startSide,
+      possession: endPossession,
+    );
 
     if (endZone == HomeOrAway.away) {
       dashedDoubleArcComponent.flipHorizontally();
@@ -2515,13 +2716,14 @@ class FootballAnimationSequence {
         (startSide != endZone ? kDoubleArcWidth : -kDoubleArcWidth);
 
     final solidLineComponent = SolidLineComponent.combo(
-        skin: _skin,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        yardline: solidLineStartYardline,
-        distance: netYards.toDouble() - 5,
-        side: startSide,
-        possession: endZone,);
+      skin: _skin,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      yardline: solidLineStartYardline,
+      distance: netYards.toDouble() - 5,
+      side: startSide,
+      possession: endZone,
+    );
 
     // solidLineComponent.y -= 16;
 
@@ -2533,7 +2735,9 @@ class FootballAnimationSequence {
   }
 
   Future<void> twoPointConversionAnimation(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) async {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) async {
     final startSide = incident.start!.side!;
     final startPossession = incident.start!.possession!;
     final startYardline = incident.start!.yardline!;
@@ -2541,14 +2745,15 @@ class FootballAnimationSequence {
         incident.event == FootballMatchIncidentEventType.twoPointConversionMade;
 
     final ribbonPath = PlayRibbonComponent(
-        text: '2PT ATT',
-        color: startPossession == HomeOrAway.home
-            ? _homeTeam.primaryColor
-            : _awayTeam.primaryColor,
-        yardline: startYardline,
-        side: startSide,
-        direction: startPossession.opposite,
-        skin: _skin,);
+      text: '2PT ATT',
+      color: startPossession == HomeOrAway.home
+          ? _homeTeam.primaryColor
+          : _awayTeam.primaryColor,
+      yardline: startYardline,
+      side: startSide,
+      direction: startPossession.opposite,
+      skin: _skin,
+    );
 
     _game.add(ribbonPath);
 
@@ -2572,24 +2777,26 @@ class FootballAnimationSequence {
 
     if (isMadeIncident) {
       final solidLineComponent = SolidLineComponent.regular(
-          skin: _skin,
-          screenWidth: screenWidth,
-          screenHeight: screenHeight,
-          yardline: startYardline.toDouble(),
-          distance: startYardline.toDouble() + 5,
-          side: startSide,
-          possession: startPossession,
-          driveComponentHeight: driveComponentHeight,);
+        skin: _skin,
+        screenWidth: screenWidth,
+        screenHeight: screenHeight,
+        yardline: startYardline.toDouble(),
+        distance: startYardline.toDouble() + 5,
+        side: startSide,
+        possession: startPossession,
+        driveComponentHeight: driveComponentHeight,
+      );
 
       driveComponent.add(solidLineComponent);
 
       await solidLineComponent.onCompleted;
     } else {
       final crossComponent = CrossComponent(
-          skin: _skin,
-          side: startSide,
-          yardline: startYardline.toDouble(),
-          driveComponentHeight: driveComponentHeight,);
+        skin: _skin,
+        side: startSide,
+        yardline: startYardline.toDouble(),
+        driveComponentHeight: driveComponentHeight,
+      );
 
       driveComponent.add(crossComponent);
 
@@ -2606,19 +2813,22 @@ class FootballAnimationSequence {
   }
 
   void twoPointConversionMadeLine(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) {
     final startSide = incident.start!.side!;
     final startPossession = incident.start!.possession!;
     final startYardline = incident.start!.yardline!;
 
     final solidLineComponent = SolidLineComponent.regular(
-        skin: _skin,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        yardline: startYardline.toDouble(),
-        distance: startYardline.toDouble() + 5,
-        side: startSide,
-        possession: startPossession,);
+      skin: _skin,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      yardline: startYardline.toDouble(),
+      distance: startYardline.toDouble() + 5,
+      side: startSide,
+      possession: startPossession,
+    );
 
     solidLineComponent.y = driveComponentHeight;
 
@@ -2626,12 +2836,17 @@ class FootballAnimationSequence {
   }
 
   void twoPointConversionMissedCross(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) {
     final startSide = incident.start!.side!;
     final startYardline = incident.start!.yardline!;
 
     final crossComponent = CrossComponent(
-        skin: _skin, side: startSide, yardline: startYardline.toDouble(),);
+      skin: _skin,
+      side: startSide,
+      yardline: startYardline.toDouble(),
+    );
 
     crossComponent.y = driveComponentHeight;
 
@@ -2639,7 +2854,9 @@ class FootballAnimationSequence {
   }
 
   Future<void> safetyFromKickoffAnimation(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) async {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) async {
     _footballController.flip();
 
     final startSide = incident.start!.side!;
@@ -2649,13 +2866,14 @@ class FootballAnimationSequence {
     final startYardline = incident.start!.yardline!;
 
     final footballArc = FootballRiveComponent.safetyFromKickoff(
-        _footballArtboard,
-        startingYardline: startYardline,
-        startingSide: startSide,
-        endingSide: endZone,
-        possession: startPossession,
-        screenWidth: screenWidth,
-        controller: _footballController,);
+      _footballArtboard,
+      startingYardline: startYardline,
+      startingSide: startSide,
+      endingSide: endZone,
+      possession: startPossession,
+      screenWidth: screenWidth,
+      controller: _footballController,
+    );
 
     _game.add(footballArc);
 
@@ -2671,38 +2889,43 @@ class FootballAnimationSequence {
     await _transitionOverlaysController.safety();
 
     final dashedArcComponent = DashedArcComponent.combo(
-        skin: _skin,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        yardline: startYardline.toDouble(),
-        distance: (100 - startYardline + 2).toDouble(),
-        side: startSide,
-        possession: startPossession,
-        shouldMoveUp: false,
-        driveComponentHeight: driveComponentHeight,);
+      skin: _skin,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      yardline: startYardline.toDouble(),
+      distance: (100 - startYardline + 2).toDouble(),
+      side: startSide,
+      possession: startPossession,
+      shouldMoveUp: false,
+      driveComponentHeight: driveComponentHeight,
+    );
 
     final solidLineComponent = SolidLineComponent.combo(
-        skin: _skin,
-        yardline: -2,
-        distance: -3,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        side: endZone,
-        possession: startPossession,
-        driveComponentHeight: driveComponentHeight,
-        arrowHeadType: ArrowHeadType.arrow,
-        shouldMoveUp: false,
-        bottomPadding: 0,);
+      skin: _skin,
+      yardline: -2,
+      distance: -3,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      side: endZone,
+      possession: startPossession,
+      driveComponentHeight: driveComponentHeight,
+      arrowHeadType: ArrowHeadType.arrow,
+      shouldMoveUp: false,
+      bottomPadding: 0,
+    );
 
     driveComponent.add(solidLineComponent);
     driveComponent.add(dashedArcComponent);
 
     await Future.wait(
-        [solidLineComponent.onCompleted, dashedArcComponent.onCompleted],);
+      [solidLineComponent.onCompleted, dashedArcComponent.onCompleted],
+    );
   }
 
   Future<void> safetyFromPuntAnimation(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) async {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) async {
     _footballController.flip();
 
     final startSide = incident.start!.side!;
@@ -2712,13 +2935,14 @@ class FootballAnimationSequence {
     final startYardline = incident.start!.yardline!;
 
     final footballArc = FootballRiveComponent.safetyFromKickoff(
-        _footballArtboard,
-        startingYardline: startYardline,
-        startingSide: startSide,
-        endingSide: endZone,
-        possession: startPossession,
-        screenWidth: screenWidth,
-        controller: _footballController,);
+      _footballArtboard,
+      startingYardline: startYardline,
+      startingSide: startSide,
+      endingSide: endZone,
+      possession: startPossession,
+      screenWidth: screenWidth,
+      controller: _footballController,
+    );
 
     _game.add(footballArc);
 
@@ -2733,15 +2957,16 @@ class FootballAnimationSequence {
     await _transitionOverlaysController.safety();
 
     final dashedArcComponent = DashedArcComponent.regular(
-        skin: _skin,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        yardline: startYardline.toDouble(),
-        distance: (100 - startYardline + 5).toDouble(),
-        side: startSide,
-        possession: startPossession,
-        arrowHeadType: ArrowHeadType.arrow,
-        driveComponentHeight: driveComponentHeight,);
+      skin: _skin,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      yardline: startYardline.toDouble(),
+      distance: (100 - startYardline + 5).toDouble(),
+      side: startSide,
+      possession: startPossession,
+      arrowHeadType: ArrowHeadType.arrow,
+      driveComponentHeight: driveComponentHeight,
+    );
 
     driveComponent.add(dashedArcComponent);
 
@@ -2749,7 +2974,9 @@ class FootballAnimationSequence {
   }
 
   void safetyFromPuntDashedArc(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) {
     final startSide = incident.start!.side!;
     final startPossession = incident.start!.possession!;
     final startYardline = incident.start!.yardline!;
@@ -2771,7 +2998,9 @@ class FootballAnimationSequence {
   }
 
   Future<void> safetyFromRushOrPassAnimation(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) async {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) async {
     final startSide = incident.start!.side!;
     final startPossession = incident.start!.possession!;
     final endZone = incident.end!.possession!;
@@ -2812,14 +3041,15 @@ class FootballAnimationSequence {
     await _transitionOverlaysController.safety();
 
     final solidLineComponent = SolidLineComponent.regular(
-        skin: _skin,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        yardline: startYardline.toDouble(),
-        distance: -((endYardline - startYardline).abs().toDouble() - 5),
-        side: startSide,
-        possession: startPossession,
-        driveComponentHeight: driveComponentHeight,);
+      skin: _skin,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      yardline: startYardline.toDouble(),
+      distance: -((endYardline - startYardline).abs().toDouble() - 5),
+      side: startSide,
+      possession: startPossession,
+      driveComponentHeight: driveComponentHeight,
+    );
 
     driveComponent.add(solidLineComponent);
 
@@ -2827,20 +3057,23 @@ class FootballAnimationSequence {
   }
 
   void safetyFromRushOrPassLine(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) {
     final startSide = incident.start!.side!;
     final startPossession = incident.start!.possession!;
     final startYardline = incident.start!.yardline!;
     final endYardline = incident.end!.yardline!;
 
     final solidLineComponent = SolidLineComponent.regular(
-        skin: _skin,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        yardline: startYardline.toDouble(),
-        distance: -((endYardline - startYardline).abs().toDouble() - 5),
-        side: startSide,
-        possession: startPossession,);
+      skin: _skin,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      yardline: startYardline.toDouble(),
+      distance: -((endYardline - startYardline).abs().toDouble() - 5),
+      side: startSide,
+      possession: startPossession,
+    );
 
     solidLineComponent.y = driveComponentHeight;
 
@@ -2848,7 +3081,9 @@ class FootballAnimationSequence {
   }
 
   Future<void> safetyFromSackAnimation(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) async {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) async {
     await sackAnimation(incident, driveComponentHeight);
 
     setTransitionOverlayColor(incident);
@@ -2856,7 +3091,9 @@ class FootballAnimationSequence {
   }
 
   Future<void> fumbleFromPassAnimation(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) async {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) async {
     _footballController.spiral();
 
     final HomeOrAway resultingStartSide = incident.start!.side!;
@@ -2881,21 +3118,24 @@ class FootballAnimationSequence {
               startYardline < endYardline) ||
           (startSide == HomeOrAway.away && endSide == HomeOrAway.home)) {
         riveComponent = FootballRiveComponent.fumbleFromPassWithRun(
-            _footballArtboard,
-            passingStartYardline: startYardline,
-            rushingEndYardline: endYardline,
-            passingStartSide: startSide,
-            rushingEndSide: endSide,
-            possession: incident.start!.possession!,
-            screenWidth: screenWidth,
-            screenHeight: screenHeight,
-            footballController: _footballController,);
+          _footballArtboard,
+          passingStartYardline: startYardline,
+          rushingEndYardline: endYardline,
+          passingStartSide: startSide,
+          rushingEndSide: endSide,
+          possession: incident.start!.possession!,
+          screenWidth: screenWidth,
+          screenHeight: screenHeight,
+          footballController: _footballController,
+        );
       } else {
         final int passOffset = endSide == HomeOrAway.home ? 5 : -5;
 
         // ignore: unnecessary_statements
         (resultingEndSide, resultingEndYardline) = getSideAndYardlineIfPast50(
-            endSide, incident.end!.yardline! + passOffset,);
+          endSide,
+          incident.end!.yardline! + passOffset,
+        );
 
         riveComponent = FootballRiveComponent.fumbleFromPass(
           _footballArtboard,
@@ -2917,21 +3157,24 @@ class FootballAnimationSequence {
               startYardline < endYardline) ||
           (startSide == HomeOrAway.home && endSide == HomeOrAway.away)) {
         riveComponent = FootballRiveComponent.fumbleFromPassWithRun(
-            _footballArtboard,
-            passingStartYardline: startYardline,
-            rushingEndYardline: endYardline,
-            passingStartSide: startSide,
-            rushingEndSide: endSide,
-            possession: incident.start!.possession!,
-            screenWidth: screenWidth,
-            screenHeight: screenHeight,
-            footballController: _footballController,);
+          _footballArtboard,
+          passingStartYardline: startYardline,
+          rushingEndYardline: endYardline,
+          passingStartSide: startSide,
+          rushingEndSide: endSide,
+          possession: incident.start!.possession!,
+          screenWidth: screenWidth,
+          screenHeight: screenHeight,
+          footballController: _footballController,
+        );
       } else {
         final int passOffset = endSide == HomeOrAway.away ? 5 : -5;
 
         // ignore: unnecessary_statements
         (resultingEndSide, resultingEndYardline) = getSideAndYardlineIfPast50(
-            endSide, incident.end!.yardline! + passOffset,);
+          endSide,
+          incident.end!.yardline! + passOffset,
+        );
 
         riveComponent = FootballRiveComponent.fumbleFromPass(
           _footballArtboard,
@@ -2954,13 +3197,14 @@ class FootballAnimationSequence {
     await _transitionOverlaysController.fumble();
 
     final doubleArc = DashedDoubleArcComponent.fumble(
-        skin: _skin,
-        yardline: endYardline.toDouble(),
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        side: endSide,
-        netYards: 10,
-        driveComponentHeight: driveComponentHeight,);
+      skin: _skin,
+      yardline: endYardline.toDouble(),
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      side: endSide,
+      netYards: 10,
+      driveComponentHeight: driveComponentHeight,
+    );
 
     driveComponent.add(doubleArc);
 
@@ -2968,17 +3212,20 @@ class FootballAnimationSequence {
   }
 
   void fumbleDashedDoubleArc(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) {
     final endSide = incident.end!.side!;
     final endYardline = incident.end!.yardline!;
 
     final doubleArc = DashedDoubleArcComponent.fumble(
-        skin: _skin,
-        yardline: endYardline.toDouble(),
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        side: endSide,
-        netYards: 10,);
+      skin: _skin,
+      yardline: endYardline.toDouble(),
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      side: endSide,
+      netYards: 10,
+    );
 
     doubleArc.y = driveComponentHeight;
 
@@ -2986,7 +3233,9 @@ class FootballAnimationSequence {
   }
 
   Future<void> fumbleFromRushAnimation(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) async {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) async {
     _footballController.idleAngled();
 
     final HomeOrAway resultingStartSide = incident.start!.side!;
@@ -3011,20 +3260,23 @@ class FootballAnimationSequence {
               startYardline < endYardline) ||
           (startSide == HomeOrAway.away && endSide == HomeOrAway.home)) {
         riveComponent = FootballRiveComponent.fumbleFromRushWithRun(
-            _footballArtboard,
-            rushingStartYardline: startYardline,
-            finalEndYardline: endYardline,
-            rushingStartSide: startSide,
-            finalEndSide: endSide,
-            possession: incident.start!.possession!,
-            screenWidth: screenWidth,
-            footballController: _footballController,);
+          _footballArtboard,
+          rushingStartYardline: startYardline,
+          finalEndYardline: endYardline,
+          rushingStartSide: startSide,
+          finalEndSide: endSide,
+          possession: incident.start!.possession!,
+          screenWidth: screenWidth,
+          footballController: _footballController,
+        );
       } else {
         final int passOffset = endSide == HomeOrAway.home ? 5 : -5;
 
         // ignore: unnecessary_statements
         (resultingEndSide, resultingEndYardline) = getSideAndYardlineIfPast50(
-            endSide, incident.end!.yardline! + passOffset,);
+          endSide,
+          incident.end!.yardline! + passOffset,
+        );
 
         riveComponent = FootballRiveComponent.fumbleFromRush(
           _footballArtboard,
@@ -3046,20 +3298,23 @@ class FootballAnimationSequence {
               startYardline < endYardline) ||
           (startSide == HomeOrAway.home && endSide == HomeOrAway.away)) {
         riveComponent = FootballRiveComponent.fumbleFromRushWithRun(
-            _footballArtboard,
-            rushingStartYardline: startYardline,
-            finalEndYardline: endYardline,
-            rushingStartSide: startSide,
-            finalEndSide: endSide,
-            possession: incident.start!.possession!,
-            screenWidth: screenWidth,
-            footballController: _footballController,);
+          _footballArtboard,
+          rushingStartYardline: startYardline,
+          finalEndYardline: endYardline,
+          rushingStartSide: startSide,
+          finalEndSide: endSide,
+          possession: incident.start!.possession!,
+          screenWidth: screenWidth,
+          footballController: _footballController,
+        );
       } else {
         final int passOffset = endSide == HomeOrAway.away ? 5 : -5;
 
         // ignore: unnecessary_statements
         (resultingEndSide, resultingEndYardline) = getSideAndYardlineIfPast50(
-            endSide, incident.end!.yardline! + passOffset,);
+          endSide,
+          incident.end!.yardline! + passOffset,
+        );
 
         riveComponent = FootballRiveComponent.fumbleFromRush(
           _footballArtboard,
@@ -3082,13 +3337,14 @@ class FootballAnimationSequence {
     await _transitionOverlaysController.fumble();
 
     final doubleArc = DashedDoubleArcComponent.fumble(
-        skin: _skin,
-        yardline: endYardline.toDouble(),
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        side: endSide,
-        netYards: 10,
-        driveComponentHeight: driveComponentHeight,);
+      skin: _skin,
+      yardline: endYardline.toDouble(),
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      side: endSide,
+      netYards: 10,
+      driveComponentHeight: driveComponentHeight,
+    );
 
     driveComponent.add(doubleArc);
 
@@ -3096,7 +3352,9 @@ class FootballAnimationSequence {
   }
 
   Future<void> fumbleFromKickoffAnimation(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) async {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) async {
     _footballController.idleVertical();
 
     final startSide = incident.start!.side!;
@@ -3115,15 +3373,19 @@ class FootballAnimationSequence {
 
     // ignore: unnecessary_statements
     (firstArcEndSide, firstArcEndYardline) = getSideAndYardlineIfPast50(
-        startSide, (startYardline + distance - 10).toInt(),);
+      startSide,
+      (startYardline + distance - 10).toInt(),
+    );
 
-    final kickoff = FootballRiveComponent.fumbleFromKickoff(_footballArtboard,
-        footballController: _footballController,
-        startingYardline: startYardline,
-        endingYardline: firstArcEndYardline,
-        startingSide: startSide,
-        endingSide: firstArcEndSide,
-        screenWidth: screenWidth,);
+    final kickoff = FootballRiveComponent.fumbleFromKickoff(
+      _footballArtboard,
+      footballController: _footballController,
+      startingYardline: startYardline,
+      endingYardline: firstArcEndYardline,
+      startingSide: startSide,
+      endingSide: firstArcEndSide,
+      screenWidth: screenWidth,
+    );
 
     _game.add(kickoff);
 
@@ -3134,48 +3396,52 @@ class FootballAnimationSequence {
 
     if (distance < 15) {
       final dashedArcComponent = DashedArcComponent.combo(
-          skin: _skin,
-          screenWidth: screenWidth,
-          screenHeight: screenHeight,
-          yardline: startYardline.toDouble(),
-          distance: (100 - startYardline + 5).toDouble(),
-          side: startSide,
-          possession: possession,
-          shouldMoveUp: false,
-          driveComponentHeight: driveComponentHeight,);
+        skin: _skin,
+        screenWidth: screenWidth,
+        screenHeight: screenHeight,
+        yardline: startYardline.toDouble(),
+        distance: (100 - startYardline + 5).toDouble(),
+        side: startSide,
+        possession: possession,
+        shouldMoveUp: false,
+        driveComponentHeight: driveComponentHeight,
+      );
 
       final distanceFromEndzone =
           getYardageInBetween(startSide.opposite, -5, endSide, endYardline)
               .toDouble();
 
       final solidLineComponent = SolidLineComponent.combo(
-          skin: _skin,
-          yardline: -5,
-          distance: distanceFromEndzone,
-          screenWidth: screenWidth,
-          screenHeight: screenHeight,
-          side: endPossession.opposite,
-          possession: endPossession,
-          driveComponentHeight: driveComponentHeight,
-          shouldMoveUp: false,
-          bottomPadding: 0,);
+        skin: _skin,
+        yardline: -5,
+        distance: distanceFromEndzone,
+        screenWidth: screenWidth,
+        screenHeight: screenHeight,
+        side: endPossession.opposite,
+        possession: endPossession,
+        driveComponentHeight: driveComponentHeight,
+        shouldMoveUp: false,
+        bottomPadding: 0,
+      );
 
       driveComponent.add(dashedArcComponent);
       driveComponent.add(solidLineComponent);
 
       await Future.wait(
-          [dashedArcComponent.onCompleted, solidLineComponent.onCompleted],);
+        [dashedArcComponent.onCompleted, solidLineComponent.onCompleted],
+      );
     } else {
       final dashedArc = DashedArcComponent.combo(
-          skin: _skin,
-          screenWidth: screenWidth,
-          screenHeight: screenHeight,
-          yardline: startYardline.toDouble(),
-          distance: distance - 12,
-          side: startSide,
-          possession: incident.start!.possession!,
-          shouldMoveUp: false,
-          driveComponentHeight: driveComponentHeight,);
+        skin: _skin,
+        screenWidth: screenWidth,
+        screenHeight: screenHeight,
+        yardline: startYardline.toDouble(),
+        distance: distance - 12,
+        side: startSide,
+        possession: incident.start!.possession!,
+        shouldMoveUp: false,
+        driveComponentHeight: driveComponentHeight,
+      );
 
       final fumbleArc = DashedDoubleArcComponent.fumble(
         skin: _skin,
@@ -3190,17 +3456,18 @@ class FootballAnimationSequence {
       );
 
       final solidLineComponent = SolidLineComponent.combo(
-          skin: _skin,
-          yardline: startYardline + distance - 2,
-          distance: -2,
-          screenWidth: screenWidth,
-          screenHeight: screenHeight,
-          side: startSide,
-          possession: startSide,
-          driveComponentHeight: driveComponentHeight,
-          arrowHeadType: ArrowHeadType.arrow,
-          shouldMoveUp: false,
-          bottomPadding: 10,);
+        skin: _skin,
+        yardline: startYardline + distance - 2,
+        distance: -2,
+        screenWidth: screenWidth,
+        screenHeight: screenHeight,
+        side: startSide,
+        possession: startSide,
+        driveComponentHeight: driveComponentHeight,
+        arrowHeadType: ArrowHeadType.arrow,
+        shouldMoveUp: false,
+        bottomPadding: 10,
+      );
 
       driveComponent.add(dashedArc);
       driveComponent.add(fumbleArc);
@@ -3215,7 +3482,9 @@ class FootballAnimationSequence {
   }
 
   Future<void> fumbleFromPuntAnimation(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) async {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) async {
     _footballController.idleVertical();
 
     final startSide = incident.start!.side!;
@@ -3223,13 +3492,15 @@ class FootballAnimationSequence {
     final endSide = incident.end!.side!;
     final endYardline = incident.end!.yardline!;
 
-    final punt = FootballRiveComponent.fumbleFromPunt(_footballArtboard,
-        footballController: _footballController,
-        startingYardline: startYardline,
-        endingYardline: endYardline,
-        startingSide: startSide,
-        endingSide: endSide,
-        screenWidth: screenWidth,);
+    final punt = FootballRiveComponent.fumbleFromPunt(
+      _footballArtboard,
+      footballController: _footballController,
+      startingYardline: startYardline,
+      endingYardline: endYardline,
+      startingSide: startSide,
+      endingSide: endSide,
+      screenWidth: screenWidth,
+    );
 
     _game.add(punt);
     await punt.onCompleted;
@@ -3238,18 +3509,19 @@ class FootballAnimationSequence {
     await _transitionOverlaysController.fumble();
 
     final dashedArc = DashedArcComponent.regular(
-        skin: _skin,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        yardline: startYardline.toDouble(),
-        distance:
-            getYardageInBetween(startSide, startYardline, endSide, endYardline)
-                .toDouble(),
-        side: startSide,
-        possession: incident.start!.possession!,
-        arrowHeadType: ArrowHeadType.arrow,
-        delay: 2,
-        driveComponentHeight: driveComponentHeight,);
+      skin: _skin,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      yardline: startYardline.toDouble(),
+      distance:
+          getYardageInBetween(startSide, startYardline, endSide, endYardline)
+              .toDouble(),
+      side: startSide,
+      possession: incident.start!.possession!,
+      arrowHeadType: ArrowHeadType.arrow,
+      delay: 2,
+      driveComponentHeight: driveComponentHeight,
+    );
 
     final fumbleArc = DashedDoubleArcComponent.fumble(
       skin: _skin,
@@ -3269,7 +3541,9 @@ class FootballAnimationSequence {
   }
 
   Future<void> defensiveTwoPointAnimation(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) async {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) async {
     final startSide = incident.start!.side!;
     final startYardline = incident.start!.yardline!;
 
@@ -3277,12 +3551,13 @@ class FootballAnimationSequence {
 
     _footballController.spiral();
     final ballAnimation = FootballRiveComponent.defensiveTwoPoint(
-        _footballArtboard,
-        startingYardline: startYardline,
-        startingSide: startSide,
-        footballController: _footballController,
-        starSprite: starSprite,
-        screenWidth: screenWidth,);
+      _footballArtboard,
+      startingYardline: startYardline,
+      startingSide: startSide,
+      footballController: _footballController,
+      starSprite: starSprite,
+      screenWidth: screenWidth,
+    );
 
     _game.add(ballAnimation);
     _game.add(starSprite);
@@ -3306,29 +3581,39 @@ class FootballAnimationSequence {
 
     if (incident.event.isUseFieldColorEvents) {
       _transitionOverlaysController.setColor(
-          footballFieldColor, footballFieldColor,);
+        footballFieldColor,
+        footballFieldColor,
+      );
     } else {
       _transitionOverlaysController.setColor(primaryColor, secondaryColor);
     }
   }
 
   Future<void> previousPlayUnderReviewAnimation(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) async {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) async {
     await _transitionOverlaysController.previousPlayUnderReview();
   }
 
   Future<void> previousPlayStandsAnimation(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) async {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) async {
     await _transitionOverlaysController.previousPlayStands();
   }
 
   Future<void> previousPlayOverturnedAnimation(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) async {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) async {
     await _transitionOverlaysController.previousPlayOverturned();
   }
 
   void fumbleFromKickoffArc(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) {
     final startSide = incident.start!.side!;
     final startYardline = incident.start!.yardline!;
     final endSide = incident.end!.side!;
@@ -3341,45 +3626,48 @@ class FootballAnimationSequence {
 
     if (distance < 15) {
       final dashedArcComponent = DashedArcComponent.combo(
-          skin: _skin,
-          screenWidth: screenWidth,
-          screenHeight: screenHeight,
-          yardline: startYardline.toDouble(),
-          distance: (100 - startYardline + 5).toDouble(),
-          side: startSide,
-          possession: possession,
-          shouldMoveUp: false,
-          driveComponentHeight: driveComponentHeight,);
+        skin: _skin,
+        screenWidth: screenWidth,
+        screenHeight: screenHeight,
+        yardline: startYardline.toDouble(),
+        distance: (100 - startYardline + 5).toDouble(),
+        side: startSide,
+        possession: possession,
+        shouldMoveUp: false,
+        driveComponentHeight: driveComponentHeight,
+      );
 
       final distanceFromEndzone =
           getYardageInBetween(startSide.opposite, -5, endSide, endYardline)
               .toDouble();
 
       final solidLineComponent = SolidLineComponent.combo(
-          skin: _skin,
-          yardline: -5,
-          distance: distanceFromEndzone,
-          screenWidth: screenWidth,
-          screenHeight: screenHeight,
-          side: endPossession.opposite,
-          possession: endPossession,
-          driveComponentHeight: driveComponentHeight,
-          shouldMoveUp: false,
-          bottomPadding: 0,);
+        skin: _skin,
+        yardline: -5,
+        distance: distanceFromEndzone,
+        screenWidth: screenWidth,
+        screenHeight: screenHeight,
+        side: endPossession.opposite,
+        possession: endPossession,
+        driveComponentHeight: driveComponentHeight,
+        shouldMoveUp: false,
+        bottomPadding: 0,
+      );
 
       driveComponent.add(dashedArcComponent);
       driveComponent.add(solidLineComponent);
     } else {
       final dashedArc = DashedArcComponent.combo(
-          skin: _skin,
-          screenWidth: screenWidth,
-          screenHeight: screenHeight,
-          yardline: startYardline.toDouble(),
-          distance: distance - 12,
-          side: startSide,
-          possession: incident.start!.possession!,
-          shouldMoveUp: false,
-          driveComponentHeight: driveComponentHeight,);
+        skin: _skin,
+        screenWidth: screenWidth,
+        screenHeight: screenHeight,
+        yardline: startYardline.toDouble(),
+        distance: distance - 12,
+        side: startSide,
+        possession: incident.start!.possession!,
+        shouldMoveUp: false,
+        driveComponentHeight: driveComponentHeight,
+      );
 
       final fumbleArc = DashedDoubleArcComponent.fumble(
         skin: _skin,
@@ -3394,17 +3682,18 @@ class FootballAnimationSequence {
       );
 
       final solidLineComponent = SolidLineComponent.combo(
-          skin: _skin,
-          yardline: startYardline + distance - 2,
-          distance: -2,
-          screenWidth: screenWidth,
-          screenHeight: screenHeight,
-          side: startSide,
-          possession: startSide,
-          driveComponentHeight: driveComponentHeight,
-          arrowHeadType: ArrowHeadType.arrow,
-          shouldMoveUp: false,
-          bottomPadding: 10,);
+        skin: _skin,
+        yardline: startYardline + distance - 2,
+        distance: -2,
+        screenWidth: screenWidth,
+        screenHeight: screenHeight,
+        side: startSide,
+        possession: startSide,
+        driveComponentHeight: driveComponentHeight,
+        arrowHeadType: ArrowHeadType.arrow,
+        shouldMoveUp: false,
+        bottomPadding: 10,
+      );
 
       driveComponent.add(dashedArc);
       driveComponent.add(fumbleArc);
@@ -3413,42 +3702,48 @@ class FootballAnimationSequence {
   }
 
   void safetyFromKickoffArc(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) {
     final startSide = incident.start!.side!;
     final startPossession = incident.start!.possession!;
     final endZone = incident.end!.possession!;
     final startYardline = incident.start!.yardline!;
 
     final dashedArcComponent = DashedArcComponent.combo(
-        skin: _skin,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        yardline: startYardline.toDouble(),
-        distance: (100 - startYardline + 2).toDouble(),
-        side: startSide,
-        possession: startPossession,
-        shouldMoveUp: false,
-        driveComponentHeight: driveComponentHeight,);
+      skin: _skin,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      yardline: startYardline.toDouble(),
+      distance: (100 - startYardline + 2).toDouble(),
+      side: startSide,
+      possession: startPossession,
+      shouldMoveUp: false,
+      driveComponentHeight: driveComponentHeight,
+    );
 
     final solidLineComponent = SolidLineComponent.combo(
-        skin: _skin,
-        yardline: -2,
-        distance: -3,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        side: endZone,
-        possession: startPossession,
-        driveComponentHeight: driveComponentHeight,
-        arrowHeadType: ArrowHeadType.arrow,
-        shouldMoveUp: false,
-        bottomPadding: 0,);
+      skin: _skin,
+      yardline: -2,
+      distance: -3,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      side: endZone,
+      possession: startPossession,
+      driveComponentHeight: driveComponentHeight,
+      arrowHeadType: ArrowHeadType.arrow,
+      shouldMoveUp: false,
+      bottomPadding: 0,
+    );
 
     driveComponent.add(solidLineComponent);
     driveComponent.add(dashedArcComponent);
   }
 
   void kickoffWithTouchbackArc(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) {
     final startSide = incident.start!.side!;
     final possession = incident.start!.possession!;
     final startYardline = incident.start!.yardline!;
@@ -3471,40 +3766,46 @@ class FootballAnimationSequence {
   }
 
   void touchdownFromKickoffArc(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) {
     final startSide = incident.start!.side!;
     final possession = incident.start!.possession!;
     final startYardline = incident.start!.yardline!;
 
     final dashedArcComponent = DashedArcComponent.combo(
-        skin: _skin,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        yardline: startYardline.toDouble(),
-        distance: (100 - startYardline + 5).toDouble(),
-        side: startSide,
-        possession: possession,
-        shouldMoveUp: false,
-        driveComponentHeight: driveComponentHeight,);
+      skin: _skin,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      yardline: startYardline.toDouble(),
+      distance: (100 - startYardline + 5).toDouble(),
+      side: startSide,
+      possession: possession,
+      shouldMoveUp: false,
+      driveComponentHeight: driveComponentHeight,
+    );
 
     final solidLineComponent = SolidLineComponent.combo(
-        skin: _skin,
-        yardline: -5,
-        distance: 110,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        side: startSide.opposite,
-        possession: possession,
-        driveComponentHeight: driveComponentHeight,
-        shouldMoveUp: false,
-        bottomPadding: 12,);
+      skin: _skin,
+      yardline: -5,
+      distance: 110,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      side: startSide.opposite,
+      possession: possession,
+      driveComponentHeight: driveComponentHeight,
+      shouldMoveUp: false,
+      bottomPadding: 12,
+    );
 
     driveComponent.add(dashedArcComponent);
     driveComponent.add(solidLineComponent);
   }
 
   void onsideKickSucceedsArc(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) {
     final endingYardline = incident.end!.yardline!;
     final startingSide = incident.start!.side!;
     final endingSide = incident.end!.side!;
@@ -3512,19 +3813,23 @@ class FootballAnimationSequence {
     final startingYardline = incident.start!.yardline!;
 
     final distance = getYardageInBetween(
-            startingSide, startingYardline, endingSide, endingYardline,)
-        .toDouble();
+      startingSide,
+      startingYardline,
+      endingSide,
+      endingYardline,
+    ).toDouble();
 
     final dashedArcComponent = DashedArcComponent.combo(
-        skin: _skin,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        yardline: startingYardline.toDouble(),
-        distance: distance - 2,
-        side: startingSide,
-        possession: startPossession,
-        shouldMoveUp: false,
-        driveComponentHeight: driveComponentHeight,);
+      skin: _skin,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      yardline: startingYardline.toDouble(),
+      distance: distance - 2,
+      side: startingSide,
+      possession: startPossession,
+      shouldMoveUp: false,
+      driveComponentHeight: driveComponentHeight,
+    );
 
     late HomeOrAway solidLineSide;
     late int solidLineYardline;
@@ -3534,24 +3839,27 @@ class FootballAnimationSequence {
         getSideAndYardlineIfPast50(startingSide, endingYardline - 2);
 
     final solidLineComponent = SolidLineComponent.combo(
-        skin: _skin,
-        yardline: solidLineYardline.toDouble(),
-        distance: -2,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        side: solidLineSide,
-        possession: startPossession,
-        driveComponentHeight: driveComponentHeight,
-        shouldMoveUp: false,
-        arrowHeadType: ArrowHeadType.arrow,
-        bottomPadding: 0,);
+      skin: _skin,
+      yardline: solidLineYardline.toDouble(),
+      distance: -2,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      side: solidLineSide,
+      possession: startPossession,
+      driveComponentHeight: driveComponentHeight,
+      shouldMoveUp: false,
+      arrowHeadType: ArrowHeadType.arrow,
+      bottomPadding: 0,
+    );
 
     driveComponent.add(dashedArcComponent);
     driveComponent.add(solidLineComponent);
   }
 
   void onsideKickFailsArc(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) {
     final endingYardline = incident.end!.yardline!;
     final startingSide = incident.start!.side!;
     final endingSide = incident.end!.side!;
@@ -3559,19 +3867,23 @@ class FootballAnimationSequence {
     final startingYardline = incident.start!.yardline!;
 
     final distance = getYardageInBetween(
-            startingSide, startingYardline, endingSide, endingYardline,)
-        .toDouble();
+      startingSide,
+      startingYardline,
+      endingSide,
+      endingYardline,
+    ).toDouble();
 
     final dashedArcComponent = DashedArcComponent.combo(
-        skin: _skin,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        yardline: startingYardline.toDouble(),
-        distance: distance + 2,
-        side: startingSide,
-        possession: startPossession,
-        shouldMoveUp: false,
-        driveComponentHeight: driveComponentHeight,);
+      skin: _skin,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      yardline: startingYardline.toDouble(),
+      distance: distance + 2,
+      side: startingSide,
+      possession: startPossession,
+      shouldMoveUp: false,
+      driveComponentHeight: driveComponentHeight,
+    );
 
     late HomeOrAway solidLineSide;
     late int solidLineYardline;
@@ -3581,24 +3893,27 @@ class FootballAnimationSequence {
         getSideAndYardlineIfPast50(startingSide, endingYardline + 2);
 
     final solidLineComponent = SolidLineComponent.combo(
-        skin: _skin,
-        yardline: solidLineYardline.toDouble(),
-        distance: 2,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        side: solidLineSide,
-        possession: startPossession,
-        driveComponentHeight: driveComponentHeight,
-        shouldMoveUp: false,
-        arrowHeadType: ArrowHeadType.arrow,
-        bottomPadding: 0,);
+      skin: _skin,
+      yardline: solidLineYardline.toDouble(),
+      distance: 2,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      side: solidLineSide,
+      possession: startPossession,
+      driveComponentHeight: driveComponentHeight,
+      shouldMoveUp: false,
+      arrowHeadType: ArrowHeadType.arrow,
+      bottomPadding: 0,
+    );
 
     driveComponent.add(dashedArcComponent);
     driveComponent.add(solidLineComponent);
   }
 
   void kickoffReturnArc(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) {
     final endSide = incident.end!.side!;
     final startSide = incident.start!.side!;
     final possession = incident.start!.possession!;
@@ -3606,90 +3921,102 @@ class FootballAnimationSequence {
     final endYardline = incident.end!.yardline!;
 
     final dashedArcComponent = DashedArcComponent.combo(
-        skin: _skin,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        yardline: startYardline.toDouble(),
-        distance: (100 - startYardline + 5).toDouble(),
-        side: startSide,
-        possession: possession,
-        shouldMoveUp: false,
-        driveComponentHeight: driveComponentHeight,);
+      skin: _skin,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      yardline: startYardline.toDouble(),
+      distance: (100 - startYardline + 5).toDouble(),
+      side: startSide,
+      possession: possession,
+      shouldMoveUp: false,
+      driveComponentHeight: driveComponentHeight,
+    );
 
     final distanceFromEndzone =
         getYardageInBetween(startSide.opposite, -5, endSide, endYardline)
             .toDouble();
 
     final solidLineComponent = SolidLineComponent.combo(
-        skin: _skin,
-        yardline: -5,
-        distance: distanceFromEndzone,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        side: startSide.opposite,
-        possession: possession,
-        shouldMoveUp: false,
-        driveComponentHeight: driveComponentHeight,
-        bottomPadding: 0,);
+      skin: _skin,
+      yardline: -5,
+      distance: distanceFromEndzone,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      side: startSide.opposite,
+      possession: possession,
+      shouldMoveUp: false,
+      driveComponentHeight: driveComponentHeight,
+      bottomPadding: 0,
+    );
 
     driveComponent.add(dashedArcComponent);
     driveComponent.add(solidLineComponent);
   }
 
   void touchdownFromReturnedFieldGoalArc(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) {
     final endingSide = incident.start!.possession!.opposite;
     final startPossession = incident.start!.possession!;
 
     final startingSide = incident.start!.side!;
 
     final solidArc = SolidArcComponent.cross(
-        skin: _skin,
-        distance: 0,
-        screenWidth: screenWidth,
-        yardline: incident.start!.yardline!.toDouble(),
-        side: incident.start!.side!,
-        possession: incident.start!.possession!,
-        driveComponentHeight: driveComponentHeight,);
+      skin: _skin,
+      distance: 0,
+      screenWidth: screenWidth,
+      yardline: incident.start!.yardline!.toDouble(),
+      side: incident.start!.side!,
+      possession: incident.start!.possession!,
+      driveComponentHeight: driveComponentHeight,
+    );
 
     final distanceFromEndzone =
         getYardageInBetween(startingSide.opposite, -5, endingSide, -5)
             .toDouble();
 
     final solidLineComponent = SolidLineComponent.combo(
-        skin: _skin,
-        yardline: distanceFromEndzone - 5,
-        distance: distanceFromEndzone,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        side: startingSide.opposite,
-        possession: startPossession,
-        driveComponentHeight: driveComponentHeight,
-        bottomPadding: 36,);
+      skin: _skin,
+      yardline: distanceFromEndzone - 5,
+      distance: distanceFromEndzone,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      side: startingSide.opposite,
+      possession: startPossession,
+      driveComponentHeight: driveComponentHeight,
+      bottomPadding: 36,
+    );
 
     driveComponent.add(solidArc);
     driveComponent.add(solidLineComponent);
   }
 
   void touchdownFromFumbledPuntArc(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) {
     final startingYardline = incident.start!.yardline!;
     final startingSide = incident.start!.side!;
     final endYardline = incident.end!.yardline!;
     final endSide = incident.end!.side!;
     final distance = getYardageInBetween(
-            startingSide, startingYardline, endSide, endYardline,)
-        .toDouble();
+      startingSide,
+      startingYardline,
+      endSide,
+      endYardline,
+    ).toDouble();
 
     final dashedArc = DashedArcComponent.combo(
-        skin: _skin,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        yardline: startingYardline.toDouble(),
-        distance: distance,
-        side: startingSide,
-        possession: incident.start!.possession!,
-        driveComponentHeight: driveComponentHeight,);
+      skin: _skin,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      yardline: startingYardline.toDouble(),
+      distance: distance,
+      side: startingSide,
+      possession: incident.start!.possession!,
+      driveComponentHeight: driveComponentHeight,
+    );
 
     final fumbleArc = DashedDoubleArcComponent.fumble(
       skin: _skin,
@@ -3706,16 +4033,17 @@ class FootballAnimationSequence {
         getYardageInBetween(endSide, endYardline + 12, endSide, -5).toDouble();
 
     final solidLineComponent = SolidLineComponent.combo(
-        skin: _skin,
-        yardline: endYardline.toDouble() + 14,
-        distance: distanceToEndzone,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        side: endSide,
-        possession: endSide,
-        driveComponentHeight: driveComponentHeight,
-        extraPaddingForMoveUpDistance: 18,
-        bottomPadding: 7,);
+      skin: _skin,
+      yardline: endYardline.toDouble() + 14,
+      distance: distanceToEndzone,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      side: endSide,
+      possession: endSide,
+      driveComponentHeight: driveComponentHeight,
+      extraPaddingForMoveUpDistance: 18,
+      bottomPadding: 7,
+    );
 
     driveComponent.add(dashedArc);
     driveComponent.add(fumbleArc);
@@ -3723,25 +4051,31 @@ class FootballAnimationSequence {
   }
 
   void touchdownFromFumbledKickoffArc(
-      FootballMatchIncidentModel incident, double driveComponentHeight,) {
+    FootballMatchIncidentModel incident,
+    double driveComponentHeight,
+  ) {
     final startingYardline = incident.start!.yardline!;
     final startingSide = incident.start!.side!;
     final endYardline = incident.end!.yardline!;
     final endSide = incident.end!.side!;
     final distance = getYardageInBetween(
-            startingSide, startingYardline, endSide, endYardline,)
-        .toDouble();
+      startingSide,
+      startingYardline,
+      endSide,
+      endYardline,
+    ).toDouble();
 
     final dashedArc = DashedArcComponent.combo(
-        skin: _skin,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        yardline: startingYardline.toDouble(),
-        distance: distance,
-        side: startingSide,
-        possession: incident.start!.possession!,
-        shouldMoveUp: false,
-        driveComponentHeight: driveComponentHeight,);
+      skin: _skin,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      yardline: startingYardline.toDouble(),
+      distance: distance,
+      side: startingSide,
+      possession: incident.start!.possession!,
+      shouldMoveUp: false,
+      driveComponentHeight: driveComponentHeight,
+    );
 
     final fumbleArc = DashedDoubleArcComponent.fumble(
       skin: _skin,
@@ -3759,17 +4093,18 @@ class FootballAnimationSequence {
         getYardageInBetween(endSide, endYardline + 12, endSide, -5).toDouble();
 
     final solidLineComponent = SolidLineComponent.combo(
-        skin: _skin,
-        yardline: endYardline.toDouble() + 14,
-        distance: distanceToEndzone,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        side: endSide,
-        possession: endSide,
-        driveComponentHeight: driveComponentHeight,
-        extraPaddingForMoveUpDistance: 18,
-        shouldMoveUp: false,
-        bottomPadding: 7,);
+      skin: _skin,
+      yardline: endYardline.toDouble() + 14,
+      distance: distanceToEndzone,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      side: endSide,
+      possession: endSide,
+      driveComponentHeight: driveComponentHeight,
+      extraPaddingForMoveUpDistance: 18,
+      shouldMoveUp: false,
+      bottomPadding: 7,
+    );
 
     driveComponent.add(dashedArc);
     driveComponent.add(fumbleArc);

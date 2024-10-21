@@ -5,11 +5,11 @@ import 'package:game_tracker/core/models/match_model.dart';
 import 'pre_match_screen.dart';
 
 class MatchStatusScreen extends StatelessWidget {
-  const MatchStatusScreen(
-      {Key? key,
-      required this.match,
-      required this.size,})
-      : super(key: key);
+  const MatchStatusScreen({
+    Key? key,
+    required this.match,
+    required this.size,
+  }) : super(key: key);
 
   final Match<FootballData> match;
   final Size size;

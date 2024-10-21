@@ -67,19 +67,23 @@ class FootballTeamLogoNameWidget extends ConsumerWidget {
             ? TextDirection.ltr
             : TextDirection.rtl,
         children: [
-
-          if (homeTeamTimeoutsLeft != null &&
-              awayTeamTimeoutsLeft != null)
+          if (homeTeamTimeoutsLeft != null && awayTeamTimeoutsLeft != null)
             FootballTimeoutCounter(
-                homeOrAway: homeOrAway,
-                awayTeamTimeoutsLeft: awayTeamTimeoutsLeft!,
-                homeTeamTimeoutsLeft: homeTeamTimeoutsLeft!,
-           ),
+              homeOrAway: homeOrAway,
+              awayTeamTimeoutsLeft: awayTeamTimeoutsLeft!,
+              homeTeamTimeoutsLeft: homeTeamTimeoutsLeft!,
+            ),
           Container(
             height: maxHeight * kBaseMatchStateWidgetHeightFactor,
             padding: homeOrAway == HomeOrAway.away
-                ? const EdgeInsets.only(left: 4, right: 8,)
-                : const EdgeInsets.only(left: 8, right: 4,),
+                ? const EdgeInsets.only(
+                    left: 4,
+                    right: 8,
+                  )
+                : const EdgeInsets.only(
+                    left: 8,
+                    right: 4,
+                  ),
             alignment: Alignment.center,
             child: ScalableTextWidget(
               text: shortName ?? '',
@@ -89,16 +93,19 @@ class FootballTeamLogoNameWidget extends ConsumerWidget {
             ),
           ),
           Container(
-              height: maxHeight * kBaseMatchStateWidgetHeightFactor,
-              padding: const EdgeInsets.only(left: 8, right: 8,),
-              color: skin.colors.background,
-              alignment: Alignment.center,
-              child: ScalableTextWidget(
-                  text: score.toString(),
-                  textStyle: skin.textStyles.footballMatchStateScore
-                      .copyWith(color: skin.colors.grey1, height: 1),
-                  maxWidth: maxWidth),
-            )
+            height: maxHeight * kBaseMatchStateWidgetHeightFactor,
+            padding: const EdgeInsets.only(
+              left: 8,
+              right: 8,
+            ),
+            color: skin.colors.background,
+            alignment: Alignment.center,
+            child: ScalableTextWidget(
+                text: score.toString(),
+                textStyle: skin.textStyles.footballMatchStateScore
+                    .copyWith(color: skin.colors.grey1, height: 1),
+                maxWidth: maxWidth),
+          )
         ],
       ),
     );
