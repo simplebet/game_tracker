@@ -1,15 +1,13 @@
 import 'dart:math';
 
-import 'package:flutter/material.dart';
-
 import 'package:flame/components.dart';
+import 'package:flutter/material.dart';
 import 'package:game_tracker/core/models/enums.dart';
+import 'package:game_tracker/ui/shared/completable_mixin.dart';
+import 'package:game_tracker/ui/shared/constants.dart';
 import 'package:game_tracker/ui/shared/enums.dart';
+import 'package:game_tracker/ui/shared/util.dart';
 import 'package:game_tracker/ui/skin/game_tracker_skin.dart';
-
-import '../../../shared/completable_mixin.dart';
-import '../../../shared/constants.dart';
-import '../../../shared/util.dart';
 
 class PlayRibbonComponent extends PositionComponent
     with HasGameRef, Completable {
@@ -46,54 +44,82 @@ class PlayRibbonComponent extends PositionComponent
   void render(Canvas canvas) {
     super.render(canvas);
 
-    double screenWidth = gameRef.size.x;
+    final double screenWidth = gameRef.size.x;
 
-    TextStyle textStyle = skin.textStyles.body4Medium.copyWith(
+    final TextStyle textStyle = skin.textStyles.body4Medium.copyWith(
       fontSize: 17.5,
       color: Colors.white.withOpacity(
-          _isAnimatingOut ? 1 - _animationProgress : _animationProgress),
+        _isAnimatingOut ? 1 - _animationProgress : _animationProgress,
+      ),
     );
 
-    Size horizontalTextSize = textSize(text, textStyle);
+    final Size horizontalTextSize = textSize(text, textStyle);
 
-    TextStyle verticalTextStyle = skin.textStyles.body6Thick.copyWith(
+    final TextStyle verticalTextStyle = skin.textStyles.body6Thick.copyWith(
       fontSize: 14,
       color: skin.colors.grey2.withOpacity(
-          _isAnimatingOut ? 1 - _animationProgress : _animationProgress),
+        _isAnimatingOut ? 1 - _animationProgress : _animationProgress,
+      ),
     );
 
-    double borderStrokeWidth = 3;
+    const double borderStrokeWidth = 3;
 
-    Size verticalTextSize = _calculateVerticalTextSize(verticalTextStyle);
+    final Size verticalTextSize = _calculateVerticalTextSize(verticalTextStyle);
 
-    double widthPadding = teamAbbreviation != null || playType != null ? 3 : 5;
-    double rectangleWidth =
+    final double widthPadding =
+        teamAbbreviation != null || playType != null ? 3 : 5;
+    final double rectangleWidth =
         horizontalTextSize.width + verticalTextSize.height + widthPadding;
-    double ribbonHeight = kPassArrowHeight;
+    const double ribbonHeight = kPassArrowHeight;
 
-    double triangleWidth = 8;
+    const double triangleWidth = 8;
 
-    position = _calculateComponentPosition(direction, yardline, screenWidth,
-        triangleWidth, rectangleWidth, borderStrokeWidth, widthPadding);
+    position = _calculateComponentPosition(
+      direction,
+      yardline,
+      screenWidth,
+      triangleWidth,
+      rectangleWidth,
+      borderStrokeWidth,
+      widthPadding,
+    );
 
     final path = _createRibbonPath(
-        rectangleWidth, triangleWidth, ribbonHeight, direction);
+      rectangleWidth,
+      triangleWidth,
+      ribbonHeight,
+      direction,
+    );
 
     _drawRibbonPath(canvas, path);
     _renderBorder(canvas, path, borderStrokeWidth);
 
-    _drawText(canvas, textStyle, rectangleWidth, horizontalTextSize.width,
-        widthPadding, ribbonHeight, triangleWidth, verticalTextSize);
-    _drawVerticalText(canvas, widthPadding, ribbonHeight, verticalTextStyle,
-        triangleWidth, horizontalTextSize.width);
+    _drawText(
+      canvas,
+      textStyle,
+      rectangleWidth,
+      horizontalTextSize.width,
+      widthPadding,
+      ribbonHeight,
+      triangleWidth,
+      verticalTextSize,
+    );
+    _drawVerticalText(
+      canvas,
+      widthPadding,
+      ribbonHeight,
+      verticalTextStyle,
+      triangleWidth,
+      horizontalTextSize.width,
+    );
   }
 
   DateTime? _fadeInCompletionTime;
   final Duration _animationDuration =
       Duration(milliseconds: (kFadeOutSpeed * 1000).toInt());
   final Duration _displayDuration = Duration(
-      milliseconds:
-          (kPlayStartArrowDelay * 1000).toInt()); // or your desired duration
+    milliseconds: (kPlayStartArrowDelay * 1000).toInt(),
+  ); // or your desired duration
 
   DateTime? _animationStartTime;
 
@@ -104,9 +130,9 @@ class PlayRibbonComponent extends PositionComponent
     _animationStartTime ??= DateTime.now();
     final passedTime = DateTime.now().difference(_animationStartTime!);
     _animationProgress = min(
-        1,
-        passedTime.inMilliseconds /
-            _animationDuration.inMilliseconds.toDouble());
+      1,
+      passedTime.inMilliseconds / _animationDuration.inMilliseconds.toDouble(),
+    );
 
     if (_animationProgress == 1) {
       if (_isAnimatingIn) {
@@ -133,14 +159,19 @@ class PlayRibbonComponent extends PositionComponent
   void _renderBorder(Canvas canvas, Path path, double borderStrokeWidth) {
     final borderPaint = Paint()
       ..color = Colors.white.withOpacity(
-          _isAnimatingOut ? 1 - _animationProgress : _animationProgress)
+        _isAnimatingOut ? 1 - _animationProgress : _animationProgress,
+      )
       ..style = PaintingStyle.stroke
       ..strokeWidth = borderStrokeWidth;
     canvas.drawPath(path, borderPaint);
   }
 
-  Path _createRibbonPath(double rectangleWidth, double triangleWidth,
-      double ribbonHeight, HomeOrAway direction) {
+  Path _createRibbonPath(
+    double rectangleWidth,
+    double triangleWidth,
+    double ribbonHeight,
+    HomeOrAway direction,
+  ) {
     final Path path;
 
     if (direction == HomeOrAway.home) {
@@ -148,10 +179,14 @@ class PlayRibbonComponent extends PositionComponent
       path = Path()
         ..moveTo(0, 0) // Start top-left corner
         ..lineTo(rectangleWidth, 0) // Top right corner of rectangle
-        ..lineTo(rectangleWidth + triangleWidth,
-            ribbonHeight / 2) // Tip of the triangle
         ..lineTo(
-            rectangleWidth, ribbonHeight) // Bottom right corner of rectangle
+          rectangleWidth + triangleWidth,
+          ribbonHeight / 2,
+        ) // Tip of the triangle
+        ..lineTo(
+          rectangleWidth,
+          ribbonHeight,
+        ) // Bottom right corner of rectangle
         ..lineTo(0, ribbonHeight) // Bottom left corner of rectangle
         ..close(); // Close path to top-left corner
     } else {
@@ -160,9 +195,13 @@ class PlayRibbonComponent extends PositionComponent
         ..moveTo(0, ribbonHeight / 2) // Start at the tip of the triangle
         ..lineTo(triangleWidth, 0) // Top left corner of rectangle
         ..lineTo(
-            triangleWidth + rectangleWidth, 0) // Top right corner of rectangle
-        ..lineTo(triangleWidth + rectangleWidth,
-            ribbonHeight) // Bottom right corner of rectangle
+          triangleWidth + rectangleWidth,
+          0,
+        ) // Top right corner of rectangle
+        ..lineTo(
+          triangleWidth + rectangleWidth,
+          ribbonHeight,
+        ) // Bottom right corner of rectangle
         ..lineTo(triangleWidth, ribbonHeight) // Bottom left corner of rectangle
         ..close(); // Close path to tip of the triangle
     }
@@ -179,8 +218,6 @@ class PlayRibbonComponent extends PositionComponent
     double borderStrokeWidth,
     double widthPadding,
   ) {
-    Vector2 position;
-
     double baseX;
     if (direction == HomeOrAway.home) {
       baseX = getXPosition(yardline, side, screenWidth) -
@@ -194,21 +231,21 @@ class PlayRibbonComponent extends PositionComponent
           widthPadding;
     }
 
-    double offsetX = _isAnimatingIn
+    final double offsetX = _isAnimatingIn
         ? (1 - _animationProgress) * rectangleWidth
         : 0; // Only apply offset when animating in
 
-    position = Vector2(
-        baseX + (direction == HomeOrAway.home ? -offsetX : offsetX),
-        gameRef.size.y * kArrowPathHeightFactor);
-
-    return position;
+    return Vector2(
+      baseX + (direction == HomeOrAway.home ? -offsetX : offsetX),
+      gameRef.size.y * kArrowPathHeightFactor,
+    );
   }
 
   void _drawRibbonPath(Canvas canvas, Path path) {
     final paint = Paint()
       ..color = color.withOpacity(
-          _isAnimatingOut ? 1 - _animationProgress : _animationProgress)
+        _isAnimatingOut ? 1 - _animationProgress : _animationProgress,
+      )
       ..style = PaintingStyle.fill;
     canvas.drawPath(path, paint);
   }
@@ -228,21 +265,22 @@ class PlayRibbonComponent extends PositionComponent
     } else if (playType != null) {
       verticalTextSize = textSize(playType.toString().toUpperCase(), style);
     } else {
-      verticalTextSize = const Size(0, 0);
+      verticalTextSize = Size.zero;
     }
 
     return verticalTextSize;
   }
 
   void _drawText(
-      Canvas canvas,
-      TextStyle style,
-      double rectangleWidth,
-      double horizontalTextWidth,
-      double widthPadding,
-      double ribbonHeight,
-      double triangleWidth,
-      Size verticalTextSize) {
+    Canvas canvas,
+    TextStyle style,
+    double rectangleWidth,
+    double horizontalTextWidth,
+    double widthPadding,
+    double ribbonHeight,
+    double triangleWidth,
+    Size verticalTextSize,
+  ) {
     final textPainter = TextPainter(
       text: TextSpan(text: text, style: style),
       textDirection: TextDirection.ltr,
@@ -269,7 +307,7 @@ class PlayRibbonComponent extends PositionComponent
     double horizontalTextWidth,
   ) {
     if (teamAbbreviation != null || playType != null) {
-      String verticalText =
+      final String verticalText =
           teamAbbreviation ?? playType.toString().toUpperCase();
       final verticalTextPainter = TextPainter(
         text: TextSpan(text: verticalText, style: verticalTextStyle),
@@ -281,15 +319,15 @@ class PlayRibbonComponent extends PositionComponent
       if (playType != null) {
         verticalTextX = verticalTextX + horizontalTextWidth;
       }
-      double verticalTextY = (ribbonHeight + verticalTextPainter.width) / 2;
+      final double verticalTextY =
+          (ribbonHeight + verticalTextPainter.width) / 2;
 
-      canvas.save();
+      canvas
+        ..save()
+        ..rotate(-pi / 2)
+        ..translate(-verticalTextY, verticalTextX);
 
-      canvas.rotate(-pi / 2);
-
-      canvas.translate(-verticalTextY, verticalTextX);
-
-      verticalTextPainter.paint(canvas, const Offset(0, 0));
+      verticalTextPainter.paint(canvas, Offset.zero);
 
       canvas.restore();
     }

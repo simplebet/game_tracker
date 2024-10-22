@@ -12,7 +12,9 @@ class TextAnimationComponent extends TextComponent with HasPaint {
           text: text,
           textRenderer: textRenderer,
           position: Vector2(
-              ((yard + 10) / 120) * screenWidth + 25, screenHeight * 0.68 - 16),
+            ((yard + 10) / 120) * screenWidth + 25,
+            screenHeight * 0.68 - 16,
+          ),
           scale: Vector2.all(1.6),
         );
 }

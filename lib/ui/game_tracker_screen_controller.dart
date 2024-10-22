@@ -114,9 +114,6 @@ class GameTrackerScreenController
     FootballMatchIncidentModel? lastPlay,
   ) {
     final currentDriveId = lastPlay?.driveId;
-    // print('lastFootballPlay $lastFootballPlay');
-    // print('currentDriveId $currentDriveId');
-
     if (state.match != null && lastPlay != null) {
       /// only filter football plays when the game is active
       if (state.match?.status == MatchStatus.active &&

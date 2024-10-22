@@ -1,23 +1,17 @@
-import 'package:flutter/material.dart';
-
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flame/palette.dart';
+import 'package:flutter/material.dart';
 import 'package:game_tracker/core/models/enums.dart';
+import 'package:game_tracker/ui/football_tracker/full_view/flame_skewed_view/arrow_head_component.dart';
+import 'package:game_tracker/ui/shared/completable_mixin.dart';
+import 'package:game_tracker/ui/shared/constants.dart';
 import 'package:game_tracker/ui/shared/enums.dart';
+import 'package:game_tracker/ui/shared/util.dart';
 import 'package:game_tracker/ui/skin/game_tracker_skin.dart';
-
-import '../../../shared/completable_mixin.dart';
-import '../../../shared/constants.dart';
-import '../../../shared/util.dart';
-import 'arrow_head_component.dart';
 
 class SolidLineComponent extends PositionComponent
     with HasPaint, Completable, HasGameRef {
-  final double length;
-  final Color color;
-  final bool autoRemove;
-
   SolidLineComponent({
     required this.length,
     required this.color,
@@ -47,9 +41,10 @@ class SolidLineComponent extends PositionComponent
     yardline = side == HomeOrAway.home ? 100 - yardline : yardline;
 
     final component = SolidLineComponent(
-        color: color, length: distance, autoRemove: autoRemove);
-
-    component.x = convertYardLineToWidth(yardline) * screenWidth;
+      color: color,
+      length: distance,
+      autoRemove: autoRemove,
+    )..x = convertYardLineToWidth(yardline) * screenWidth;
 
     /// minus/plus the radius of the circle
     /// so the Component start from yardline mark
@@ -76,10 +71,15 @@ class SolidLineComponent extends PositionComponent
 
         /// stack the components below past incidents
         if (shouldMoveUp) {
-          component.add(MoveToEffect(
+          component.add(
+            MoveToEffect(
               Vector2(component.x, driveComponentHeight + 20),
-              DelayedEffectController(LinearEffectController(kFadeOutSpeed),
-                  delay: kComponentMoveUpDelay)));
+              DelayedEffectController(
+                LinearEffectController(kFadeOutSpeed),
+                delay: kComponentMoveUpDelay,
+              ),
+            ),
+          );
         }
       }
     }
@@ -88,12 +88,18 @@ class SolidLineComponent extends PositionComponent
         (distance.abs() >= 0 && distance.abs() <= 1);
 
     if (arrowHeadType != ArrowHeadType.arrow || !distanceArrowExtraSmall) {
-      component.add(CircleComponent(
-          radius: kCircleComponentRadius, paint: paint, priority: 2)
-        ..add(OpacityEffect.fadeIn(LinearEffectController(kFadeInSpeed))));
+      component.add(
+        CircleComponent(
+          radius: kCircleComponentRadius,
+          paint: paint,
+          priority: 2,
+        )..add(OpacityEffect.fadeIn(LinearEffectController(kFadeInSpeed))),
+      );
     } else {
-      component.add(CircleComponent(radius: 0.1, paint: paint, priority: 2)
-        ..add(OpacityEffect.fadeIn(LinearEffectController(kFadeInSpeed))));
+      component.add(
+        CircleComponent(radius: 0.1, paint: paint, priority: 2)
+          ..add(OpacityEffect.fadeIn(LinearEffectController(kFadeInSpeed))),
+      );
     }
 
     if (arrowHeadType == ArrowHeadType.arrow) {
@@ -101,16 +107,22 @@ class SolidLineComponent extends PositionComponent
       if (distance < 0) {
         arrowDirection = ArrowDirection.right;
       }
-      component.add(ArrowHeadComponent.arrow(
+      component.add(
+        ArrowHeadComponent.arrow(
           paint: paint,
           distance: distance,
           screenWidth: screenWidth,
-          arrowDirection: arrowDirection)
-        ..y = -0.5);
+          arrowDirection: arrowDirection,
+        )..y = -0.5,
+      );
     } else {
-      component.add(CircleComponent(
-          radius: kCircleComponentRadius, paint: paint, priority: 2)
-        ..x = -(distance / 120) * screenWidth);
+      component.add(
+        CircleComponent(
+          radius: kCircleComponentRadius,
+          paint: paint,
+          priority: 2,
+        )..x = -(distance / 120) * screenWidth,
+      );
     }
 
     if (possession == HomeOrAway.away) {
@@ -140,9 +152,9 @@ class SolidLineComponent extends PositionComponent
     yardline = side == HomeOrAway.home ? 100 - yardline : yardline;
 
     final component = SolidLineComponent(
-        color: paint.color, length: distance, autoRemove: false);
-
-    component.x = convertYardLineToWidth(yardline) * screenWidth;
+      color: paint.color,
+      length: distance,
+    )..x = convertYardLineToWidth(yardline) * screenWidth;
 
     if (driveComponentHeight != null) {
       /// when past incidents didn't fill up the screen
@@ -159,15 +171,21 @@ class SolidLineComponent extends PositionComponent
 
         /// stack the components below past incidents
         if (shouldMoveUp) {
-          component.add(MoveToEffect(
+          component.add(
+            MoveToEffect(
               Vector2(
-                  component.x,
-                  driveComponentHeight +
-                      kComponentMoveUpDistance +
-                      bottomPadding +
-                      extraPaddingForMoveUpDistance),
-              DelayedEffectController(LinearEffectController(kFadeOutSpeed),
-                  delay: kRushOrPassLineDelay)));
+                component.x,
+                driveComponentHeight +
+                    kComponentMoveUpDistance +
+                    bottomPadding +
+                    extraPaddingForMoveUpDistance,
+              ),
+              DelayedEffectController(
+                LinearEffectController(kFadeOutSpeed),
+                delay: kRushOrPassLineDelay,
+              ),
+            ),
+          );
         }
       }
     }
@@ -179,16 +197,24 @@ class SolidLineComponent extends PositionComponent
       if (distance < 0) {
         arrowDirection = ArrowDirection.right;
       }
-      component.add(ArrowHeadComponent.arrow(
+      component.add(
+        ArrowHeadComponent.arrow(
           paint: BasicPalette.white.paint(),
           distance: distance,
           screenWidth: screenWidth,
-          arrowDirection: arrowDirection));
+          arrowDirection: arrowDirection,
+        ),
+      );
     } else {
-      component.add(CircleComponent(
-          radius: kCircleComponentRadius, paint: paint, priority: 2)
-        ..x = -convertYardsToWidth(distance) * screenWidth
-        ..add(OpacityEffect.fadeIn(LinearEffectController(kFadeInSpeed))));
+      component.add(
+        CircleComponent(
+          radius: kCircleComponentRadius,
+          paint: paint,
+          priority: 2,
+        )
+          ..x = -convertYardsToWidth(distance) * screenWidth
+          ..add(OpacityEffect.fadeIn(LinearEffectController(kFadeInSpeed))),
+      );
     }
 
     if (possession == HomeOrAway.home) {
@@ -197,25 +223,34 @@ class SolidLineComponent extends PositionComponent
 
     return component;
   }
+  final double length;
+  final Color color;
+  final bool autoRemove;
 
   @override
   void onLoad() {
     final screenWidth = gameRef.size.x;
 
-    add(_SolidLine(color: color, length: length, screenWidth: screenWidth)
-      ..add(OpacityEffect.fadeIn(LinearEffectController(kFadeInSpeed))
-        ..onComplete = () {
-          complete();
-        }));
+    add(
+      _SolidLine(color: color, length: length, screenWidth: screenWidth)
+        ..add(
+          OpacityEffect.fadeIn(LinearEffectController(kFadeInSpeed))
+            ..onComplete = complete,
+        ),
+    );
 
     if (autoRemove) {
-      add(OpacityEffect.fadeOut(DelayedEffectController(
-          LinearEffectController(kFadeOutSpeed),
-          delay: kPlayStartArrowDelay))
-        ..onComplete = () {
-          complete();
-          removeFromParent();
-        });
+      add(
+        OpacityEffect.fadeOut(
+          DelayedEffectController(
+            LinearEffectController(kFadeOutSpeed),
+            delay: kPlayStartArrowDelay,
+          ),
+        )..onComplete = () {
+            complete();
+            removeFromParent();
+          },
+      );
     }
   }
 
@@ -223,16 +258,14 @@ class SolidLineComponent extends PositionComponent
   void render(Canvas canvas) {
     invertSkewedView(canvas);
 
-    canvas.save();
-    canvas.clipRect(Rect.fromLTWH(0, 0, width, height));
-    canvas.restore();
+    canvas
+      ..save()
+      ..clipRect(Rect.fromLTWH(0, 0, width, height))
+      ..restore();
   }
 }
 
 class _SolidLine extends PositionComponent with HasPaint {
-  final double length;
-  final double screenWidth;
-
   _SolidLine({
     required Color color,
     required this.length,
@@ -243,15 +276,20 @@ class _SolidLine extends PositionComponent with HasPaint {
 
     paint.strokeWidth = 2;
   }
+  final double length;
+  final double screenWidth;
 
   @override
   void render(Canvas canvas) {
     /// 4 is the radius
     /// minus 8 because we don't wanna line to show beneath circle
     canvas.drawLine(
-        const Offset(0, kCircleComponentRadius),
-        Offset(-((length / 120) * screenWidth - 2 * kCircleComponentRadius),
-            kCircleComponentRadius),
-        paint);
+      const Offset(0, kCircleComponentRadius),
+      Offset(
+        -((length / 120) * screenWidth - 2 * kCircleComponentRadius),
+        kCircleComponentRadius,
+      ),
+      paint,
+    );
   }
 }

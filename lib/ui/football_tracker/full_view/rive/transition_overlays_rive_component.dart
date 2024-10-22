@@ -1,7 +1,6 @@
-import 'package:flutter/widgets.dart';
-
 import 'package:flame/components.dart';
 import 'package:flame_rive/flame_rive.dart';
+import 'package:flutter/widgets.dart';
 
 class TransitionOverlaysRiveComponent extends RiveComponent with HasGameRef {
   TransitionOverlaysRiveComponent(Artboard artboard)

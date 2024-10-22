@@ -1,11 +1,9 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
-
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
-
-import '../../../../shared/constants.dart';
+import 'package:flutter/material.dart';
+import 'package:game_tracker/ui/shared/constants.dart';
 
 class StarSprite extends SpriteComponent {
   StarSprite();
@@ -21,7 +19,7 @@ class StarSprite extends SpriteComponent {
   void render(Canvas canvas) {
     canvas.save();
 
-    Matrix4 skewMatrix = Matrix4.inverted(kSkewMatrixSmall.clone());
+    final Matrix4 skewMatrix = Matrix4.inverted(kSkewMatrixSmall.clone());
 
     // Apply the transformation
     canvas.transform(skewMatrix.storage);
@@ -31,7 +29,7 @@ class StarSprite extends SpriteComponent {
   }
 
   Future<void> scaleInOut({required Vector2 position}) async {
-    Completer completer = Completer();
+    final Completer completer = Completer();
 
     x = position.x;
     y = position.y;

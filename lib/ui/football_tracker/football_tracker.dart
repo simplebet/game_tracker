@@ -47,7 +47,7 @@ class _FootballTrackerState extends ConsumerState<FootballTracker> {
             child: Align(
               alignment: Alignment.topCenter,
               child: FootballTrackerMatchStateWidget(
-                match: state.match as Match<FootballData>,
+                match: state.match as Match<FootballData>?,
                 maxWidth: widget.size.width,
                 maxHeight: widget.size.height,
                 lastFootballPlay: state.footballIncidents?.last,
@@ -68,7 +68,7 @@ class _FootballTrackerState extends ConsumerState<FootballTracker> {
             child: Align(
               child: MatchStatusScreen(
                 size: widget.size,
-                match: state.match as Match<FootballData>,
+                match: state.match as Match<FootballData>?,
               ),
             ),
           ),

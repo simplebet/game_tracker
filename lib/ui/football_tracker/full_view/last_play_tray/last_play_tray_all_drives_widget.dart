@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:game_tracker/core/models/match_incidents/football_match_incident_drive_list_model.dart';
 import 'package:game_tracker/core/models/match_incidents/football_match_incident_model.dart';
+import 'package:game_tracker/ui/shared/football_last_play_tray_formatter.dart';
+import 'package:game_tracker/ui/shared/scalable_text_widget.dart';
 import 'package:game_tracker/ui/skin/game_tracker_skin.dart';
 
-import '../../../shared/football_last_play_tray_formatter.dart';
-import '../../../shared/scalable_text_widget.dart';
-
 class LastPlayTrayAllDrivesWidget extends StatelessWidget {
-  const LastPlayTrayAllDrivesWidget(
-      {super.key,
-      required this.maxWidth,
-      required this.maxHeight,
-      required this.changeDriveCallback,
-      required this.allDrivesList,
-      required this.formatter,
-      required this.currentDriveId});
+  const LastPlayTrayAllDrivesWidget({
+    required this.maxWidth,
+    required this.maxHeight,
+    required this.changeDriveCallback,
+    required this.allDrivesList,
+    required this.formatter,
+    required this.currentDriveId,
+    super.key,
+  });
 
   final double maxWidth;
   final double maxHeight;
@@ -58,14 +57,15 @@ class LastPlayTrayAllDrivesWidget extends StatelessWidget {
 }
 
 class _LastPlayTrayAllDrivesItemWidget extends ConsumerWidget {
-  const _LastPlayTrayAllDrivesItemWidget(
-      {required this.index,
-      required this.maxWidth,
-      required this.changeDriveCallback,
-      required this.isCurrentDrive,
-      required this.driveId,
-      required this.play,
-      required this.formatter});
+  const _LastPlayTrayAllDrivesItemWidget({
+    required this.index,
+    required this.maxWidth,
+    required this.changeDriveCallback,
+    required this.isCurrentDrive,
+    required this.driveId,
+    required this.play,
+    required this.formatter,
+  });
 
   final int index;
   final double maxWidth;
@@ -83,12 +83,14 @@ class _LastPlayTrayAllDrivesItemWidget extends ConsumerWidget {
 
     final skin = GameTrackerSkin();
     final driveTitle = formatter.formatDriveNumberWithName(
-        play?.start?.possession, play?.driveNumber);
+      play?.start?.possession,
+      play?.driveNumber,
+    );
     final isInProgress = isCurrentDrive &&
         play!.event != FootballMatchIncidentEventType.driveEnded;
 
-    var subtitle = isInProgress ? 'In Progress' : 'Drive Ended';
-    var driveTitleStyle = skin.textStyles.footballPlayTrayTitle;
+    final subtitle = isInProgress ? 'In Progress' : 'Drive Ended';
+    final driveTitleStyle = skin.textStyles.footballPlayTrayTitle;
 
     return GestureDetector(
       onTap:
@@ -96,19 +98,20 @@ class _LastPlayTrayAllDrivesItemWidget extends ConsumerWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         decoration: BoxDecoration(
-            color: index.isEven
-                ? skin.colors.playTrayEven
-                : skin.colors.playTrayOdd,
-            border: Border(
-                bottom: BorderSide(
+          color:
+              index.isEven ? skin.colors.playTrayEven : skin.colors.playTrayOdd,
+          border: Border(
+            bottom: BorderSide(
               color: skin.colors.grey1.withOpacity(0.1),
-              width: 1.0,
-            ))),
+            ),
+          ),
+        ),
         child: play!.isStandAloneEvent
             ? ScalableTextWidget(
                 text: formatter.lastPlayTraySubtitle(play).toUpperCase(),
                 textStyle: driveTitleStyle.copyWith(
-                    color: skin.colors.playTrayTitleColor),
+                  color: skin.colors.playTrayTitleColor,
+                ),
                 maxWidth: maxWidth,
                 textAlign: TextAlign.left,
               )
@@ -121,7 +124,8 @@ class _LastPlayTrayAllDrivesItemWidget extends ConsumerWidget {
                       ScalableTextWidget(
                         text: driveTitle.toUpperCase(),
                         textStyle: driveTitleStyle.copyWith(
-                            color: skin.colors.playTrayTitleColor),
+                          color: skin.colors.playTrayTitleColor,
+                        ),
                         maxWidth: maxWidth,
                       ),
                       ScalableTextWidget(
@@ -136,7 +140,7 @@ class _LastPlayTrayAllDrivesItemWidget extends ConsumerWidget {
                   Icon(
                     Icons.arrow_forward,
                     color: skin.colors.grey1,
-                  )
+                  ),
                 ],
               ),
       ),

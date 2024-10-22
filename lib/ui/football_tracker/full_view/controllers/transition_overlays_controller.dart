@@ -5,9 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:game_tracker/ui/football_tracker/full_view/controllers/controller_helper.dart';
 
 class TransitionOverlaysController {
-  TransitionOverlaysController(
-      {required StateMachineController controller,
-      required Artboard artboard}) {
+  TransitionOverlaysController({
+    required StateMachineController controller,
+    required Artboard artboard,
+  }) {
     _controller = controller;
     _artboard = artboard;
 
@@ -106,11 +107,10 @@ class TransitionOverlaysController {
   }
 
   Future<void> setCoinTossColor(Color color) async {
-    final Shape? backgroundShape = _artboard.component<Shape>("Background");
+    final Shape? backgroundShape = _artboard.component<Shape>('Background');
 
     if (backgroundShape != null) {
-      final Fill fill = backgroundShape.fills.first;
-      fill.renderOpacity = 1;
+      final Fill fill = backgroundShape.fills.first..renderOpacity = 1;
       final ColorTween colorTween =
           ColorTween(begin: fill.paint.color, end: color);
 
@@ -135,7 +135,7 @@ class TransitionOverlaysController {
   }
 
   void setCoinTossText({required String teamTricode}) {
-    final tricodeText = _artboard.component<TextValueRun>("Tricode");
+    final tricodeText = _artboard.component<TextValueRun>('Tricode');
 
     tricodeText?.text = teamTricode;
   }

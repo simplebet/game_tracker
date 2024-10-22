@@ -56,6 +56,7 @@ class FootballAnimationSequence {
   late FlagRiveComponent _flagRiveComponent;
   late TransitionOverlaysController _transitionOverlaysController;
   late LastPlayTrayStateNotifier _lastPlayTrayStateNotifier;
+  late String _currentDriveId;
 
   void init({
     required GameTrackerSkin skin,
@@ -68,6 +69,7 @@ class FootballAnimationSequence {
     required FlagRiveComponent flagRiveComponent,
     required TransitionOverlaysController transitionOverlaysController,
     required LastPlayTrayStateNotifier lastPlayTrayStateNotifier,
+    required String currentDriveId,
   }) {
     _skin = skin;
     _footballArtboard = footballArtboard;
@@ -79,10 +81,10 @@ class FootballAnimationSequence {
     _flagController = flagController;
     _transitionOverlaysController = transitionOverlaysController;
     _lastPlayTrayStateNotifier = lastPlayTrayStateNotifier;
+    _currentDriveId = currentDriveId;
   }
 
   double get screenWidth => _game.screenWidth;
-
   double get screenHeight => _game.screenHeight;
 
   DriveContainerComponent driveComponent = DriveContainerComponent();
@@ -91,7 +93,7 @@ class FootballAnimationSequence {
 
   void renderLastDriveIncidents(List<FootballMatchIncidentModel>? incidents) {
     if (incidents != null && incidents.isNotEmpty) {
-      for (var incident in incidents) {
+      for (final incident in incidents) {
         /// position past plays vertically renders on the field
         if (incident.event.isPersistingEvent) {
           driveComponentHeight += kComponentMoveUpDistance;
@@ -194,7 +196,8 @@ class FootballAnimationSequence {
           twoPointConversionMissedCross(incident, driveComponentHeight);
         }
 
-        if (incident.event == FootballMatchIncidentEventType.driveStarted) {
+        if (incident.event == FootballMatchIncidentEventType.driveStarted &&
+            incident.driveId == _currentDriveId) {
           renderDriveStartLine(incident);
         }
         if (incident.event ==
@@ -291,13 +294,15 @@ class FootballAnimationSequence {
             ),
           );
         } else {
-          /// move the whole drive component up after each new incident animation sequence finish
-          driveComponent.add(
-            MoveEffect.by(
-              Vector2(0, -kComponentMoveUpDistance),
-              LinearEffectController(kDriveScrollUpSpeed),
-            ),
-          );
+          if (!incident.event.isUnderReviewEvent) {
+            /// move the whole drive component up after each new incident animation sequence finish
+            driveComponent.add(
+              MoveEffect.by(
+                Vector2(0, -kComponentMoveUpDistance),
+                LinearEffectController(kDriveScrollUpSpeed),
+              ),
+            );
+          }
         }
       }
     }
@@ -320,7 +325,9 @@ class FootballAnimationSequence {
 
       /// increase the driveComponentHeight factor after each incident is rendered
       if (incident.event.isPersistingEvent) {
-        driveComponentHeight += kComponentMoveUpDistance;
+        if (!incident.event.isUnderReviewEvent) {
+          driveComponentHeight += kComponentMoveUpDistance;
+        }
       }
     } catch (e) {
       throw Exception('Unknown football event');
@@ -333,7 +340,7 @@ class FootballAnimationSequence {
   ) async {
     final homeTeamWonCoinToss = incident.coinTossWinner == HomeOrAway.home;
 
-    _transitionOverlaysController.setCoinTossColor(
+    await _transitionOverlaysController.setCoinTossColor(
       homeTeamWonCoinToss ? _homeTeam.primaryColor : _awayTeam.primaryColor,
     );
     _transitionOverlaysController.setCoinTossText(
@@ -454,7 +461,6 @@ class FootballAnimationSequence {
     final startingYardline = incident.start!.yardline!;
     final startingSide = incident.start!.side!;
     final startPossession = incident.start!.possession!;
-    final endPossession = incident.end!.possession!;
     final endYardline = incident.end!.yardline!;
     final endSide = incident.end!.side!;
 
@@ -464,7 +470,6 @@ class FootballAnimationSequence {
       startingYardline: startingYardline,
       startingSide: startingSide,
       startPossession: startPossession,
-      endPossession: endPossession,
       endSide: endSide,
       footballController: _footballController,
       screenWidth: screenWidth,
@@ -549,7 +554,6 @@ class FootballAnimationSequence {
     final startingYardline = incident.start!.yardline!;
     final startingSide = incident.start!.side!;
     final startPossession = incident.start!.possession!;
-    final endPossession = incident.end!.possession!;
     final endYardline = incident.end!.yardline!;
     final endSide = incident.end!.side!;
 
@@ -559,7 +563,6 @@ class FootballAnimationSequence {
       startingYardline: startingYardline,
       startingSide: startingSide,
       startPossession: startPossession,
-      endPossession: endPossession,
       endSide: endSide,
       footballController: _footballController,
       screenWidth: screenWidth,
@@ -742,7 +745,7 @@ class FootballAnimationSequence {
     double driveComponentHeight,
   ) async {
     /// clear the drive if the new drive comes in before the 10 seconds drive ended delay
-    // clearDrive();
+    clearDrive();
 
     _game.add(
       TimerComponent(
@@ -1227,7 +1230,6 @@ class FootballAnimationSequence {
       startingYardline: startYardline,
       endingYardline: endYardline,
       startingSide: startSide,
-      possession: possession,
       screenWidth: screenWidth,
       controller: _footballController,
     );
@@ -2128,7 +2130,6 @@ class FootballAnimationSequence {
       _footballArtboard,
       startingYardline: startYardline,
       startingSide: startSide,
-      endingSide: endSide,
       possession: startPossession,
       screenWidth: screenWidth,
       screenHeight: screenHeight,
@@ -2654,7 +2655,6 @@ class FootballAnimationSequence {
       yardline: startYardline.toDouble(),
       netYards: kDoubleArcWidth,
       side: startSide,
-      possession: endPossession,
       driveComponentHeight: driveComponentHeight,
     );
 
@@ -2705,7 +2705,6 @@ class FootballAnimationSequence {
       yardline: startYardline.toDouble(),
       netYards: kDoubleArcWidth,
       side: startSide,
-      possession: endPossession,
     );
 
     if (endZone == HomeOrAway.away) {
@@ -2870,7 +2869,6 @@ class FootballAnimationSequence {
       startingYardline: startYardline,
       startingSide: startSide,
       endingSide: endZone,
-      possession: startPossession,
       screenWidth: screenWidth,
       controller: _footballController,
     );
@@ -2939,7 +2937,6 @@ class FootballAnimationSequence {
       startingYardline: startYardline,
       startingSide: startSide,
       endingSide: endZone,
-      possession: startPossession,
       screenWidth: screenWidth,
       controller: _footballController,
     );

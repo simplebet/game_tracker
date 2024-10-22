@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 
-import '../../../../shared/constants.dart';
+import 'package:game_tracker/ui/shared/constants.dart';
 
 class XIconSprite extends SpriteComponent with HasGameRef {
   XIconSprite();
@@ -15,8 +15,10 @@ class XIconSprite extends SpriteComponent with HasGameRef {
     sprite = await Sprite.load(kXIconSpritePath);
   }
 
-  Future<void> trigger(
-      {required Vector2 position, double duration = .3}) async {
+  Future<void> trigger({
+    required Vector2 position,
+    double duration = .3,
+  }) async {
     this.position = position;
 
     await Future.wait([
@@ -28,7 +30,7 @@ class XIconSprite extends SpriteComponent with HasGameRef {
   }
 
   Future<void> _fadeInOut({double duration = .3}) {
-    Completer completer = Completer();
+    final Completer completer = Completer();
 
     final effect = SequenceEffect(
       [
@@ -39,9 +41,7 @@ class XIconSprite extends SpriteComponent with HasGameRef {
           EffectController(duration: duration),
         ),
       ],
-      onComplete: () {
-        completer.complete();
-      },
+      onComplete: completer.complete,
     );
 
     add(effect);
@@ -49,7 +49,7 @@ class XIconSprite extends SpriteComponent with HasGameRef {
   }
 
   Future<void> _scaleInOut({double duration = .3}) {
-    Completer completer = Completer();
+    final Completer completer = Completer();
     scale = Vector2.all(.5);
 
     final effect = SequenceEffect(
@@ -63,9 +63,7 @@ class XIconSprite extends SpriteComponent with HasGameRef {
           EffectController(duration: duration),
         ),
       ],
-      onComplete: () {
-        completer.complete();
-      },
+      onComplete: completer.complete,
     );
 
     add(effect);

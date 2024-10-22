@@ -7,19 +7,19 @@ import 'package:game_tracker/ui/shared/scalable_text_widget.dart';
 import 'package:game_tracker/ui/skin/game_tracker_skin.dart';
 
 class FootballTeamLogoNameWidget extends ConsumerWidget {
-  const FootballTeamLogoNameWidget(
-      {Key? key,
-      required this.primaryColor,
-      required this.logoUrl,
-      required this.shortName,
-      required this.matchStatus,
-      required this.score,
-      required this.homeOrAway,
-      required this.maxWidth,
-      required this.maxHeight,
-      required this.awayTeamTimeoutsLeft,
-      required this.homeTeamTimeoutsLeft})
-      : super(key: key);
+  const FootballTeamLogoNameWidget({
+    required this.primaryColor,
+    required this.logoUrl,
+    required this.shortName,
+    required this.matchStatus,
+    required this.score,
+    required this.homeOrAway,
+    required this.maxWidth,
+    required this.maxHeight,
+    required this.awayTeamTimeoutsLeft,
+    required this.homeTeamTimeoutsLeft,
+    super.key,
+  });
 
   final Color primaryColor;
   final String? logoUrl;
@@ -42,10 +42,10 @@ class FootballTeamLogoNameWidget extends ConsumerWidget {
         boxShadow: [
           BoxShadow(
             color: skin.colors.grey5.withOpacity(0.5),
-            blurRadius: 4.0,
+            blurRadius: 4,
             spreadRadius: 0.5,
             offset: const Offset(2, 4),
-          )
+          ),
         ],
         borderRadius: BorderRadius.only(
           topLeft: homeOrAway == HomeOrAway.away
@@ -101,35 +101,14 @@ class FootballTeamLogoNameWidget extends ConsumerWidget {
             color: skin.colors.background,
             alignment: Alignment.center,
             child: ScalableTextWidget(
-                text: score.toString(),
-                textStyle: skin.textStyles.footballMatchStateScore
-                    .copyWith(color: skin.colors.grey1, height: 1),
-                maxWidth: maxWidth),
-          )
+              text: score.toString(),
+              textStyle: skin.textStyles.footballMatchStateScore
+                  .copyWith(color: skin.colors.grey1, height: 1),
+              maxWidth: maxWidth,
+            ),
+          ),
         ],
       ),
     );
-  }
-}
-
-class TeamLogoWrapperWidget extends ConsumerWidget {
-  const TeamLogoWrapperWidget({Key? key, required this.child})
-      : super(key: key);
-
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final skin = GameTrackerSkin();
-
-    return Container(
-        decoration: BoxDecoration(boxShadow: [
-          BoxShadow(
-            color: skin.colors.grey5.withOpacity(0.15),
-            blurRadius: 2.0,
-            spreadRadius: 0.5,
-          )
-        ]),
-        child: child);
   }
 }

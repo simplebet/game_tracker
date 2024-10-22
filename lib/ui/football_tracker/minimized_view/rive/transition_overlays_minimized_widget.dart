@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:game_tracker/ui/football_tracker/full_view/providers/transition_overlays_minimized_rive_provider.dart';
+import 'package:game_tracker/ui/football_tracker/minimized_view/state_notifier/transition_overlays_minimized_notifier.dart';
 import 'package:rive/rive.dart';
-
-import '../../full_view/providers/transition_overlays_minimized_rive_provider.dart';
-import '../state_notifier/transition_overlays_minimized_notifier.dart';
 
 class TransitionOverlaysMinimizedWidget extends ConsumerWidget {
   const TransitionOverlaysMinimizedWidget({
-    Key? key,
     required this.screenWidth,
-  }) : super(key: key);
+    super.key,
+  });
 
   final double screenWidth;
 
@@ -26,7 +24,8 @@ class TransitionOverlaysMinimizedWidget extends ConsumerWidget {
       child: artboard.when(
         loading: () => const SizedBox.shrink(),
         error: (error, stack) => const Center(
-            child: Text('TransitionOverlaysMinimized Artboard Error')),
+          child: Text('TransitionOverlaysMinimized Artboard Error'),
+        ),
         data: (artboard) {
           return Rive(
             artboard: artboard,

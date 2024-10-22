@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-import '../../../shared/constants.dart';
+import 'package:game_tracker/ui/shared/constants.dart';
 
 class FootballMatchStateAnimationWrapper extends StatefulWidget {
   const FootballMatchStateAnimationWrapper({
-    Key? key,
     required this.child,
     required this.updated,
     required this.onEndCallback,
     required this.maxHeight,
-  }) : super(key: key);
+    super.key,
+  });
 
   final Widget child;
   final bool updated;

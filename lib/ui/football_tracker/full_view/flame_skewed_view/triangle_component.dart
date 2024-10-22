@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:flame/components.dart';
 import 'package:flame/palette.dart';
 
-import '../../../shared/enums.dart';
+import 'package:game_tracker/ui/shared/enums.dart';
 
 final pointLeftTriangle = [
   Vector2(6, -1),

@@ -5,30 +5,17 @@ import 'package:flame/effects.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame_rive/flame_rive.dart';
 import 'package:game_tracker/core/models/enums.dart';
+import 'package:game_tracker/ui/football_tracker/full_view/controllers/football_controller.dart';
+import 'package:game_tracker/ui/football_tracker/full_view/effects/football_movement_effects.dart';
+import 'package:game_tracker/ui/football_tracker/full_view/flame_skewed_view/opacity_provider_mixin.dart';
+import 'package:game_tracker/ui/football_tracker/full_view/flame_skewed_view/sprites/star_sprite.dart';
+import 'package:game_tracker/ui/shared/completable_mixin.dart';
+import 'package:game_tracker/ui/shared/constants.dart';
 import 'package:game_tracker/ui/shared/enums.dart';
-
-import '../../../shared/completable_mixin.dart';
-import '../../../shared/constants.dart';
-import '../../../shared/util.dart';
-import '../controllers/football_controller.dart';
-import '../effects/football_movement_effects.dart';
-import '../flame_skewed_view/opacity_provider_mixin.dart';
-import '../flame_skewed_view/sprites/star_sprite.dart';
+import 'package:game_tracker/ui/shared/util.dart';
 
 class FootballRiveComponent extends RiveComponent
     with HasGameRef, HasOpacityProvider, Completable {
-  FootballRiveComponent._(
-    Artboard artboard, {
-    required this.effect,
-    required this.startingYardline,
-    required this.startingSide,
-  }) : super(
-          artboard: artboard,
-        );
-  final int startingYardline;
-  final HomeOrAway startingSide;
-  final Effect effect;
-
   factory FootballRiveComponent.arc(
     Artboard artboard, {
     required int startingYardline,
@@ -64,20 +51,21 @@ class FootballRiveComponent extends RiveComponent
     required StarSprite starSprite,
   }) {
     final arcEffect = createFootballArcEffect(
-        startingYardline: startingYardline,
-        endingYardline: endingYardline,
-        startingSide: startingSide,
-        endingSide: endingSide,
-        screenWidth: screenWidth,
-        onComplete: () {
-          controller.idleForward();
-          starSprite.scaleInOut(
-            position: Vector2(
-              getXPosition(endingYardline, endingSide, screenWidth),
-              screenHeight * kStarSpriteYFactor,
-            ),
-          );
-        });
+      startingYardline: startingYardline,
+      endingYardline: endingYardline,
+      startingSide: startingSide,
+      endingSide: endingSide,
+      screenWidth: screenWidth,
+      onComplete: () {
+        controller.idleForward();
+        starSprite.scaleInOut(
+          position: Vector2(
+            getXPosition(endingYardline, endingSide, screenWidth),
+            screenHeight * kStarSpriteYFactor,
+          ),
+        );
+      },
+    );
 
     final halfArcEndYardline = endingYardline +
         kPassIncompleteNetYards ~/
@@ -85,15 +73,16 @@ class FootballRiveComponent extends RiveComponent
             (startingSide != endingSide || startingSide != possession ? -1 : 1);
 
     final halfArcEffect = createFootballHalfArcEffect(
-        startDelay: 0.1,
-        startingYardline: endingYardline,
+      startDelay: 0.1,
+      startingYardline: endingYardline,
 
-        /// half arc will move towards other direction
-        /// with the length half of the full arc
-        endingYardline: halfArcEndYardline,
-        startingSide: startingSide,
-        endingSide: endingSide,
-        screenWidth: screenWidth);
+      /// half arc will move towards other direction
+      /// with the length half of the full arc
+      endingYardline: halfArcEndYardline,
+      startingSide: startingSide,
+      endingSide: endingSide,
+      screenWidth: screenWidth,
+    );
 
     final sequenceEffect = SequenceEffect([arcEffect, halfArcEffect]);
 
@@ -170,21 +159,22 @@ class FootballRiveComponent extends RiveComponent
     required StarSprite starSprite,
   }) {
     final arcEffect = createFootballArcEffect(
-        startingYardline: startingYardline,
-        endingYardline: -12,
-        startingSide: startingSide,
-        endingSide: endingSide,
-        screenWidth: screenWidth,
-        oriented: false,
-        onComplete: () {
-          controller.idleHorizontal();
-          starSprite.scaleInOut(
-            position: Vector2(
-              getXPosition(-12, endingSide, screenWidth),
-              screenHeight * kGoalPostYFactor + 15,
-            ),
-          );
-        });
+      startingYardline: startingYardline,
+      endingYardline: -12,
+      startingSide: startingSide,
+      endingSide: endingSide,
+      screenWidth: screenWidth,
+      oriented: false,
+      onComplete: () {
+        controller.idleHorizontal();
+        starSprite.scaleInOut(
+          position: Vector2(
+            getXPosition(-12, endingSide, screenWidth),
+            screenHeight * kGoalPostYFactor + 15,
+          ),
+        );
+      },
+    );
 
     final rotateAngle =
         endingSide == HomeOrAway.home ? math.pi / 4 : -math.pi / 4;
@@ -230,12 +220,13 @@ class FootballRiveComponent extends RiveComponent
     final component = FootballRiveComponent._(
       artboard,
       effect: createFootballStraightLineEffect(
-          startingYardline: startingYardline,
-          endingYardline: endingYardline,
-          startingSide: startingSide,
-          endingSide: endingSide,
-          screenWidth: screenWidth,
-          fixedDuration: 2),
+        startingYardline: startingYardline,
+        endingYardline: endingYardline,
+        startingSide: startingSide,
+        endingSide: endingSide,
+        screenWidth: screenWidth,
+        fixedDuration: 2,
+      ),
       startingYardline: startingYardline,
       startingSide: startingSide,
     );
@@ -288,29 +279,34 @@ class FootballRiveComponent extends RiveComponent
         (startingYardline + kInterceptionNetYards * netYardsFactor).toInt();
 
     final arcEffect = createFootballArcEffect(
-        startingYardline: startingYardline,
-        endingYardline: straightLineStartYardline,
-        startingSide: startingSide,
-        endingSide: endingSide,
-        screenWidth: screenWidth,
-        onComplete: () {
-          controller.idleForward();
-          starSprite.scaleInOut(
-            position: Vector2(
-              getXPosition(straightLineStartYardline + 2 * netYardsFactor,
-                  endingSide, screenWidth),
-              screenHeight * kGoalPostYFactor + 32,
+      startingYardline: startingYardline,
+      endingYardline: straightLineStartYardline,
+      startingSide: startingSide,
+      endingSide: endingSide,
+      screenWidth: screenWidth,
+      onComplete: () {
+        controller.idleForward();
+        starSprite.scaleInOut(
+          position: Vector2(
+            getXPosition(
+              straightLineStartYardline + 2 * netYardsFactor,
+              endingSide,
+              screenWidth,
             ),
-          );
-        });
+            screenHeight * kGoalPostYFactor + 32,
+          ),
+        );
+      },
+    );
 
     final straightLineEffect = createFootballStraightLineEffect(
-        startingYardline: straightLineStartYardline,
-        endingYardline: endingYardline,
-        startingSide: startingSide,
-        endingSide: endingSide,
-        screenWidth: screenWidth,
-        fixedDuration: 1.5);
+      startingYardline: straightLineStartYardline,
+      endingYardline: endingYardline,
+      startingSide: startingSide,
+      endingSide: endingSide,
+      screenWidth: screenWidth,
+      fixedDuration: 1.5,
+    );
 
     final sequenceEffect = SequenceEffect([arcEffect, straightLineEffect]);
 
@@ -347,32 +343,37 @@ class FootballRiveComponent extends RiveComponent
         (startingYardline + kInterceptionNetYards * netYardsFactor).toInt();
 
     final halfArcEffect = createFootballHalfArcEffect(
-        startingYardline: startingYardline,
+      startingYardline: startingYardline,
 
-        /// half arc will move towards other direction
-        /// with the length half of the full arc
-        endingYardline: straightLineStartYardline,
-        startingSide: startingSide,
-        endingSide: startingSide,
-        screenWidth: screenWidth,
-        onComplete: () {
-          controller.idleForward();
-          starSprite.scaleInOut(
-            position: Vector2(
-              getXPosition(startingYardline + 5 * netYardsFactor, possession,
-                  screenWidth),
-              screenHeight * kStarSpriteYFactor - 16,
+      /// half arc will move towards other direction
+      /// with the length half of the full arc
+      endingYardline: straightLineStartYardline,
+      startingSide: startingSide,
+      endingSide: startingSide,
+      screenWidth: screenWidth,
+      onComplete: () {
+        controller.idleForward();
+        starSprite.scaleInOut(
+          position: Vector2(
+            getXPosition(
+              startingYardline + 5 * netYardsFactor,
+              possession,
+              screenWidth,
             ),
-          );
-        });
+            screenHeight * kStarSpriteYFactor - 16,
+          ),
+        );
+      },
+    );
 
     final straightLineEffect = createFootballStraightLineEffect(
-        startingYardline: straightLineStartYardline,
-        endingYardline: endingYardline,
-        startingSide: startingSide,
-        endingSide: endingSide,
-        screenWidth: screenWidth,
-        fixedDuration: 1.5);
+      startingYardline: straightLineStartYardline,
+      endingYardline: endingYardline,
+      startingSide: startingSide,
+      endingSide: endingSide,
+      screenWidth: screenWidth,
+      fixedDuration: 1.5,
+    );
 
     final sequenceEffect = SequenceEffect([halfArcEffect, straightLineEffect]);
 
@@ -414,30 +415,32 @@ class FootballRiveComponent extends RiveComponent
     late FootballRiveComponent footballComponent;
 
     final arcEffect = createFootballArcEffect(
-        startingYardline: startingYardline,
-        endingYardline: endingYardline,
-        startingSide: startingSide,
-        endingSide: startingSide,
-        screenWidth: screenWidth,
-        onComplete: () {
-          footballComponent.angle =
-              0; // Since the ball is stopped partially through its arc, reset angle to 0.
-          controller.idleAngled();
-          starSprite.scaleInOut(
-            position: Vector2(
-              getXPosition(endingYardline, startingSide, screenWidth),
-              screenHeight * kGoalPostYFactor + 32,
-            ),
-          );
-        });
+      startingYardline: startingYardline,
+      endingYardline: endingYardline,
+      startingSide: startingSide,
+      endingSide: startingSide,
+      screenWidth: screenWidth,
+      onComplete: () {
+        footballComponent.angle =
+            0; // Since the ball is stopped partially through its arc, reset angle to 0.
+        controller.idleAngled();
+        starSprite.scaleInOut(
+          position: Vector2(
+            getXPosition(endingYardline, startingSide, screenWidth),
+            screenHeight * kGoalPostYFactor + 32,
+          ),
+        );
+      },
+    );
 
     final straightLineEffect = createFootballStraightLineEffect(
-        startingYardline: endingYardline,
-        endingYardline: -5,
-        startingSide: startingSide,
-        endingSide: endingSide,
-        screenWidth: screenWidth,
-        fixedDuration: 2);
+      startingYardline: endingYardline,
+      endingYardline: -5,
+      startingSide: startingSide,
+      endingSide: endingSide,
+      screenWidth: screenWidth,
+      fixedDuration: 2,
+    );
 
     final sequenceEffect = SequenceEffect([arcEffect, straightLineEffect]);
 
@@ -463,20 +466,22 @@ class FootballRiveComponent extends RiveComponent
     required FootballController controller,
   }) {
     final arcEffect = createFootballArcEffect(
-        startingYardline: startingYardline,
-        endingYardline: -5,
-        startingSide: startingSide,
-        endingSide: startingSide.opposite,
-        screenWidth: screenWidth,
-        onComplete: () => controller.idleForward());
+      startingYardline: startingYardline,
+      endingYardline: -5,
+      startingSide: startingSide,
+      endingSide: startingSide.opposite,
+      screenWidth: screenWidth,
+      onComplete: () => controller.idleForward(),
+    );
 
     final straightLineEffect = createFootballStraightLineEffect(
-        startingYardline: -5,
-        endingYardline: -5,
-        startingSide: startingSide.opposite,
-        endingSide: startingSide,
-        screenWidth: screenWidth,
-        fixedDuration: 2);
+      startingYardline: -5,
+      endingYardline: -5,
+      startingSide: startingSide.opposite,
+      endingSide: startingSide,
+      screenWidth: screenWidth,
+      fixedDuration: 2,
+    );
 
     final sequenceEffect = SequenceEffect([arcEffect, straightLineEffect]);
 
@@ -485,9 +490,7 @@ class FootballRiveComponent extends RiveComponent
       effect: sequenceEffect,
       startingYardline: startingYardline,
       startingSide: startingSide,
-    );
-
-    footballComponent.add(verticalBobbingEffect(startDelay: 1));
+    )..add(verticalBobbingEffect(startDelay: 1));
 
     controller.idleAngled();
 
@@ -499,28 +502,29 @@ class FootballRiveComponent extends RiveComponent
     required int startingYardline,
     required HomeOrAway startingSide,
     required int endingYardline,
-    required HomeOrAway possession,
     required double screenWidth,
     required FootballController controller,
   }) {
     final arcEffect = createFootballArcEffect(
-        startingYardline: startingYardline,
-        endingYardline: -5,
-        startingSide: startingSide,
-        endingSide: startingSide.opposite,
-        screenWidth: screenWidth,
-        oriented: false,
-        startDelay: kKickoffDelay,
-        afterDelay: () => controller.spiral(),
-        onComplete: () => controller.idleForward());
+      startingYardline: startingYardline,
+      endingYardline: -5,
+      startingSide: startingSide,
+      endingSide: startingSide.opposite,
+      screenWidth: screenWidth,
+      oriented: false,
+      startDelay: kKickoffDelay,
+      afterDelay: () => controller.spiral(),
+      onComplete: () => controller.idleForward(),
+    );
 
     final straightLineEffect = createFootballStraightLineEffect(
-        startingYardline: -5,
-        endingYardline: endingYardline,
-        startingSide: startingSide.opposite,
-        endingSide: startingSide.opposite,
-        screenWidth: screenWidth,
-        fixedDuration: 2);
+      startingYardline: -5,
+      endingYardline: endingYardline,
+      startingSide: startingSide.opposite,
+      endingSide: startingSide.opposite,
+      screenWidth: screenWidth,
+      fixedDuration: 2,
+    );
 
     final sequenceEffect = SequenceEffect([arcEffect, straightLineEffect]);
 
@@ -529,9 +533,7 @@ class FootballRiveComponent extends RiveComponent
       effect: sequenceEffect,
       startingYardline: startingYardline,
       startingSide: startingSide,
-    );
-
-    footballComponent.add(verticalBobbingEffect(startDelay: 1));
+    )..add(verticalBobbingEffect(startDelay: 1));
 
     controller.idleAngled();
 
@@ -542,7 +544,6 @@ class FootballRiveComponent extends RiveComponent
     Artboard artboard, {
     required int startingYardline,
     required HomeOrAway startingSide,
-    required HomeOrAway endingSide,
     required HomeOrAway possession,
     required double screenWidth,
     required double screenHeight,
@@ -560,32 +561,37 @@ class FootballRiveComponent extends RiveComponent
     final halfArcEndYardline = endingYardline + kPassIncompleteNetYards ~/ 2;
 
     final halfArcEffect = createFootballHalfArcEffect(
-        startingYardline: startingYardline,
+      startingYardline: startingYardline,
 
-        /// half arc will move towards other direction
-        /// with the length half of the full arc
-        endingYardline: halfArcEndYardline,
-        startingSide: startingSide,
-        endingSide: startingSide,
-        screenWidth: screenWidth,
-        onComplete: () {
-          controller.idleForward();
-          starSprite.scaleInOut(
-            position: Vector2(
-              getXPosition(startingYardline + 8 * netYardsFactor, possession,
-                  screenWidth),
-              screenHeight * kStarSpriteYFactor - 16,
+      /// half arc will move towards other direction
+      /// with the length half of the full arc
+      endingYardline: halfArcEndYardline,
+      startingSide: startingSide,
+      endingSide: startingSide,
+      screenWidth: screenWidth,
+      onComplete: () {
+        controller.idleForward();
+        starSprite.scaleInOut(
+          position: Vector2(
+            getXPosition(
+              startingYardline + 8 * netYardsFactor,
+              possession,
+              screenWidth,
             ),
-          );
-        });
+            screenHeight * kStarSpriteYFactor - 16,
+          ),
+        );
+      },
+    );
 
     final straightLineEffect = createFootballStraightLineEffect(
-        startingYardline: endingYardline,
-        endingYardline: -5,
-        startingSide: startingSide,
-        endingSide: possession,
-        screenWidth: screenWidth,
-        fixedDuration: 2);
+      startingYardline: endingYardline,
+      endingYardline: -5,
+      startingSide: startingSide,
+      endingSide: possession,
+      screenWidth: screenWidth,
+      fixedDuration: 2,
+    );
 
     final sequenceEffect = SequenceEffect([halfArcEffect, straightLineEffect]);
 
@@ -594,9 +600,7 @@ class FootballRiveComponent extends RiveComponent
       effect: sequenceEffect,
       startingYardline: startingYardline,
       startingSide: startingSide,
-    );
-
-    footballComponent.add(verticalBobbingEffect(startDelay: 1));
+    )..add(verticalBobbingEffect(startDelay: 1));
 
     controller.idleAngled();
 
@@ -619,31 +623,34 @@ class FootballRiveComponent extends RiveComponent
     final netYardsFactor = startingSide == possession ? 1 : -1;
 
     final arcEffect = createFootballArcEffect(
-        startingYardline: startingYardline,
-        endingYardline: 20,
-        startingSide: startingSide,
-        endingSide: startingSide.opposite,
-        screenWidth: screenWidth,
-        onComplete: () {
-          controller.idleForward();
-          starSprite.scaleInOut(
-            position: Vector2(
-              getXPosition(
-                  startingYardline + arcEndingYardline + 2 * netYardsFactor,
-                  possession,
-                  screenWidth),
-              screenHeight * kGoalPostYFactor + 32,
+      startingYardline: startingYardline,
+      endingYardline: 20,
+      startingSide: startingSide,
+      endingSide: startingSide.opposite,
+      screenWidth: screenWidth,
+      onComplete: () {
+        controller.idleForward();
+        starSprite.scaleInOut(
+          position: Vector2(
+            getXPosition(
+              startingYardline + arcEndingYardline + 2 * netYardsFactor,
+              possession,
+              screenWidth,
             ),
-          );
-        });
+            screenHeight * kGoalPostYFactor + 32,
+          ),
+        );
+      },
+    );
 
     final straightLineEffect = createFootballStraightLineEffect(
-        startingYardline: 20,
-        endingYardline: -5,
-        startingSide: startingSide.opposite,
-        endingSide: startingSide,
-        screenWidth: screenWidth,
-        fixedDuration: 2);
+      startingYardline: 20,
+      endingYardline: -5,
+      startingSide: startingSide.opposite,
+      endingSide: startingSide,
+      screenWidth: screenWidth,
+      fixedDuration: 2,
+    );
 
     final sequenceEffect = SequenceEffect([arcEffect, straightLineEffect]);
 
@@ -652,9 +659,7 @@ class FootballRiveComponent extends RiveComponent
       effect: sequenceEffect,
       startingYardline: startingYardline,
       startingSide: startingSide,
-    );
-
-    footballComponent.add(verticalBobbingEffect(startDelay: 1));
+    )..add(verticalBobbingEffect(startDelay: 1));
 
     controller.idleAngled();
 
@@ -666,27 +671,28 @@ class FootballRiveComponent extends RiveComponent
     required int startingYardline,
     required HomeOrAway startingSide,
     required HomeOrAway endingSide,
-    required HomeOrAway possession,
     required double screenWidth,
     required FootballController controller,
   }) {
     final arcEffect = createFootballArcEffect(
-        startingYardline: startingYardline,
-        endingYardline: -6,
-        startingSide: startingSide,
-        endingSide: endingSide,
-        screenWidth: screenWidth,
-        onComplete: () {
-          controller.idleVertical();
-        });
+      startingYardline: startingYardline,
+      endingYardline: -6,
+      startingSide: startingSide,
+      endingSide: endingSide,
+      screenWidth: screenWidth,
+      onComplete: () {
+        controller.idleVertical();
+      },
+    );
 
     final straightLineEffect = createFootballStraightLineEffect(
-        startingYardline: -6,
-        endingYardline: -4,
-        startingSide: endingSide,
-        endingSide: endingSide,
-        screenWidth: screenWidth,
-        fixedDuration: 2);
+      startingYardline: -6,
+      endingYardline: -4,
+      startingSide: endingSide,
+      endingSide: endingSide,
+      screenWidth: screenWidth,
+      fixedDuration: 2,
+    );
 
     final sequenceEffect = SequenceEffect([arcEffect, straightLineEffect]);
 
@@ -713,18 +719,21 @@ class FootballRiveComponent extends RiveComponent
     required FootballController footballController,
   }) {
     final pass = createFootballArcEffect(
-        startingYardline: passingStartYardline,
-        endingYardline: passingEndYardline,
-        startingSide: passingStartSide,
-        endingSide: passingEndSide,
-        screenWidth: screenWidth,
-        oriented: false,
-        onComplete: () {
-          footballController.fumble();
-        });
+      startingYardline: passingStartYardline,
+      endingYardline: passingEndYardline,
+      startingSide: passingStartSide,
+      endingSide: passingEndSide,
+      screenWidth: screenWidth,
+      oriented: false,
+      onComplete: () {
+        footballController.fumble();
+      },
+    );
 
     final delay = MoveByEffect(
-        Vector2.zero(), EffectController(duration: kFumbleDuration));
+      Vector2.zero(),
+      EffectController(duration: kFumbleDuration),
+    );
 
     final SequenceEffect sequence = SequenceEffect(
       [
@@ -777,34 +786,38 @@ class FootballRiveComponent extends RiveComponent
 
     footballController.spiral();
 
-    var (passingEndSide, passingEndYardline) = getSideAndYardlineIfPast50(
-        passingStartSide, passingStartYardline + passOffset);
+    final (passingEndSide, passingEndYardline) = getSideAndYardlineIfPast50(
+      passingStartSide,
+      passingStartYardline + passOffset,
+    );
     final pass = createFootballArcEffect(
-        startingYardline: passingStartYardline,
-        endingYardline: passingEndYardline,
-        startingSide: passingStartSide,
-        endingSide: passingEndSide,
-        screenWidth: screenWidth,
-        oriented: true,
-        onComplete: () {
-          footballController.fumble();
-          if (starSprite != null) {
-            starSprite.scaleInOut(
-              position: Vector2(
-                getXPosition(passingEndYardline, passingEndSide, screenWidth),
-                screenHeight * kGoalPostYFactor + 32,
-              ),
-            );
-          }
-        });
+      startingYardline: passingStartYardline,
+      endingYardline: passingEndYardline,
+      startingSide: passingStartSide,
+      endingSide: passingEndSide,
+      screenWidth: screenWidth,
+      onComplete: () {
+        footballController.fumble();
+        if (starSprite != null) {
+          starSprite.scaleInOut(
+            position: Vector2(
+              getXPosition(passingEndYardline, passingEndSide, screenWidth),
+              screenHeight * kGoalPostYFactor + 32,
+            ),
+          );
+        }
+      },
+    );
 
     late FootballRiveComponent component;
 
     final delay = MoveByEffect(
-        Vector2.zero(), EffectController(duration: kFumbleDuration),
-        onComplete: () {
-      component.add(verticalBobbingEffect());
-    });
+      Vector2.zero(),
+      EffectController(duration: kFumbleDuration),
+      onComplete: () {
+        component.add(verticalBobbingEffect());
+      },
+    );
 
     final rush = createFootballStraightLineEffect(
       startingYardline: passingStartYardline,
@@ -850,17 +863,20 @@ class FootballRiveComponent extends RiveComponent
     late FootballRiveComponent component;
 
     final pass = createFootballStraightLineEffect(
-        startingYardline: rushingStartYardline,
-        endingYardline: rushingEndYardline,
-        startingSide: rushingStartSide,
-        endingSide: rushingEndSide,
-        screenWidth: screenWidth,
-        onComplete: () {
-          footballController.fumble();
-        });
+      startingYardline: rushingStartYardline,
+      endingYardline: rushingEndYardline,
+      startingSide: rushingStartSide,
+      endingSide: rushingEndSide,
+      screenWidth: screenWidth,
+      onComplete: () {
+        footballController.fumble();
+      },
+    );
 
     final delay = MoveByEffect(
-        Vector2.zero(), EffectController(duration: kFumbleDuration));
+      Vector2.zero(),
+      EffectController(duration: kFumbleDuration),
+    );
 
     final SequenceEffect sequence = SequenceEffect(
       [
@@ -913,25 +929,30 @@ class FootballRiveComponent extends RiveComponent
       }
     }
 
-    var (rushingEndSide, rushingEndYardline) = getSideAndYardlineIfPast50(
-        rushingStartSide, rushingStartYardline + rushOffset);
+    final (rushingEndSide, rushingEndYardline) = getSideAndYardlineIfPast50(
+      rushingStartSide,
+      rushingStartYardline + rushOffset,
+    );
     final run = createFootballStraightLineEffect(
-        startingYardline: rushingStartYardline,
-        endingYardline: rushingEndYardline,
-        startingSide: rushingStartSide,
-        endingSide: rushingEndSide,
-        screenWidth: screenWidth,
-        onComplete: () {
-          footballController.fumble();
-        });
+      startingYardline: rushingStartYardline,
+      endingYardline: rushingEndYardline,
+      startingSide: rushingStartSide,
+      endingSide: rushingEndSide,
+      screenWidth: screenWidth,
+      onComplete: () {
+        footballController.fumble();
+      },
+    );
 
     late FootballRiveComponent component;
 
     final delay = MoveByEffect(
-        Vector2.zero(), EffectController(duration: kFumbleDuration),
-        onComplete: () {
-      component.add(verticalBobbingEffect());
-    });
+      Vector2.zero(),
+      EffectController(duration: kFumbleDuration),
+      onComplete: () {
+        component.add(verticalBobbingEffect());
+      },
+    );
 
     final rush = createFootballStraightLineEffect(
       startingYardline: rushingStartYardline,
@@ -974,21 +995,22 @@ class FootballRiveComponent extends RiveComponent
     required double screenWidth,
     required FootballController footballController,
   }) {
-    late FootballRiveComponent component;
-
     final kickoff = createFootballArcEffect(
-        startingYardline: startingYardline,
-        endingYardline: endingYardline,
-        startingSide: startingSide,
-        endingSide: endingSide,
-        screenWidth: screenWidth,
-        oriented: false,
-        startDelay: kKickoffDelay,
-        afterDelay: () => footballController.flip(),
-        onComplete: () => footballController.fumble());
+      startingYardline: startingYardline,
+      endingYardline: endingYardline,
+      startingSide: startingSide,
+      endingSide: endingSide,
+      screenWidth: screenWidth,
+      oriented: false,
+      startDelay: kKickoffDelay,
+      afterDelay: () => footballController.flip(),
+      onComplete: () => footballController.fumble(),
+    );
 
     final delay = MoveByEffect(
-        Vector2.zero(), EffectController(duration: kFumbleDuration));
+      Vector2.zero(),
+      EffectController(duration: kFumbleDuration),
+    );
 
     final SequenceEffect sequence = SequenceEffect(
       [
@@ -997,16 +1019,12 @@ class FootballRiveComponent extends RiveComponent
       ],
     );
 
-    component = FootballRiveComponent._(
+    return FootballRiveComponent._(
       artboard,
       effect: sequence,
       startingYardline: startingYardline,
       startingSide: startingSide,
-    );
-
-    component.flipHorizontally();
-
-    return component;
+    )..flipHorizontally();
   }
 
   factory FootballRiveComponent.fumbleFromPunt(
@@ -1020,36 +1038,43 @@ class FootballRiveComponent extends RiveComponent
   }) {
     late FootballRiveComponent component;
 
-    final (kickToSide, kickToYardline) = getSideAndYardlineIfPast50(endingSide,
-        startingSide == endingSide ? endingYardline - 10 : endingYardline + 10);
+    final (kickToSide, kickToYardline) = getSideAndYardlineIfPast50(
+      endingSide,
+      startingSide == endingSide ? endingYardline - 10 : endingYardline + 10,
+    );
 
     final punt = createFootballArcEffect(
-        startingYardline: startingYardline,
-        endingYardline: kickToYardline,
-        startingSide: startingSide,
-        endingSide: kickToSide,
-        screenWidth: screenWidth,
-        oriented: false,
-        startDelay: kKickoffDelay,
-        afterDelay: () => footballController.flip(),
-        onComplete: () => footballController.fumble());
+      startingYardline: startingYardline,
+      endingYardline: kickToYardline,
+      startingSide: startingSide,
+      endingSide: kickToSide,
+      screenWidth: screenWidth,
+      oriented: false,
+      startDelay: kKickoffDelay,
+      afterDelay: () => footballController.flip(),
+      onComplete: () => footballController.fumble(),
+    );
 
     final fumbleDelay = MoveByEffect(
-        Vector2.zero(), EffectController(duration: kFumbleDuration),
-        onComplete: () {
-      component.add(verticalBobbingEffect());
-    });
+      Vector2.zero(),
+      EffectController(duration: kFumbleDuration),
+      onComplete: () {
+        component.add(verticalBobbingEffect());
+      },
+    );
 
     final (rushStartSide, rushStartYardline) = getSideAndYardlineIfPast50(
-        kickToSide,
-        endingSide == kickToSide ? kickToYardline + 5 : kickToYardline - 5);
+      kickToSide,
+      endingSide == kickToSide ? kickToYardline + 5 : kickToYardline - 5,
+    );
 
     final rush = createFootballStraightLineEffect(
-        startingYardline: rushStartYardline,
-        endingYardline: endingYardline,
-        startingSide: rushStartSide,
-        endingSide: endingSide,
-        screenWidth: screenWidth);
+      startingYardline: rushStartYardline,
+      endingYardline: endingYardline,
+      startingSide: rushStartSide,
+      endingSide: endingSide,
+      screenWidth: screenWidth,
+    );
 
     final SequenceEffect sequence = SequenceEffect(
       [
@@ -1098,33 +1123,37 @@ class FootballRiveComponent extends RiveComponent
       }
     }
 
-    var (rushingEndSide, rushingEndYardline) =
+    final (rushingEndSide, rushingEndYardline) =
         getSideAndYardlineIfPast50(startSide, startYardline + rushOffset);
     final run = createFootballStraightLineEffect(
-        startingYardline: startYardline,
-        endingYardline: rushingEndYardline,
-        startingSide: startSide,
-        endingSide: rushingEndSide,
-        screenWidth: screenWidth,
-        onComplete: () {
-          footballController.fumble();
-        });
+      startingYardline: startYardline,
+      endingYardline: rushingEndYardline,
+      startingSide: startSide,
+      endingSide: rushingEndSide,
+      screenWidth: screenWidth,
+      onComplete: () {
+        footballController.fumble();
+      },
+    );
 
     late FootballRiveComponent component;
 
     final delay = MoveByEffect(
-        Vector2.zero(), EffectController(duration: kFumbleDuration),
-        onComplete: () {
-      component.add(verticalBobbingEffect());
-    });
+      Vector2.zero(),
+      EffectController(duration: kFumbleDuration),
+      onComplete: () {
+        component.add(verticalBobbingEffect());
+      },
+    );
 
     final rush = createFootballStraightLineEffect(
-        startingYardline: startYardline,
-        endingYardline: -5,
-        startingSide: startSide,
-        endingSide: endSide,
-        screenWidth: screenWidth,
-        fixedDuration: 1.5);
+      startingYardline: startYardline,
+      endingYardline: -5,
+      startingSide: startSide,
+      endingSide: endSide,
+      screenWidth: screenWidth,
+      fixedDuration: 1.5,
+    );
 
     final SequenceEffect sequence = SequenceEffect(
       [
@@ -1169,29 +1198,32 @@ class FootballRiveComponent extends RiveComponent
       screenWidth: screenWidth,
       onComplete: () {
         footballController.idleAngled();
-        component.angle = 0;
-        component.add(verticalBobbingEffect());
+        component
+          ..angle = 0
+          ..add(verticalBobbingEffect());
         final double starSpriteOffset = getDeltaX(
-            0,
-            3,
-            startingSide,
-            startingSide,
-            screenWidth); // show star sprite animation ~3 yards away from ball
+          0,
+          3,
+          startingSide,
+          startingSide,
+          screenWidth,
+        ); // show star sprite animation ~3 yards away from ball
         final factor = startingSide == HomeOrAway.away ? -1 : 1;
 
         starSprite.scaleInOut(
-            position:
-                component.position + Vector2(starSpriteOffset * factor, 0));
+          position: component.position + Vector2(starSpriteOffset * factor, 0),
+        );
       },
     );
 
     final rush = createFootballStraightLineEffect(
-        startingYardline: startingYardline,
-        endingYardline: -5,
-        startingSide: startingSide,
-        endingSide: startingSide.opposite,
-        fixedDuration: 2,
-        screenWidth: screenWidth);
+      startingYardline: startingYardline,
+      endingYardline: -5,
+      startingSide: startingSide,
+      endingSide: startingSide.opposite,
+      fixedDuration: 2,
+      screenWidth: screenWidth,
+    );
 
     final sequence = SequenceEffect([
       pass,
@@ -1222,21 +1254,22 @@ class FootballRiveComponent extends RiveComponent
     late FootballRiveComponent component;
 
     final arcEffect = createFootballArcEffect(
-        startingYardline: startingYardline,
-        endingYardline: -12,
-        startingSide: startingSide,
-        endingSide: endingSide,
-        screenWidth: screenWidth,
-        oriented: false,
-        onComplete: () {
-          footballController.idleHorizontal();
-          starSprite.scaleInOut(
-            position: Vector2(
-              getXPosition(-12, endingSide, screenWidth),
-              screenHeight * kGoalPostYFactor + 15,
-            ),
-          );
-        });
+      startingYardline: startingYardline,
+      endingYardline: -12,
+      startingSide: startingSide,
+      endingSide: endingSide,
+      screenWidth: screenWidth,
+      oriented: false,
+      onComplete: () {
+        footballController.idleHorizontal();
+        starSprite.scaleInOut(
+          position: Vector2(
+            getXPosition(-12, endingSide, screenWidth),
+            screenHeight * kGoalPostYFactor + 15,
+          ),
+        );
+      },
+    );
 
     final rotateAngle =
         endingSide == HomeOrAway.home ? math.pi / 4 : -math.pi / 4;
@@ -1247,12 +1280,13 @@ class FootballRiveComponent extends RiveComponent
     );
 
     final straightLineEffect = createFootballStraightLineEffect(
-        startingYardline: -10,
-        endingYardline: -10,
-        startingSide: startingSide,
-        endingSide: startingSide.opposite,
-        fixedDuration: 3,
-        screenWidth: screenWidth);
+      startingYardline: -10,
+      endingYardline: -10,
+      startingSide: startingSide,
+      endingSide: startingSide.opposite,
+      fixedDuration: 3,
+      screenWidth: screenWidth,
+    );
 
     final sequence =
         SequenceEffect([arcEffect, rotateEffect, straightLineEffect]);
@@ -1276,7 +1310,6 @@ class FootballRiveComponent extends RiveComponent
     required int startingYardline,
     required HomeOrAway startingSide,
     required HomeOrAway startPossession,
-    required HomeOrAway endPossession,
     required HomeOrAway endSide,
     required FootballController footballController,
     required double screenWidth,
@@ -1284,31 +1317,35 @@ class FootballRiveComponent extends RiveComponent
     late FootballRiveComponent component;
 
     final punt = createFootballArcEffect(
-        startingYardline: startingYardline,
-        endingYardline: 15,
-        startingSide: startingSide,
-        endingSide: startPossession.opposite,
-        screenWidth: screenWidth,
-        onComplete: () {
-          footballController.fumble();
-          component.angle = 0;
-        });
+      startingYardline: startingYardline,
+      endingYardline: 15,
+      startingSide: startingSide,
+      endingSide: startPossession.opposite,
+      screenWidth: screenWidth,
+      onComplete: () {
+        footballController.fumble();
+        component.angle = 0;
+      },
+    );
 
     final delay = MoveByEffect(
-        Vector2.zero(), EffectController(duration: kFumbleDuration),
-        onComplete: () {
-      component.add(verticalBobbingEffect());
-      // Ideally, we could call footballController.idleAngled() here, but this currently would reset the balls position because of the fumble animation
-      // footballController.idleAngled();
-    });
+      Vector2.zero(),
+      EffectController(duration: kFumbleDuration),
+      onComplete: () {
+        component.add(verticalBobbingEffect());
+        // Ideally, we could call footballController.idleAngled() here, but this currently would reset the balls position because of the fumble animation
+        // footballController.idleAngled();
+      },
+    );
 
     final rush = createFootballStraightLineEffect(
-        startingYardline: 25,
-        endingYardline: -5,
-        startingSide: startPossession.opposite,
-        endingSide: endSide,
-        fixedDuration: 2,
-        screenWidth: screenWidth);
+      startingYardline: 25,
+      endingYardline: -5,
+      startingSide: startPossession.opposite,
+      endingSide: endSide,
+      fixedDuration: 2,
+      screenWidth: screenWidth,
+    );
 
     final sequence = SequenceEffect([
       punt,
@@ -1335,7 +1372,6 @@ class FootballRiveComponent extends RiveComponent
     required int startingYardline,
     required HomeOrAway startingSide,
     required HomeOrAway startPossession,
-    required HomeOrAway endPossession,
     required HomeOrAway endSide,
     required FootballController footballController,
     required double screenWidth,
@@ -1343,29 +1379,33 @@ class FootballRiveComponent extends RiveComponent
     late FootballRiveComponent component;
 
     final punt = createFootballArcEffect(
-        startingYardline: startingYardline,
-        endingYardline: 15,
-        startingSide: startingSide,
-        endingSide: startPossession.opposite,
-        screenWidth: screenWidth,
-        onComplete: () {
-          footballController.fumble();
-          component.angle = 0;
-        });
+      startingYardline: startingYardline,
+      endingYardline: 15,
+      startingSide: startingSide,
+      endingSide: startPossession.opposite,
+      screenWidth: screenWidth,
+      onComplete: () {
+        footballController.fumble();
+        component.angle = 0;
+      },
+    );
 
     final delay = MoveByEffect(
-        Vector2.zero(), EffectController(duration: kFumbleDuration),
-        onComplete: () {
-      component.add(verticalBobbingEffect());
-    });
+      Vector2.zero(),
+      EffectController(duration: kFumbleDuration),
+      onComplete: () {
+        component.add(verticalBobbingEffect());
+      },
+    );
 
     final rush = createFootballStraightLineEffect(
-        startingYardline: 25,
-        endingYardline: -8,
-        startingSide: startPossession.opposite,
-        endingSide: endSide,
-        fixedDuration: 2,
-        screenWidth: screenWidth);
+      startingYardline: 25,
+      endingYardline: -8,
+      startingSide: startPossession.opposite,
+      endingSide: endSide,
+      fixedDuration: 2,
+      screenWidth: screenWidth,
+    );
 
     final sequence = SequenceEffect([
       punt,
@@ -1386,6 +1426,17 @@ class FootballRiveComponent extends RiveComponent
 
     return component;
   }
+  FootballRiveComponent._(
+    Artboard artboard, {
+    required this.effect,
+    required this.startingYardline,
+    required this.startingSide,
+  }) : super(
+          artboard: artboard,
+        );
+  final int startingYardline;
+  final HomeOrAway startingSide;
+  final Effect effect;
 
   @override
   void onGameResize(Vector2 size) {
@@ -1397,7 +1448,7 @@ class FootballRiveComponent extends RiveComponent
   void render(Canvas canvas) {
     canvas.save();
 
-    Matrix4 skewMatrix = Matrix4.inverted(kSkewMatrixSmall.clone());
+    final Matrix4 skewMatrix = Matrix4.inverted(kSkewMatrixSmall.clone());
 
     if (angle > -math.pi / 2 && angle < math.pi / 2) {
       skewMatrix.setRotationX(math.pi / 3);
@@ -1430,11 +1481,15 @@ class FootballRiveComponent extends RiveComponent
     add(
       effect
         ..onComplete = () {
-          add(OpacityEffect.fadeOut(EffectController(duration: .5),
+          add(
+            OpacityEffect.fadeOut(
+              EffectController(duration: .5),
               onComplete: () {
-            complete();
-            removeFromParent();
-          }));
+                complete();
+                removeFromParent();
+              },
+            ),
+          );
         },
     );
   }

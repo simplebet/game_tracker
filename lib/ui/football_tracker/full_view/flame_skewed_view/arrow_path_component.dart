@@ -1,15 +1,13 @@
-import 'package:flutter/material.dart';
-
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
+import 'package:flutter/material.dart';
 import 'package:game_tracker/core/models/enums.dart';
+import 'package:game_tracker/ui/football_tracker/full_view/flame_skewed_view/opacity_text_component.dart';
+import 'package:game_tracker/ui/shared/completable_mixin.dart';
+import 'package:game_tracker/ui/shared/constants.dart';
 import 'package:game_tracker/ui/shared/enums.dart';
+import 'package:game_tracker/ui/shared/util.dart';
 import 'package:game_tracker/ui/skin/game_tracker_skin.dart';
-
-import '../../../shared/completable_mixin.dart';
-import '../../../shared/constants.dart';
-import '../../../shared/util.dart';
-import 'opacity_text_component.dart';
 
 class ArrowPathComponent extends PositionComponent
     with Completable, HasGameRef {
@@ -39,54 +37,65 @@ class ArrowPathComponent extends PositionComponent
     final screenHeight = gameRef.size.y;
 
     final head = _ArrowPathHead(
-        skin: skin,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        yardline: yardline,
-        distance: playDistance,
-        side: side,
-        possession: $possession,
-        rushOrPass: rushOrPass);
+      skin: skin,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      yardline: yardline,
+      distance: playDistance,
+      side: side,
+      possession: $possession,
+      rushOrPass: rushOrPass,
+    );
 
     final body = _ArrowPathBody(
-        skin: skin,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        yardline: yardline,
-        distance: playDistance,
-        side: side,
-        possession: $possession);
+      skin: skin,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      yardline: yardline,
+      distance: playDistance,
+      side: side,
+      possession: $possession,
+    );
 
     add(head);
     add(body);
 
     priority = 11;
 
-    head.add(OpacityEffect.fadeOut(DelayedEffectController(
-        LinearEffectController(kFadeOutSpeed),
-        delay: kRushOrPassLineDelay))
-      ..onComplete = () {
-        complete();
-        remove(head);
-        removeFromParent();
-      });
-    body.add(OpacityEffect.fadeOut(DelayedEffectController(
-        LinearEffectController(kFadeOutSpeed),
-        delay: kRushOrPassLineDelay))
-      ..onComplete = () => remove(body));
+    head.add(
+      OpacityEffect.fadeOut(
+        DelayedEffectController(
+          LinearEffectController(kFadeOutSpeed),
+          delay: kRushOrPassLineDelay,
+        ),
+      )..onComplete = () {
+          complete();
+          remove(head);
+          removeFromParent();
+        },
+    );
+    body.add(
+      OpacityEffect.fadeOut(
+        DelayedEffectController(
+          LinearEffectController(kFadeOutSpeed),
+          delay: kRushOrPassLineDelay,
+        ),
+      )..onComplete = () => remove(body),
+    );
   }
 }
 
 class _ArrowPathHead extends PositionComponent with HasPaint {
-  _ArrowPathHead(
-      {required GameTrackerSkin skin,
-      required double yardline,
-      required double distance,
-      required double screenWidth,
-      required double screenHeight,
-      required HomeOrAway side,
-      required HomeOrAway possession,
-      RushOrPass rushOrPass = RushOrPass.pass}) {
+  _ArrowPathHead({
+    required GameTrackerSkin skin,
+    required double yardline,
+    required double distance,
+    required double screenWidth,
+    required double screenHeight,
+    required HomeOrAway side,
+    required HomeOrAway possession,
+    RushOrPass rushOrPass = RushOrPass.pass,
+  }) {
     paint = Paint()..color = skin.colors.grey5.withOpacity(0);
 
     paint.style = PaintingStyle.fill;
@@ -120,8 +129,7 @@ class _ArrowPathHead extends PositionComponent with HasPaint {
         style: skin.textStyles.body5Thick
             .copyWith(color: skin.colors.grey1.withOpacity(1)),
       ),
-    );
-    textComponent
+    )
       ..scale = Vector2.all(1.5)
       ..x = kPassArrowHeadWidth
       ..y = kPassArrowHeight / 3;
@@ -137,44 +145,48 @@ class _ArrowPathHead extends PositionComponent with HasPaint {
 
     add(
       MoveByEffect(
-          Vector2(
-              isAwayPossession
-                  ? kPassArrowSwipeDistance
-                  : -kPassArrowSwipeDistance,
-              0),
-          LinearEffectController(kFadeOutSpeed)),
+        Vector2(
+          isAwayPossession ? kPassArrowSwipeDistance : -kPassArrowSwipeDistance,
+          0,
+        ),
+        LinearEffectController(kFadeOutSpeed),
+      ),
     );
 
-    textComponent.add(OpacityEffect.fadeOut(DelayedEffectController(
-        LinearEffectController(kFadeOutSpeed),
-        delay: kRushOrPassLineDelay))
-      ..onComplete = () {
-        removeFromParent();
-        remove(textComponent);
-      });
+    textComponent.add(
+      OpacityEffect.fadeOut(
+        DelayedEffectController(
+          LinearEffectController(kFadeOutSpeed),
+          delay: kRushOrPassLineDelay,
+        ),
+      )..onComplete = () {
+          removeFromParent();
+          remove(textComponent);
+        },
+    );
   }
 
   @override
   void render(Canvas canvas) {
-    final path = Path();
-
-    path.moveTo(kPassArrowHeadWidth, 0);
-    path.lineTo(kPassArrowHeadWidth, kPassArrowHeight);
-    path.lineTo(0, kPassArrowHeight / 2);
-    path.close();
+    final path = Path()
+      ..moveTo(kPassArrowHeadWidth, 0)
+      ..lineTo(kPassArrowHeadWidth, kPassArrowHeight)
+      ..lineTo(0, kPassArrowHeight / 2)
+      ..close();
     canvas.drawPath(path, paint);
   }
 }
 
 class _ArrowPathBody extends PositionComponent with HasPaint {
-  _ArrowPathBody(
-      {required GameTrackerSkin skin,
-      required double yardline,
-      required double distance,
-      required double screenWidth,
-      required double screenHeight,
-      required HomeOrAway side,
-      required HomeOrAway possession}) {
+  _ArrowPathBody({
+    required GameTrackerSkin skin,
+    required double yardline,
+    required double distance,
+    required double screenWidth,
+    required double screenHeight,
+    required HomeOrAway side,
+    required HomeOrAway possession,
+  }) {
     paint = Paint()..color = skin.colors.grey5.withOpacity(0);
 
     paint.style = PaintingStyle.fill;
@@ -205,18 +217,22 @@ class _ArrowPathBody extends PositionComponent with HasPaint {
 
     add(
       MoveByEffect(
-          Vector2(
-              isAwayPossession
-                  ? kPassArrowSwipeDistance
-                  : -kPassArrowSwipeDistance,
-              0),
-          LinearEffectController(kFadeOutSpeed)),
+        Vector2(
+          isAwayPossession ? kPassArrowSwipeDistance : -kPassArrowSwipeDistance,
+          0,
+        ),
+        LinearEffectController(kFadeOutSpeed),
+      ),
     );
 
     final isTwoDigits = distance >= 10.0 || distance.isNegative;
 
-    add(ScaleEffect.by(Vector2(isTwoDigits ? 5.5 : 5, 1),
-        LinearEffectController(kArrowPathFadeOutSpeed)));
+    add(
+      ScaleEffect.by(
+        Vector2(isTwoDigits ? 5.5 : 5, 1),
+        LinearEffectController(kArrowPathFadeOutSpeed),
+      ),
+    );
 
     if (isAwayPossession) {
       flipHorizontally();
@@ -225,12 +241,11 @@ class _ArrowPathBody extends PositionComponent with HasPaint {
 
   @override
   void render(Canvas canvas) {
-    final path = Path();
-
-    path.lineTo(kPassArrowWidth, 0);
-    path.lineTo(kPassArrowWidth, kPassArrowHeight);
-    path.lineTo(0, kPassArrowHeight);
-    path.close();
+    final path = Path()
+      ..lineTo(kPassArrowWidth, 0)
+      ..lineTo(kPassArrowWidth, kPassArrowHeight)
+      ..lineTo(0, kPassArrowHeight)
+      ..close();
     canvas.drawPath(path, paint);
   }
 }

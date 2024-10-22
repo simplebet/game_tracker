@@ -1,10 +1,8 @@
-import 'package:flutter/widgets.dart';
-
 import 'package:flame/components.dart';
 import 'package:flame_rive/flame_rive.dart';
-
-import '../../../shared/completable_mixin.dart';
-import '../../../shared/util.dart';
+import 'package:flutter/widgets.dart';
+import 'package:game_tracker/ui/shared/completable_mixin.dart';
+import 'package:game_tracker/ui/shared/util.dart';
 
 class FlagRiveComponent extends RiveComponent with HasGameRef, Completable {
   FlagRiveComponent(Artboard artboard) : super(artboard: artboard);

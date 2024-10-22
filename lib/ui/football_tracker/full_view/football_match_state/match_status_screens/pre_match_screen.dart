@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:game_tracker/ui/football_tracker/full_view/football_match_state/match_status_screens/match_status_screen_background.dart';
+import 'package:game_tracker/ui/shared/scalable_text_widget.dart';
 import 'package:game_tracker/ui/skin/game_tracker_skin.dart';
 
-import '../../../../shared/scalable_text_widget.dart';
-import 'match_status_screen_background.dart';
-
 class PreMatchScreen extends ConsumerWidget {
-  const PreMatchScreen({Key? key, required this.size}) : super(key: key);
+  const PreMatchScreen({required this.size, super.key});
 
   final Size size;
 

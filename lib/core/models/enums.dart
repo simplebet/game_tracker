@@ -6,12 +6,14 @@ const matchStatusEnumMap = {
   MatchStatus.active: 'active',
   MatchStatus.preMatch: 'prematch',
   MatchStatus.ended: 'ended',
+  MatchStatus.quarterEnded: 'quarter_ended',
 };
 
 const matchStatusFromString = {
   'active': MatchStatus.active,
   'prematch': MatchStatus.preMatch,
   'ended': MatchStatus.ended,
+  'quarter_ended': MatchStatus.quarterEnded,
 };
 
 enum MatchStatus {
@@ -20,6 +22,7 @@ enum MatchStatus {
   preMatch,
   active,
   ended,
+  quarterEnded,
 }
 
 enum SportLeague {

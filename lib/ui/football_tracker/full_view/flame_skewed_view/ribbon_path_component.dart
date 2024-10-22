@@ -1,14 +1,12 @@
-import 'package:flutter/material.dart';
-
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
+import 'package:flutter/material.dart';
 import 'package:game_tracker/core/models/enums.dart';
+import 'package:game_tracker/ui/football_tracker/full_view/flame_skewed_view/opacity_text_component.dart';
+import 'package:game_tracker/ui/shared/completable_mixin.dart';
+import 'package:game_tracker/ui/shared/constants.dart';
+import 'package:game_tracker/ui/shared/util.dart';
 import 'package:game_tracker/ui/skin/game_tracker_skin.dart';
-
-import '../../../shared/completable_mixin.dart';
-import '../../../shared/constants.dart';
-import '../../../shared/util.dart';
-import 'opacity_text_component.dart';
 
 enum RibbonPathType {
   regular,
@@ -17,14 +15,15 @@ enum RibbonPathType {
 
 class RibbonPathComponent extends PositionComponent
     with HasGameRef, Completable {
-  RibbonPathComponent(
-      {required this.skin,
-      required this.text,
-      required this.tailColor,
-      required this.yardline,
-      required this.side,
-      required this.possession,
-      this.type = RibbonPathType.regular});
+  RibbonPathComponent({
+    required this.skin,
+    required this.text,
+    required this.tailColor,
+    required this.yardline,
+    required this.side,
+    required this.possession,
+    this.type = RibbonPathType.regular,
+  });
 
   final GameTrackerSkin skin;
   final String text;
@@ -51,62 +50,68 @@ class RibbonPathComponent extends PositionComponent
     );
 
     final body = _RibbonPathBody(
-        skin: skin,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        yardline: yardline,
-        side: side,
-        possession: possession,
-        type: type);
+      skin: skin,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      yardline: yardline,
+      side: side,
+      possession: possession,
+      type: type,
+    );
 
     final tail = _RibbonPathTail(
-        skin: skin,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight,
-        yardline: yardline,
-        side: side,
-        tailColor: tailColor,
-        possession: possession,
-        type: type);
+      skin: skin,
+      screenWidth: screenWidth,
+      screenHeight: screenHeight,
+      yardline: yardline,
+      side: side,
+      tailColor: tailColor,
+      possession: possession,
+      type: type,
+    );
 
     add(head);
     add(body);
     add(tail);
 
-    head.add(OpacityEffect.fadeOut(DelayedEffectController(
-        LinearEffectController(kFadeOutSpeed),
-        delay: kPlayStartArrowDelay))
-      ..onComplete = () {
-        remove(head);
-      });
+    head.add(
+      OpacityEffect.fadeOut(
+        DelayedEffectController(
+          LinearEffectController(kFadeOutSpeed),
+          delay: kPlayStartArrowDelay,
+        ),
+      )..onComplete = () {
+          remove(head);
+        },
+    );
 
-    body.add(OpacityEffect.fadeOut(DelayedEffectController(
-        LinearEffectController(kFadeOutSpeed),
-        delay: kPlayStartArrowDelay))
-      ..onComplete = () {
-        remove(body);
-      });
+    body.add(
+      OpacityEffect.fadeOut(
+        DelayedEffectController(
+          LinearEffectController(kFadeOutSpeed),
+          delay: kPlayStartArrowDelay,
+        ),
+      )..onComplete = () {
+          remove(body);
+        },
+    );
 
-    tail.add(OpacityEffect.fadeOut(DelayedEffectController(
-        LinearEffectController(kFadeOutSpeed),
-        delay: kPlayStartArrowDelay))
-      ..onComplete = () {
-        complete();
-        remove(tail);
-        removeFromParent();
-      });
+    tail.add(
+      OpacityEffect.fadeOut(
+        DelayedEffectController(
+          LinearEffectController(kFadeOutSpeed),
+          delay: kPlayStartArrowDelay,
+        ),
+      )..onComplete = () {
+          complete();
+          remove(tail);
+          removeFromParent();
+        },
+    );
   }
 }
 
 class _RibbonPathHead extends PositionComponent with HasPaint {
-  final GameTrackerSkin skin;
-  final String text;
-  final double screenWidth;
-  final double screenHeight;
-  final double yardline;
-  final HomeOrAway side;
-  final HomeOrAway possession;
-
   _RibbonPathHead({
     required this.skin,
     required this.text,
@@ -116,6 +121,13 @@ class _RibbonPathHead extends PositionComponent with HasPaint {
     required this.side,
     required this.possession,
   });
+  final GameTrackerSkin skin;
+  final String text;
+  final double screenWidth;
+  final double screenHeight;
+  final double yardline;
+  final HomeOrAway side;
+  final HomeOrAway possession;
 
   @override
   void onLoad() {
@@ -140,16 +152,13 @@ class _RibbonPathHead extends PositionComponent with HasPaint {
     /// add priority so the TextComponent can be over the ribbon
     priority = 1;
 
-    // todo: text animation
     final textComponent = OpacityTextComponent(
       text: text,
       textRenderer: TextPaint(
         style: skin.textStyles.body4Thick
             .copyWith(color: skin.colors.grey1.withOpacity(1)),
       ),
-    );
-
-    textComponent
+    )
       ..scale = Vector2.all(1.6)
       ..x = kPassArrowHeadWidth + (text.length <= 3 ? 14 : 0)
       ..y = kPassArrowHeight / 4;
@@ -161,20 +170,26 @@ class _RibbonPathHead extends PositionComponent with HasPaint {
 
     add(textComponent);
 
-    textComponent.add(OpacityEffect.fadeOut(DelayedEffectController(
-        LinearEffectController(kFadeOutSpeed),
-        delay: kPlayStartArrowDelay))
-      ..onComplete = () => remove(textComponent));
+    textComponent.add(
+      OpacityEffect.fadeOut(
+        DelayedEffectController(
+          LinearEffectController(kFadeOutSpeed),
+          delay: kPlayStartArrowDelay,
+        ),
+      )..onComplete = () => remove(textComponent),
+    );
 
     add(OpacityEffect.fadeIn(LinearEffectController(1)));
 
     final moveEffect = MoveByEffect(
-        Vector2(
-            possession == HomeOrAway.away
-                ? kPassArrowSwipeDistance
-                : -kPassArrowSwipeDistance,
-            0),
-        LinearEffectController(0.7));
+      Vector2(
+        possession == HomeOrAway.away
+            ? kPassArrowSwipeDistance
+            : -kPassArrowSwipeDistance,
+        0,
+      ),
+      LinearEffectController(0.7),
+    );
     add(
       moveEffect,
     );
@@ -182,24 +197,15 @@ class _RibbonPathHead extends PositionComponent with HasPaint {
 
   @override
   void render(Canvas canvas) {
-    final path = Path();
-
-    path.moveTo(kPassArrowHeadWidth, 0);
-    path.lineTo(kPassArrowHeadWidth, kPassArrowHeight);
-    path.lineTo(0, kPassArrowHeight / 2);
+    final path = Path()
+      ..moveTo(kPassArrowHeadWidth, 0)
+      ..lineTo(kPassArrowHeadWidth, kPassArrowHeight)
+      ..lineTo(0, kPassArrowHeight / 2);
     canvas.drawPath(path, paint);
   }
 }
 
 class _RibbonPathBody extends PositionComponent with HasPaint {
-  final GameTrackerSkin skin;
-  final double screenWidth;
-  final double screenHeight;
-  final double yardline;
-  final HomeOrAway side;
-  final HomeOrAway possession;
-  final RibbonPathType type;
-
   _RibbonPathBody({
     required this.skin,
     required this.screenWidth,
@@ -209,14 +215,21 @@ class _RibbonPathBody extends PositionComponent with HasPaint {
     required this.possession,
     this.type = RibbonPathType.regular,
   });
+  final GameTrackerSkin skin;
+  final double screenWidth;
+  final double screenHeight;
+  final double yardline;
+  final HomeOrAway side;
+  final HomeOrAway possession;
+  final RibbonPathType type;
 
   @override
   void onLoad() {
     paint = Paint()..color = skin.colors.grey5.withOpacity(0);
 
-    paint.filterQuality = FilterQuality.high;
-
-    paint.style = PaintingStyle.fill;
+    paint
+      ..filterQuality = FilterQuality.high
+      ..style = PaintingStyle.fill;
 
     /// when the side is on home we use the difference between 100 and distance
     final yardlineToUse = side == HomeOrAway.home ? 100 - yardline : yardline;
@@ -234,16 +247,22 @@ class _RibbonPathBody extends PositionComponent with HasPaint {
 
     add(
       MoveByEffect(
-          Vector2(
-              possession == HomeOrAway.away
-                  ? kPassArrowSwipeDistance
-                  : -kPassArrowSwipeDistance,
-              0),
-          LinearEffectController(kArrowPathFadeOutSpeed)),
+        Vector2(
+          possession == HomeOrAway.away
+              ? kPassArrowSwipeDistance
+              : -kPassArrowSwipeDistance,
+          0,
+        ),
+        LinearEffectController(kArrowPathFadeOutSpeed),
+      ),
     );
 
-    add(ScaleEffect.by(Vector2(type == RibbonPathType.regular ? 5 : 8, 1),
-        LinearEffectController(kArrowPathFadeOutSpeed)));
+    add(
+      ScaleEffect.by(
+        Vector2(type == RibbonPathType.regular ? 5 : 8, 1),
+        LinearEffectController(kArrowPathFadeOutSpeed),
+      ),
+    );
 
     if (possession == HomeOrAway.away) {
       flipHorizontally();
@@ -252,17 +271,26 @@ class _RibbonPathBody extends PositionComponent with HasPaint {
 
   @override
   void render(Canvas canvas) {
-    final path = Path();
-
-    path.lineTo(kPassArrowWidth, 0);
-    path.lineTo(kPassArrowWidth, kPassArrowHeight);
-    path.lineTo(0, kPassArrowHeight);
-    path.close();
+    final path = Path()
+      ..lineTo(kPassArrowWidth, 0)
+      ..lineTo(kPassArrowWidth, kPassArrowHeight)
+      ..lineTo(0, kPassArrowHeight)
+      ..close();
     canvas.drawPath(path, paint);
   }
 }
 
 class _RibbonPathTail extends PositionComponent with HasPaint {
+  _RibbonPathTail({
+    required this.skin,
+    required this.screenWidth,
+    required this.screenHeight,
+    required this.yardline,
+    required this.side,
+    required this.possession,
+    required this.tailColor,
+    this.type = RibbonPathType.regular,
+  });
   final GameTrackerSkin skin;
   final double screenWidth;
   final double screenHeight;
@@ -271,16 +299,6 @@ class _RibbonPathTail extends PositionComponent with HasPaint {
   final HomeOrAway possession;
   final Color tailColor;
   final RibbonPathType type;
-
-  _RibbonPathTail(
-      {required this.skin,
-      required this.screenWidth,
-      required this.screenHeight,
-      required this.yardline,
-      required this.side,
-      required this.possession,
-      required this.tailColor,
-      this.type = RibbonPathType.regular});
 
   @override
   void onLoad() {
@@ -301,12 +319,15 @@ class _RibbonPathTail extends PositionComponent with HasPaint {
 
     add(
       OpacityEffect.fadeIn(
-          DelayedEffectController(LinearEffectController(0.8), delay: 0.6)),
+        DelayedEffectController(LinearEffectController(0.8), delay: 0.6),
+      ),
     );
 
     add(
-      MoveByEffect(Vector2(possession == HomeOrAway.away ? 14 : -14, 0),
-          DelayedEffectController(LinearEffectController(0.8), delay: 0.6)),
+      MoveByEffect(
+        Vector2(possession == HomeOrAway.away ? 14 : -14, 0),
+        DelayedEffectController(LinearEffectController(0.8), delay: 0.6),
+      ),
     );
 
     /// flip the Component to a different direction
@@ -318,14 +339,13 @@ class _RibbonPathTail extends PositionComponent with HasPaint {
 
   @override
   void render(Canvas canvas) {
-    final path = Path();
-
-    path.moveTo(kPassArrowHeadWidth - 6, 0);
-    path.lineTo(kPassArrowHeadWidth, 0);
-    path.lineTo(kPassArrowHeadWidth, kPassArrowHeight);
-    path.lineTo(kPassArrowHeadWidth - 6, kPassArrowHeight);
-    path.lineTo(-6, kPassArrowHeight / 2);
-    path.close();
+    final path = Path()
+      ..moveTo(kPassArrowHeadWidth - 6, 0)
+      ..lineTo(kPassArrowHeadWidth, 0)
+      ..lineTo(kPassArrowHeadWidth, kPassArrowHeight)
+      ..lineTo(kPassArrowHeadWidth - 6, kPassArrowHeight)
+      ..lineTo(-6, kPassArrowHeight / 2)
+      ..close();
     canvas.drawPath(path, paint);
   }
 }

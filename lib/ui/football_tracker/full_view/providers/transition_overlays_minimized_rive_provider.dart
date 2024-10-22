@@ -1,8 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:game_tracker/ui/football_tracker/minimized_view/state_notifier/transition_overlays_minimized_notifier.dart';
+import 'package:game_tracker/ui/shared/constants.dart';
 import 'package:rive/rive.dart';
-
-import '../../../shared/constants.dart';
-import '../../minimized_view/state_notifier/transition_overlays_minimized_notifier.dart';
 
 final transitionOverlaysMinimizedRiveProvider =
     FutureProvider.autoDispose<Artboard>((ref) async {
@@ -20,7 +19,8 @@ final transitionOverlaysMinimizedRiveProvider =
     if (controller != null) {
       artboard.addController(controller);
       transitionOverlayNotifier.initStateMachineInputs(
-          stateMachineController: controller);
+        stateMachineController: controller,
+      );
     }
 
     return artboard;

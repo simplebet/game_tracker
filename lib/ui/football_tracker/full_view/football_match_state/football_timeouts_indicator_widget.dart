@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
 class FootballTimeoutsIndicators extends StatelessWidget {
-  const FootballTimeoutsIndicators(
-      {Key? key, required this.maxWidth, required this.timeoutsLeft})
-      : super(key: key);
+  const FootballTimeoutsIndicators({
+    required this.maxWidth,
+    required this.timeoutsLeft,
+    super.key,
+  });
 
   final double maxWidth;
   final int timeoutsLeft;

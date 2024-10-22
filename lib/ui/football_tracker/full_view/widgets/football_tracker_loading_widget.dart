@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:game_tracker/ui/shared/constants.dart';
 import 'package:game_tracker/ui/skin/game_tracker_skin.dart';
 import 'package:shimmer/shimmer.dart';
 
-import '../../../shared/constants.dart';
-
 class FootballFieldLoadingWidget extends ConsumerWidget {
   const FootballFieldLoadingWidget({
-    super.key,
     required this.screenWidth,
     required this.screenHeight,
+    super.key,
   });
 
   final double screenWidth;
@@ -34,7 +32,6 @@ class FootballFieldLoadingWidget extends ConsumerWidget {
           Stack(
             children: [
               Shimmer.fromColors(
-                enabled: true,
                 baseColor: skin.colors.field,
                 highlightColor: skin.colors.grey3,
                 period: const Duration(milliseconds: kShimmerPeriod),
@@ -86,12 +83,13 @@ class _FootballTrackerLoadingYardLineWidget extends StatelessWidget {
               ? kFootballYardLineHeightFactorSmall
               : kFootballYardLineHeightFactor),
       margin: EdgeInsets.symmetric(
-          horizontal: screenWidth * kFootballFieldEndzoneWidthFactorFlame * 2),
+        horizontal: screenWidth * kFootballFieldEndzoneWidthFactorFlame * 2,
+      ),
       padding: const EdgeInsets.only(top: kYardLineTopPadding),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          for (int i in dividerList) ...[
+          for (final int i in dividerList) ...[
             VerticalDivider(
               width: kFootballFieldEndzoneWidthFactorFlame,
               thickness: 2,
@@ -102,7 +100,7 @@ class _FootballTrackerLoadingYardLineWidget extends StatelessWidget {
                 width:
                     screenWidth * kFootballFieldEndzoneWidthFactorFlame * 1.5,
               ),
-          ]
+          ],
         ],
       ),
     );
@@ -122,20 +120,21 @@ class _FootballTrackerLoadingYardLineTextWidget extends ConsumerWidget {
 
     return Row(
       children: [
-        for (int i in dividerList) ...[
+        for (final int i in dividerList) ...[
           Text(
             yardlineList[i].toString(),
             style: skin.textStyles.body4Medium.copyWith(
-                fontSize: 20,
-                letterSpacing: 1,
-                fontWeight: FontWeight.w600,
-                color: skin.colors.grey1),
+              fontSize: 20,
+              letterSpacing: 1,
+              fontWeight: FontWeight.w600,
+              color: skin.colors.grey1,
+            ),
           ),
           if (i < 4)
             SizedBox(
               width: screenWidth * kFootballFieldEndzoneWidthFactorFlame * 1,
             ),
-        ]
+        ],
       ],
     );
   }

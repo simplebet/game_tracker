@@ -1,16 +1,14 @@
-import 'package:flutter/material.dart';
-
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
+import 'package:flutter/material.dart';
 import 'package:game_tracker/core/models/enums.dart';
+import 'package:game_tracker/ui/football_tracker/full_view/flame_skewed_view/arrow_head_component.dart';
+import 'package:game_tracker/ui/shared/completable_mixin.dart';
+import 'package:game_tracker/ui/shared/constants.dart';
 import 'package:game_tracker/ui/shared/enums.dart';
+import 'package:game_tracker/ui/shared/util.dart';
 import 'package:game_tracker/ui/skin/game_tracker_skin.dart';
 import 'package:path_drawing/path_drawing.dart';
-
-import '../../../shared/completable_mixin.dart';
-import '../../../shared/constants.dart';
-import '../../../shared/util.dart';
-import 'arrow_head_component.dart';
 
 class DashedArcComponent extends PositionComponent
     with HasPaint, Completable, HasGameRef {
@@ -21,13 +19,6 @@ class DashedArcComponent extends PositionComponent
     this.driveComponentHeight,
     this.autoRemove = false,
   });
-
-  final HomeOrAway possession;
-  final GameTrackerSkin skin;
-  final double arcDistance;
-  final double? driveComponentHeight;
-  final bool autoRemove;
-
   factory DashedArcComponent.regular({
     required GameTrackerSkin skin,
     required double yardline,
@@ -90,37 +81,62 @@ class DashedArcComponent extends PositionComponent
 
         /// stack the components below past incidents
         if (shouldMoveUp) {
-          component.add(MoveToEffect(
+          component.add(
+            MoveToEffect(
               Vector2(component.x, driveComponentHeight + moveUpDistance),
-              DelayedEffectController(LinearEffectController(kFadeOutSpeed),
-                  delay: delay ?? kComponentMoveUpDelay)));
+              DelayedEffectController(
+                LinearEffectController(kFadeOutSpeed),
+                delay: delay ?? kComponentMoveUpDelay,
+              ),
+            ),
+          );
         }
       }
     }
 
     final startDot = CircleComponent(
-        radius: kCircleComponentRadius, paint: paint, priority: 10)
-      ..add(OpacityEffect.fadeIn(LinearEffectController(kFadeInSpeed)));
+      radius: kCircleComponentRadius,
+      paint: paint,
+      priority: 10,
+    )..add(OpacityEffect.fadeIn(LinearEffectController(kFadeInSpeed)));
 
     component.add(startDot);
 
     if (arrowHeadType == ArrowHeadType.circle) {
-      component.add(ArrowHeadComponent.circle(
-          paint: paint, distance: distance, screenWidth: screenWidth));
+      component.add(
+        ArrowHeadComponent.circle(
+          paint: paint,
+          distance: distance,
+          screenWidth: screenWidth,
+        ),
+      );
     } else if (arrowHeadType == ArrowHeadType.arrow) {
       if (distance.abs() > kSmallerArcThreshold) {
-        component.add(ArrowHeadComponent.arrow(
+        component.add(
+          ArrowHeadComponent.arrow(
             arrowDirection: ArrowDirection.down,
             paint: paint,
             distance: distance,
-            screenWidth: screenWidth));
+            screenWidth: screenWidth,
+          ),
+        );
       } else {
-        component.add(ArrowHeadComponent.arrow(
-            paint: paint, distance: distance, screenWidth: screenWidth));
+        component.add(
+          ArrowHeadComponent.arrow(
+            paint: paint,
+            distance: distance,
+            screenWidth: screenWidth,
+          ),
+        );
       }
     } else if (arrowHeadType == ArrowHeadType.cross) {
-      component.add(ArrowHeadComponent.cross(
-          skin: skin, distance: distance, screenWidth: screenWidth));
+      component.add(
+        ArrowHeadComponent.cross(
+          skin: skin,
+          distance: distance,
+          screenWidth: screenWidth,
+        ),
+      );
     }
 
     return component;
@@ -140,10 +156,10 @@ class DashedArcComponent extends PositionComponent
     final paint = Paint()..color = skin.colors.grey1.withOpacity(0);
 
     final component = DashedArcComponent(
-        skin: skin,
-        possession: possession,
-        arcDistance: distance,
-        autoRemove: false);
+      skin: skin,
+      possession: possession,
+      arcDistance: distance,
+    );
 
     /// when the side is on home we use the difference between 100 and distance
     yardline = side == HomeOrAway.home ? 100 - yardline : yardline;
@@ -167,35 +183,50 @@ class DashedArcComponent extends PositionComponent
 
         /// stack the components below past incidents
         if (shouldMoveUp) {
-          component.add(MoveToEffect(
+          component.add(
+            MoveToEffect(
               Vector2(component.x, driveComponentHeight + moveUpDistance),
-              DelayedEffectController(LinearEffectController(kFadeOutSpeed),
-                  delay: kRushOrPassLineDelay)));
+              DelayedEffectController(
+                LinearEffectController(kFadeOutSpeed),
+                delay: kRushOrPassLineDelay,
+              ),
+            ),
+          );
         }
       }
     }
 
     final startDot = CircleComponent(
-        radius: kCircleComponentRadius, paint: paint, priority: 10)
-      ..add(OpacityEffect.fadeIn(LinearEffectController(kFadeInSpeed)));
+      radius: kCircleComponentRadius,
+      paint: paint,
+      priority: 10,
+    )..add(OpacityEffect.fadeIn(LinearEffectController(kFadeInSpeed)));
 
     component.add(startDot);
 
     return component;
   }
 
+  final HomeOrAway possession;
+  final GameTrackerSkin skin;
+  final double arcDistance;
+  final double? driveComponentHeight;
+  final bool autoRemove;
+
   @override
   void onLoad() {
     final screenWidth = gameRef.size.x;
 
     final dashedArc = _DashArc(
-        color: arcDistance.isNegative
-            ? skin.colors.negative.withOpacity(0)
-            : skin.colors.grey1.withOpacity(0),
-        length: arcDistance,
-        screenWidth: screenWidth)
-      ..add(OpacityEffect.fadeIn(LinearEffectController(kFadeInSpeed))
-        ..onComplete = () => complete());
+      color: arcDistance.isNegative
+          ? skin.colors.negative.withOpacity(0)
+          : skin.colors.grey1.withOpacity(0),
+      length: arcDistance,
+      screenWidth: screenWidth,
+    )..add(
+        OpacityEffect.fadeIn(LinearEffectController(kFadeInSpeed))
+          ..onComplete = complete,
+      );
 
     add(dashedArc);
 
@@ -204,13 +235,17 @@ class DashedArcComponent extends PositionComponent
     }
 
     if (autoRemove) {
-      add(OpacityEffect.fadeOut(DelayedEffectController(
-          LinearEffectController(kFadeOutSpeed),
-          delay: kPlayStartArrowDelay))
-        ..onComplete = () {
-          complete();
-          removeFromParent();
-        });
+      add(
+        OpacityEffect.fadeOut(
+          DelayedEffectController(
+            LinearEffectController(kFadeOutSpeed),
+            delay: kPlayStartArrowDelay,
+          ),
+        )..onComplete = () {
+            complete();
+            removeFromParent();
+          },
+      );
     }
   }
 
@@ -218,30 +253,33 @@ class DashedArcComponent extends PositionComponent
   void render(Canvas canvas) {
     invertSkewedView(canvas);
 
-    canvas.save();
-    canvas.clipRect(Rect.fromLTWH(0, 0, width, height));
-    canvas.restore();
+    canvas
+      ..save()
+      ..clipRect(Rect.fromLTWH(0, 0, width, height))
+      ..restore();
   }
 }
 
 class _DashArc extends PositionComponent with HasPaint {
-  final double length;
-  final double screenWidth;
-
-  _DashArc(
-      {required Color color, required this.length, required this.screenWidth}) {
+  _DashArc({
+    required Color color,
+    required this.length,
+    required this.screenWidth,
+  }) {
     /// style of the yard line, e.g. color, width, opacity
     paint = Paint()..color = color;
 
-    paint.style = PaintingStyle.stroke;
-
-    paint.strokeWidth = 2;
+    paint
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2;
 
     /// the way the arc is draw in `path_drawing` the arc needs to be flipped
     if (!length.isNegative) {
       flipHorizontally();
     }
   }
+  final double length;
+  final double screenWidth;
 
   @override
   void render(Canvas canvas) {
@@ -259,16 +297,17 @@ class _DashArc extends PositionComponent with HasPaint {
           ..arcToPoint(
             /// minus 2 because CircleComponent radius
             Offset(
-                (length.abs() / 120) * screenWidth -
-                    (kCircleComponentRadius * (length.isNegative ? -1 : 1)),
-                -kCircleComponentRadius),
+              (length.abs() / 120) * screenWidth -
+                  (kCircleComponentRadius * (length.isNegative ? -1 : 1)),
+              -kCircleComponentRadius,
+            ),
 
             /// ellipse width and height
             radius: radius,
           ),
         dashArray: CircularIntervalList<double>(
           /// dash is dashSize followed by a gap gapSize
-          <double>[3.0, 1.8],
+          <double>[3, 1.8],
         ),
       ),
       paint,

@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
-
 import 'package:flame/components.dart';
+import 'package:flutter/material.dart';
 
 class DriveContainerComponent extends PositionComponent with HasGameRef {
   @override
@@ -13,8 +12,9 @@ class DriveContainerComponent extends PositionComponent with HasGameRef {
     final screenWidth = gameRef.size.x;
     final screenHeight = gameRef.size.y;
 
-    canvas.save();
-    canvas.clipRect(Rect.fromLTRB(0, 0, screenWidth, screenHeight));
+    canvas
+      ..save()
+      ..clipRect(Rect.fromLTRB(0, 0, screenWidth, screenHeight));
     super.renderTree(canvas);
     canvas.restore();
   }

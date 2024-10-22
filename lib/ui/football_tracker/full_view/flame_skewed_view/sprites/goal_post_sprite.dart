@@ -12,9 +12,8 @@ class GoalPostSprite extends SpriteComponent with HasGameRef {
 
   void fadeOut() {
     add(
-      OpacityEffect.fadeOut(EffectController(duration: 1), onComplete: () {
-        removeFromParent();
-      }),
+      OpacityEffect.fadeOut(EffectController(duration: 1),
+          onComplete: removeFromParent),
     );
   }
 
@@ -42,7 +41,7 @@ class GoalPostSprite extends SpriteComponent with HasGameRef {
   void render(Canvas canvas) {
     canvas.save();
 
-    Matrix4 skewMatrix = Matrix4.inverted(kSkewMatrixSmall.clone());
+    final Matrix4 skewMatrix = Matrix4.inverted(kSkewMatrixSmall.clone());
 
     // Apply the transformation
     canvas.transform(skewMatrix.storage);

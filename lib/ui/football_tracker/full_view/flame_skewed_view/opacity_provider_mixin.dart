@@ -1,8 +1,7 @@
-import 'package:flutter/material.dart';
-
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flame/palette.dart';
+import 'package:flutter/material.dart';
 
 /// TextComponent opacity solution from @shtse8 on https://github.com/flame-engine/flame/issues/1013
 mixin HasOpacityProvider on Component implements OpacityProvider {
@@ -23,7 +22,8 @@ mixin HasOpacityProvider on Component implements OpacityProvider {
   void renderTree(Canvas canvas) {
     canvas.saveLayer(null, Paint()..blendMode = BlendMode.srcOver);
     super.renderTree(canvas);
-    canvas.drawPaint(_paint..blendMode = BlendMode.modulate);
-    canvas.restore();
+    canvas
+      ..drawPaint(_paint..blendMode = BlendMode.modulate)
+      ..restore();
   }
 }

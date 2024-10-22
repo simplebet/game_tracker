@@ -4,8 +4,8 @@ import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flutter/material.dart';
 
-import '../../../shared/constants.dart';
-import '../../../shared/util.dart';
+import 'package:game_tracker/ui/shared/constants.dart';
+import 'package:game_tracker/ui/shared/util.dart';
 
 class DistanceBetweenRectangleComponent extends PositionComponent
     with HasPaint, HasGameRef {
@@ -33,12 +33,14 @@ class DistanceBetweenRectangleComponent extends PositionComponent
     add(rectangleComponent);
 
     if (!isPersisting) {
-      rectangleComponent.add(OpacityEffect.fadeOut(DelayedEffectController(
-          LinearEffectController(kFadeOutSpeed),
-          delay: kDownLineDelay))
-        ..onComplete = () {
-          removeFromParent();
-        });
+      rectangleComponent.add(
+        OpacityEffect.fadeOut(
+          DelayedEffectController(
+            LinearEffectController(kFadeOutSpeed),
+            delay: kDownLineDelay,
+          ),
+        )..onComplete = removeFromParent,
+      );
     }
 
     if (isHomePossession) flipHorizontally();

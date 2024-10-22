@@ -1,36 +1,18 @@
 import 'dart:math' as math;
 
-import 'package:flutter/material.dart';
-
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
+import 'package:flutter/material.dart';
 import 'package:game_tracker/core/models/enums.dart';
+import 'package:game_tracker/ui/football_tracker/full_view/flame_skewed_view/arrow_head_component.dart';
+import 'package:game_tracker/ui/football_tracker/full_view/flame_skewed_view/triangle_component.dart';
+import 'package:game_tracker/ui/shared/completable_mixin.dart';
+import 'package:game_tracker/ui/shared/constants.dart';
+import 'package:game_tracker/ui/shared/util.dart';
 import 'package:game_tracker/ui/skin/game_tracker_skin.dart';
-
-import '../../../shared/completable_mixin.dart';
-import '../../../shared/constants.dart';
-import '../../../shared/util.dart';
-import 'arrow_head_component.dart';
-import 'triangle_component.dart';
 
 class SolidArcComponent extends PositionComponent
     with HasPaint, HasGameRef, Completable {
-  SolidArcComponent._({
-    required this.skin,
-    required this.yardline,
-    required this.side,
-    required this.possession,
-    required this.arcHead,
-    this.driveComponentHeight,
-  });
-
-  final GameTrackerSkin skin;
-  final double yardline;
-  final HomeOrAway side;
-  final HomeOrAway possession;
-  final PositionComponent arcHead;
-  final double? driveComponentHeight;
-
   factory SolidArcComponent({
     required GameTrackerSkin skin,
     required double yardline,
@@ -60,7 +42,10 @@ class SolidArcComponent extends PositionComponent
     double? driveComponentHeight,
   }) {
     final head = ArrowHeadComponent.cross(
-        skin: skin, distance: distance, screenWidth: screenWidth);
+      skin: skin,
+      distance: distance,
+      screenWidth: screenWidth,
+    );
 
     return SolidArcComponent._(
       skin: skin,
@@ -71,6 +56,21 @@ class SolidArcComponent extends PositionComponent
       driveComponentHeight: driveComponentHeight,
     );
   }
+  SolidArcComponent._({
+    required this.skin,
+    required this.yardline,
+    required this.side,
+    required this.possession,
+    required this.arcHead,
+    this.driveComponentHeight,
+  });
+
+  final GameTrackerSkin skin;
+  final double yardline;
+  final HomeOrAway side;
+  final HomeOrAway possession;
+  final PositionComponent arcHead;
+  final double? driveComponentHeight;
 
   @override
   void onLoad() {
@@ -113,33 +113,41 @@ class SolidArcComponent extends PositionComponent
         y = screenHeight * kArrowPathHeightFactor;
 
         /// stack the components below past incidents
-        add(MoveToEffect(
+        add(
+          MoveToEffect(
             Vector2(
-                x,
-                driveComponentHeight! +
-                    kComponentMoveUpDistance +
-                    kComponentBottomPadding),
-            DelayedEffectController(LinearEffectController(kFadeOutSpeed),
-                delay: kRushOrPassLineDelay)));
+              x,
+              driveComponentHeight! +
+                  kComponentMoveUpDistance +
+                  kComponentBottomPadding,
+            ),
+            DelayedEffectController(
+              LinearEffectController(kFadeOutSpeed),
+              delay: kRushOrPassLineDelay,
+            ),
+          ),
+        );
       }
     }
 
     y += 40;
 
-    final circlePaint = Paint()..style = PaintingStyle.fill;
-
-    circlePaint.color = skin.colors.grey1.withOpacity(1);
+    final circlePaint = Paint()
+      ..style = PaintingStyle.fill
+      ..color = skin.colors.grey1.withOpacity(1);
 
     final circle = CircleComponent(
-        radius: kCircleComponentRadius, paint: circlePaint, priority: 10)
-      ..x = 2;
+      radius: kCircleComponentRadius,
+      paint: circlePaint,
+      priority: 10,
+    )..x = 2;
 
     final solidArc = _SolidArc(
-        skin: skin,
-        yardline: newYardline,
-        screenWidth: screenWidth,
-        possession: possession,
-        paint: paint);
+      yardline: newYardline,
+      screenWidth: screenWidth,
+      possession: possession,
+      paint: paint,
+    );
 
     final arcWidthFactor = _setArcWidthFactor(newYardline);
     final yardlineOnField =
@@ -161,29 +169,25 @@ class SolidArcComponent extends PositionComponent
 
     addAll(components);
 
-    add(OpacityEffect.fadeIn(LinearEffectController(kFadeInSpeed))
-      ..onComplete = () {
-        complete();
-      });
+    add(
+      OpacityEffect.fadeIn(LinearEffectController(kFadeInSpeed))
+        ..onComplete = complete,
+    );
   }
 
   @override
   void render(Canvas canvas) {
     invertSkewedView(canvas);
 
-    canvas.save();
-    canvas.clipRect(Rect.fromLTWH(0, 0, width, height));
-    canvas.restore();
+    canvas
+      ..save()
+      ..clipRect(Rect.fromLTWH(0, 0, width, height))
+      ..restore();
   }
 }
 
 class _SolidArc extends PositionComponent with HasPaint {
-  final double yardline;
-  final double screenWidth;
-  final HomeOrAway possession;
-
   _SolidArc({
-    required GameTrackerSkin skin,
     required this.yardline,
     required this.screenWidth,
     required this.possession,
@@ -199,6 +203,9 @@ class _SolidArc extends PositionComponent with HasPaint {
     /// the way the arc is draw in `path_drawing` the arc needs to be flipped
     flipHorizontally();
   }
+  final double yardline;
+  final double screenWidth;
+  final HomeOrAway possession;
 
   double get arcWidthFactor => _setArcWidthFactor(yardline);
 
@@ -210,29 +217,30 @@ class _SolidArc extends PositionComponent with HasPaint {
   @override
   void render(Canvas canvas) {
     canvas.drawArc(
+      /// the width of the arc will be determined by the start of play to the edge of endzone
+      /// -white dot radius and -arc height / 2
+      Rect.fromLTWH(
+        -kCircleComponentRadius * 2,
+        -kSolidArcHeight / 2,
 
-        /// the width of the arc will be determined by the start of play to the edge of endzone
-        /// -white dot radius and -arc height / 2
-        Rect.fromLTWH(
-            -kCircleComponentRadius * 2,
-            -kSolidArcHeight / 2,
+        /// minus one here so the solid arc won't get clipped beyond field
+        ((yardlineOnField - 1) / 120) * screenWidth * arcWidthFactor,
+        kSolidArcHeight,
+      ),
 
-            /// minus one here so the solid arc won't get clipped beyond field
-            ((yardlineOnField - 1) / 120) * screenWidth * arcWidthFactor,
-            kSolidArcHeight),
+      /// The startAngle is the location on the oval that the line starts drawing from.
+      /// An angle of 0 is at the right side. Angles are in radians, not degrees.
+      /// The top is at 3π/2 (or -π/2), the left at π, and the bottom at π/2.
+      -math.pi,
 
-        /// The startAngle is the location on the oval that the line starts drawing from.
-        /// An angle of 0 is at the right side. Angles are in radians, not degrees.
-        /// The top is at 3π/2 (or -π/2), the left at π, and the bottom at π/2.
-        -math.pi,
+      /// The sweepAngle is how much of the oval is included in the arc.
+      /// A value of 2π would draw the entire oval.
+      math.pi / 2,
 
-        /// The sweepAngle is how much of the oval is included in the arc.
-        /// A value of 2π would draw the entire oval.
-        math.pi / 2,
-
-        /// useCenter: true will set the arc to form a circle
-        false,
-        paint);
+      /// useCenter: true will set the arc to form a circle
+      false,
+      paint,
+    );
   }
 }
 

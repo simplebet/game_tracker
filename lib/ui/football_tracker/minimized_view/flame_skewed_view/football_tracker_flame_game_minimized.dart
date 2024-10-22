@@ -87,7 +87,6 @@ class FootballTrackerFlameGameMinimized extends FlameGame
       if (incident.event == FootballMatchIncidentEventType.driveStarted ||
           !incident.isCorrectedPlay) {
         /// don't animate the last one. only animate new ones
-        // print('incidentSequenceController add ======= $incident');
         incidentSequenceController.add(incident);
         // }
       }

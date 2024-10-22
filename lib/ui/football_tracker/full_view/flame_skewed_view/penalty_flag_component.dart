@@ -1,21 +1,29 @@
-import 'package:flutter/material.dart';
-
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
+import 'package:flutter/material.dart';
 import 'package:game_tracker/core/models/enums.dart';
+import 'package:game_tracker/ui/shared/completable_mixin.dart';
+import 'package:game_tracker/ui/shared/constants.dart';
+import 'package:game_tracker/ui/shared/util.dart';
 import 'package:game_tracker/ui/skin/game_tracker_skin.dart';
-
-import '../../../shared/completable_mixin.dart';
-import '../../../shared/constants.dart';
-import '../../../shared/util.dart';
 
 class PenaltyFlagArrowComponent extends PositionComponent
     with HasPaint, Completable {
+  PenaltyFlagArrowComponent({
+    required this.skin,
+    required this.screenWidth,
+    required this.screenHeight,
+    required this.side,
+    required this.possession,
+    required this.netYards,
+    required this.yardline,
+    this.driveComponentHeight,
+  });
   late double length;
 
   double progress = 0;
 
-  Path path = Path()..moveTo(0.0, 0.0);
+  Path path = Path()..moveTo(0, 0);
 
   final GameTrackerSkin skin;
   final double screenWidth;
@@ -25,16 +33,6 @@ class PenaltyFlagArrowComponent extends PositionComponent
   final double netYards;
   final double yardline;
   final double? driveComponentHeight;
-
-  PenaltyFlagArrowComponent(
-      {required this.skin,
-      required this.screenWidth,
-      required this.screenHeight,
-      required this.side,
-      required this.possession,
-      required this.netYards,
-      required this.yardline,
-      this.driveComponentHeight});
 
   @override
   void update(double dt) {
@@ -48,10 +46,10 @@ class PenaltyFlagArrowComponent extends PositionComponent
 
     /// animate the arrow line
     if (progress < length) {
-      path.lineTo(progress, 0.0);
+      path.lineTo(progress, 0);
     } else if (progress >= length) {
       /// animate the arrow head
-      path.lineTo(progress - 6, -8.0);
+      path.lineTo(progress - 6, -8);
       complete();
     }
   }
@@ -66,9 +64,9 @@ class PenaltyFlagArrowComponent extends PositionComponent
     /// style of the yard line, e.g. color, width, opacity
     paint = Paint()..color = skin.colors.attention.withOpacity(1);
 
-    paint.style = PaintingStyle.stroke;
-
-    paint.strokeWidth = 2;
+    paint
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2;
 
     /// when the side is on home we use the difference between 100 and distance
     final yardlineToUse = side == HomeOrAway.home ? 100 - yardline : yardline;
@@ -102,10 +100,15 @@ class PenaltyFlagArrowComponent extends PositionComponent
         y = screenHeight * kPenaltyFlagHeightFactor;
 
         /// stack the components below past incidents
-        add(MoveToEffect(
+        add(
+          MoveToEffect(
             Vector2(x, driveComponentHeight! + kPenaltyComponentMoveUpDistance),
-            DelayedEffectController(LinearEffectController(kFadeOutSpeed),
-                delay: kRushOrPassLineDelay)));
+            DelayedEffectController(
+              LinearEffectController(kFadeOutSpeed),
+              delay: kRushOrPassLineDelay,
+            ),
+          ),
+        );
       }
     }
   }

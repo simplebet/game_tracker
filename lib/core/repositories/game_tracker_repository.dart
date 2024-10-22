@@ -146,7 +146,6 @@ class GameTrackerRepository {
         switch (message.event) {
           /// match state updates
           case const PhoenixChannelEvent.custom('match_update'):
-            // print('paylaod: ${payload['match']}');
             final match = MatchModel.fromJson(
               payload['match'] as Map<String, dynamic>? ?? {},
             );

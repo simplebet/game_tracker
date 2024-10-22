@@ -133,6 +133,7 @@ const _$MatchStatusEnumMap = {
   MatchStatus.preMatch: 'prematch',
   MatchStatus.active: 'active',
   MatchStatus.ended: 'ended',
+  MatchStatus.quarterEnded: 'quarterEnded',
 };
 
 _$BasketballMatchImpl _$$BasketballMatchImplFromJson(

@@ -1,15 +1,13 @@
-import 'package:flutter/material.dart';
-
 import 'package:flame/components.dart';
+import 'package:flutter/material.dart';
 import 'package:game_tracker/core/models/enums.dart';
 import 'package:game_tracker/core/models/team_model.dart';
+import 'package:game_tracker/ui/football_tracker/full_view/flame_skewed_view/end_zone_component.dart';
+import 'package:game_tracker/ui/football_tracker/full_view/flame_skewed_view/yard_line_component.dart';
+import 'package:game_tracker/ui/shared/constants.dart';
+import 'package:game_tracker/ui/shared/team_name_formatter.dart';
+import 'package:game_tracker/ui/shared/util.dart';
 import 'package:game_tracker/ui/skin/game_tracker_skin.dart';
-
-import '../../../shared/constants.dart';
-import '../../../shared/team_name_formatter.dart';
-import '../../../shared/util.dart';
-import 'end_zone_component.dart';
-import 'yard_line_component.dart';
 
 class FootballFieldComponent extends PositionComponent {
   FootballFieldComponent({
@@ -54,7 +52,9 @@ class FootballFieldComponent extends PositionComponent {
     /// when screen width is bigger than 470 extra stripes is added
     if (_stripeRects.length > _numberOfStripesIncludingEndzones / 2) {
       _stripeRects.removeRange(
-          _numberOfStripesIncludingEndzones ~/ 2, _stripeRects.length);
+        _numberOfStripesIncludingEndzones ~/ 2,
+        _stripeRects.length,
+      );
     }
 
     _shadowGradientPaint = Paint()
@@ -83,38 +83,46 @@ class FootballFieldComponent extends PositionComponent {
         teamsNameContainJorQ ? Vector2.all(1.4) : Vector2.all(2);
 
     /// away team endzone
-    add(EndZoneComponent.away(
+    add(
+      EndZoneComponent.away(
         skin: skin,
         teamData: awayTeam,
         screenWidth: width,
         screenHeight: height,
-        scale: teamsNameScale)
-      ..position = Vector2(0, 0)
-      ..width = width * kFootballFieldEndzoneWidthFactorFlame
-      ..height = height
-      ..anchor = Anchor.topLeft);
+        scale: teamsNameScale,
+      )
+        ..position = Vector2(0, 0)
+        ..width = width * kFootballFieldEndzoneWidthFactorFlame
+        ..height = height
+        ..anchor = Anchor.topLeft,
+    );
 
     /// home team endzone
-    add(EndZoneComponent.home(
+    add(
+      EndZoneComponent.home(
         skin: skin,
         teamData: homeTeam,
         screenWidth: width,
         screenHeight: height,
-        scale: teamsNameScale)
-      ..position = Vector2(width, 0)
-      ..width = width * kFootballFieldEndzoneWidthFactorFlame
-      ..height = height
-      ..anchor = Anchor.topRight);
+        scale: teamsNameScale,
+      )
+        ..position = Vector2(width, 0)
+        ..width = width * kFootballFieldEndzoneWidthFactorFlame
+        ..height = height
+        ..anchor = Anchor.topRight,
+    );
 
     /// render yard lines in the order of:
     /// 20-35-50-35-20
-    for (double yardLine in yardLineList) {
-      add(YardLineComponent(
-        skin: skin,
-        yards: yardLine,
-        screenWidth: width,
-        screenHeight: height,
-      ));
+    for (final double yardLine in yardLineList) {
+      add(
+        YardLineComponent(
+          skin: skin,
+          yards: yardLine,
+          screenWidth: width,
+          screenHeight: height,
+        ),
+      );
     }
   }
 
@@ -128,7 +136,8 @@ class FootballFieldComponent extends PositionComponent {
       canvas.drawRect(stripeRect, _stripePaint);
     }
 
-    canvas.drawRect(_fieldRect, _colorGradientPaint);
-    canvas.drawRect(_fieldRect, _shadowGradientPaint);
+    canvas
+      ..drawRect(_fieldRect, _colorGradientPaint)
+      ..drawRect(_fieldRect, _shadowGradientPaint);
   }
 }

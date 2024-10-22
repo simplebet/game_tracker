@@ -1,31 +1,29 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
-
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flame_rive/flame_rive.dart';
 import 'package:flame_riverpod/flame_riverpod.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:game_tracker/core/models/enums.dart';
 import 'package:game_tracker/core/models/match_incidents/football_match_incident_model.dart';
 import 'package:game_tracker/core/repositories/game_tracker_repository.dart';
+import 'package:game_tracker/ui/football_tracker/controllers/incident_sequence_controller.dart';
+import 'package:game_tracker/ui/football_tracker/full_view/animation_sequence/football_animation_sequence.dart';
+import 'package:game_tracker/ui/football_tracker/full_view/controllers/flag_controller.dart';
+import 'package:game_tracker/ui/football_tracker/full_view/controllers/football_controller.dart';
+import 'package:game_tracker/ui/football_tracker/full_view/controllers/transition_overlays_controller.dart';
+import 'package:game_tracker/ui/football_tracker/full_view/flame_skewed_view/football_field_component.dart';
+import 'package:game_tracker/ui/football_tracker/full_view/providers/football_tracker_rive_provider.dart';
+import 'package:game_tracker/ui/football_tracker/full_view/providers/transition_overlays_rive_provider.dart';
+import 'package:game_tracker/ui/football_tracker/full_view/rive/flag_rive_component.dart';
+import 'package:game_tracker/ui/football_tracker/full_view/rive/transition_overlays_rive_component.dart';
+import 'package:game_tracker/ui/football_tracker/state_nofitifiers/last_play_tray_state_notifier.dart';
 import 'package:game_tracker/ui/game_tracker_screen_controller.dart';
+import 'package:game_tracker/ui/shared/constants.dart';
 import 'package:game_tracker/ui/skin/game_tracker_skin.dart';
-
-import '../../../shared/constants.dart';
-import '../../controllers/incident_sequence_controller.dart';
-import '../../state_nofitifiers/last_play_tray_state_notifier.dart';
-import '../animation_sequence/football_animation_sequence.dart';
-import '../controllers/flag_controller.dart';
-import '../controllers/football_controller.dart';
-import '../controllers/transition_overlays_controller.dart';
-import '../providers/football_tracker_rive_provider.dart';
-import '../providers/transition_overlays_rive_provider.dart';
-import '../rive/flag_rive_component.dart';
-import '../rive/transition_overlays_rive_component.dart';
-import 'football_field_component.dart';
 
 class FootballTrackerFlameGame extends FlameGame
     with HasComponentRef, HasGameRef {
@@ -85,7 +83,9 @@ class FootballTrackerFlameGame extends FlameGame
 
     transitionOverlayStateMachineController =
         StateMachineController.fromArtboard(
-            transitionsArtboard, 'StateMachine')!;
+      transitionsArtboard,
+      'StateMachine',
+    )!;
 
     footballController =
         FootballController(controller: footballStateMachineController);
@@ -93,8 +93,9 @@ class FootballTrackerFlameGame extends FlameGame
     flagController = FlagController(controller: flagStateMachineController);
 
     transitionOverlaysController = TransitionOverlaysController(
-        controller: transitionOverlayStateMachineController,
-        artboard: transitionsArtboard);
+      controller: transitionOverlayStateMachineController,
+      artboard: transitionsArtboard,
+    );
 
     transitionsArtboard.addController(transitionOverlayStateMachineController);
 
@@ -114,25 +115,29 @@ class FootballTrackerFlameGame extends FlameGame
         ref.read(gameTrackerScreenControllerProvider.notifier);
     final state = ref.read(gameTrackerScreenControllerProvider);
     if (state.match!.awayTeam != null && state.match!.homeTeam != null) {
-      add(FootballFieldComponent(
-        skin: skin,
-        width: screenWidth,
-        height: screenHeight,
-        awayTeam: state.match!.awayTeam!,
-        homeTeam: state.match!.homeTeam!,
-      ));
+      add(
+        FootballFieldComponent(
+          skin: skin,
+          width: screenWidth,
+          height: screenHeight,
+          awayTeam: state.match!.awayTeam!,
+          homeTeam: state.match!.homeTeam!,
+        ),
+      );
 
       animationSequence.init(
-          footballArtboard: footballArtboard,
-          footballController: footballController,
-          flagController: flagController,
-          flagRiveComponent: flagRiveComponent,
-          transitionOverlaysController: transitionOverlaysController,
-          lastPlayTrayStateNotifier: lastPlayTrayStateNotifier,
-          skin: skin,
-          homeTeam: state.match!.homeTeam!,
-          awayTeam: state.match!.awayTeam!,
-          game: this);
+        footballArtboard: footballArtboard,
+        footballController: footballController,
+        flagController: flagController,
+        flagRiveComponent: flagRiveComponent,
+        transitionOverlaysController: transitionOverlaysController,
+        lastPlayTrayStateNotifier: lastPlayTrayStateNotifier,
+        skin: skin,
+        homeTeam: state.match!.homeTeam!,
+        awayTeam: state.match!.awayTeam!,
+        currentDriveId: state.footballIncidents?.last.driveId ?? '',
+        game: this,
+      );
     }
 
     /// render past incidents within the current drive
@@ -144,9 +149,7 @@ class FootballTrackerFlameGame extends FlameGame
     final repo = ref.read(gameTrackerRepositoryProvider).requireValue;
 
     /// render the upcoming incidents
-    repo.footballIncidentStreamController.listen((value) {
-      final incident = value as FootballMatchIncidentModel;
-
+    repo.footballIncidentStreamController.listen((incident) {
       /// don't render corrected incidents unless it's a drive started incident
       if (incident.event == FootballMatchIncidentEventType.driveStarted ||
           !incident.isCorrectedPlay) {
@@ -173,8 +176,8 @@ class FootballTrackerFlameGame extends FlameGame
       // Move the canvas to the center of the screen.
       ..translate(size.x / 2, size.y / 2)
       ..transform(
-          (size.x < kSmallerScreenWidth ? kSkewMatrixSmall : kSkewMatrix)
-              .storage)
+        (size.x < kSmallerScreenWidth ? kSkewMatrixSmall : kSkewMatrix).storage,
+      )
       // Move the canvas back to the top left corner.
       ..translate(-size.x / 2, -size.y / 2);
 

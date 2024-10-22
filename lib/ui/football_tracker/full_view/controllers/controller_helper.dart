@@ -6,7 +6,7 @@ Future<void> waitForInactive(StateMachineController controller) async {
   if (controller.isActive) {
     final Completer completer = Completer();
 
-    listener() {
+    void listener() {
       if (!controller.isActive && !completer.isCompleted) {
         completer.complete();
         controller.isActiveChanged.removeListener(listener);
@@ -15,11 +15,14 @@ Future<void> waitForInactive(StateMachineController controller) async {
 
     controller.isActiveChanged.addListener(listener);
 
-    return completer.future.timeout(const Duration(seconds: 6), onTimeout: () {
-      controller.isActiveChanged.removeListener(listener);
-      if (!completer.isCompleted) {
-        completer.complete();
-      }
-    });
+    return completer.future.timeout(
+      const Duration(seconds: 6),
+      onTimeout: () {
+        controller.isActiveChanged.removeListener(listener);
+        if (!completer.isCompleted) {
+          completer.complete();
+        }
+      },
+    );
   }
 }

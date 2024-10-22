@@ -1,21 +1,19 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:game_tracker/core/models/enums.dart';
 import 'package:game_tracker/core/models/match_incidents/football_match_incident_model.dart';
 import 'package:game_tracker/core/models/match_model.dart';
+import 'package:game_tracker/ui/football_tracker/full_view/last_play_tray/all_drives_play_tray_widget.dart';
+import 'package:game_tracker/ui/football_tracker/full_view/last_play_tray/pre_match_play_tray_widget.dart';
 import 'package:game_tracker/ui/game_tracker_screen_controller.dart';
+import 'package:game_tracker/ui/shared/constants.dart';
 import 'package:game_tracker/ui/skin/game_tracker_skin.dart';
-
-import '../../../shared/constants.dart';
-import 'all_drives_play_tray_widget.dart';
-import 'pre_match_play_tray_widget.dart';
 
 class LastPlayTray extends ConsumerWidget {
   const LastPlayTray({
-    Key? key,
     required this.size,
-  }) : super(key: key);
+    super.key,
+  });
 
   final Size size;
 
@@ -29,7 +27,7 @@ class LastPlayTray extends ConsumerWidget {
         maxWidth: size.width,
         maxHeight: size.height,
         child: PreMatchPlayTrayWidget(
-          match: state.match as Match<FootballData>,
+          match: state.match as Match<FootballData>?,
           maxWidth: size.width,
         ),
       );
@@ -57,14 +55,15 @@ class LastPlayTray extends ConsumerWidget {
 
 class LastPlayTrayWidgetWrapper extends ConsumerWidget {
   const LastPlayTrayWidgetWrapper({
-    Key? key,
     required this.child,
     required this.maxWidth,
     required this.maxHeight,
-  }) : super(key: key);
+    super.key,
+  });
 
   final Widget child;
-  final double maxWidth, maxHeight;
+  final double maxWidth;
+  final double maxHeight;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

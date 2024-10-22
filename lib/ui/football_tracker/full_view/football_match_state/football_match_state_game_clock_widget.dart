@@ -1,24 +1,23 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:game_tracker/ui/shared/custom_progress_bar.dart';
+import 'package:game_tracker/ui/shared/scalable_text_widget.dart';
 import 'package:game_tracker/ui/shared/text_utils.dart';
 import 'package:game_tracker/ui/skin/game_tracker_skin.dart';
 
-import '../../../shared/custom_progress_bar.dart';
-import '../../../shared/scalable_text_widget.dart';
-
 class FootballMatchStateGameClockWidget extends ConsumerWidget {
   const FootballMatchStateGameClockWidget({
-    Key? key,
     required this.gameClock,
     required this.maxWidth,
     required this.maxHeight,
     this.isClockRunning = false,
-  }) : super(key: key);
+    super.key,
+  });
 
   final int gameClock;
   final bool isClockRunning;
-  final double maxWidth, maxHeight;
+  final double maxWidth;
+  final double maxHeight;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -39,7 +38,7 @@ class FootballMatchStateGameClockWidget extends ConsumerWidget {
           stops: const [0.1, 1.0],
           colors: [
             skin.colors.background,
-            skin.colors.background.withOpacity(0.8)
+            skin.colors.background.withOpacity(0.8),
           ],
         ),
       ),
@@ -53,12 +52,13 @@ class FootballMatchStateGameClockWidget extends ConsumerWidget {
           ),
           if (isClockRunning)
             const Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 12.0,
-                ),
-                child: CustomProgressBar(
-                  height: 1,
-                ))
+              padding: EdgeInsets.symmetric(
+                horizontal: 12,
+              ),
+              child: CustomProgressBar(
+                height: 1,
+              ),
+            ),
         ],
       ),
     );

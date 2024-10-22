@@ -1,9 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:game_tracker/ui/football_tracker/full_view/controllers/controller_helper.dart';
 import 'package:rive/rive.dart';
-
-import '../../full_view/controllers/controller_helper.dart';
 
 final transitionOverlaysMinimizedStateProvider =
     StateNotifierProvider.autoDispose<TransitionOverlaysMinimizedNotifier,
@@ -40,7 +39,7 @@ class TransitionOverlaysMinimizedNotifier
 
   Future<void> triggerOvertime() async {
     if (mounted) {
-      final trigger = state.stateMachineController?.findInput<bool>('Overtime')
+      final trigger = state.stateMachineController!.findInput<bool>('Overtime')
           as SMITrigger;
       trigger.fire();
       if (state.stateMachineController != null) {

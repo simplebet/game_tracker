@@ -1,22 +1,14 @@
-import 'package:flutter/material.dart';
-
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
+import 'package:flutter/material.dart';
 import 'package:game_tracker/core/models/enums.dart';
+import 'package:game_tracker/ui/shared/completable_mixin.dart';
+import 'package:game_tracker/ui/shared/constants.dart';
+import 'package:game_tracker/ui/shared/util.dart';
 import 'package:game_tracker/ui/skin/game_tracker_skin.dart';
-
-import '../../../shared/completable_mixin.dart';
-import '../../../shared/constants.dart';
-import '../../../shared/util.dart';
 
 class CrossComponent extends PositionComponent
     with HasPaint, HasGameRef, Completable {
-  final GameTrackerSkin skin;
-  final HomeOrAway side;
-  final double yardline;
-  final double? driveComponentHeight;
-  final bool autoRemove;
-
   CrossComponent({
     required this.skin,
     required this.side,
@@ -24,6 +16,11 @@ class CrossComponent extends PositionComponent
     this.driveComponentHeight,
     this.autoRemove = false,
   });
+  final GameTrackerSkin skin;
+  final HomeOrAway side;
+  final double yardline;
+  final double? driveComponentHeight;
+  final bool autoRemove;
 
   @override
   void onLoad() {
@@ -32,9 +29,9 @@ class CrossComponent extends PositionComponent
 
     paint = Paint()..color = skin.colors.grey1.withOpacity(0);
 
-    paint.style = PaintingStyle.fill;
-
-    paint.strokeWidth = 2;
+    paint
+      ..style = PaintingStyle.fill
+      ..strokeWidth = 2;
 
     final yardlineToUse = side == HomeOrAway.home ? 100 - yardline : yardline;
 
@@ -52,35 +49,44 @@ class CrossComponent extends PositionComponent
             (kCircleComponentRadius * 2);
 
         /// stack the components below past incidents
-        add(MoveToEffect(
+        add(
+          MoveToEffect(
             Vector2(x, driveComponentHeight! + kComponentMoveUpDistance),
-            DelayedEffectController(LinearEffectController(kFadeOutSpeed),
-                delay: kRushOrPassLineDelay)));
+            DelayedEffectController(
+              LinearEffectController(kFadeOutSpeed),
+              delay: kRushOrPassLineDelay,
+            ),
+          ),
+        );
       }
     }
 
-    add(OpacityEffect.fadeIn(LinearEffectController(0.5))
-      ..onComplete = () {
-        complete();
-      });
+    add(
+      OpacityEffect.fadeIn(LinearEffectController(0.5))..onComplete = complete,
+    );
 
     if (autoRemove) {
-      add(OpacityEffect.fadeOut(DelayedEffectController(
-          LinearEffectController(kFadeOutSpeed),
-          delay: kPlayStartArrowDelay))
-        ..onComplete = () {
-          complete();
-          removeFromParent();
-        });
+      add(
+        OpacityEffect.fadeOut(
+          DelayedEffectController(
+            LinearEffectController(kFadeOutSpeed),
+            delay: kPlayStartArrowDelay,
+          ),
+        )..onComplete = () {
+            complete();
+            removeFromParent();
+          },
+      );
     }
   }
 
   @override
   void render(Canvas canvas) {
     invertSkewedView(canvas);
-    canvas.save();
-    canvas.drawLine(const Offset(0, 0), const Offset(8, 8), paint);
-    canvas.drawLine(const Offset(0, 8), const Offset(8, 0), paint);
-    canvas.restore();
+    canvas
+      ..save()
+      ..drawLine(Offset.zero, const Offset(8, 8), paint)
+      ..drawLine(const Offset(0, 8), const Offset(8, 0), paint)
+      ..restore();
   }
 }
