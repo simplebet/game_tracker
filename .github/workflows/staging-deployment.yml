@@ -17,8 +17,8 @@ jobs:
           channel: 'stable'
       - name: Build
         run: >
-          flutter build web 
-          --dart-define=socket_url=${{ vars.SOCKET_URL }}
+          flutter build web
+          --dart-define=socket_url=${{vars.SOCKET_URL}}
           --dart-define=api_key=${{secrets.API_KEY}}
           --dart-define=partner_origin=${{secrets.PARTNER_ORIGIN}}
           --web-renderer=canvaskit
