@@ -35,6 +35,8 @@ class GameTrackerScreenController
   StreamSubscription<bool>? _matchDisabledSubscription;
   StreamSubscription<bool>? _matchCoveredSubscription;
 
+  late String _lastPlayEventId;
+
   @override
   GameTrackerScreenState build() {
     state = const GameTrackerScreenState();
@@ -75,9 +77,12 @@ class GameTrackerScreenController
         repo.pastFootballIncidentsStreamController.listen((list) {
       if (list.plays.isNotEmpty) {
         state = state.copyWith(footballIncidents: list.plays.reversed.toList());
+        state = state.copyWith(pastFootballIncidents: list.plays.reversed.toList());
 
         /// on initial load filter the list with currentDriveId
-        filterFootballPlaysByCurrentDriveId(state.footballIncidents?.last);
+        filterFootballPlaysByCurrentDriveId(state.pastFootballIncidents?.last);
+
+        _lastPlayEventId = state.pastFootballIncidents?.last.eventId ?? '';
       }
     });
 
@@ -98,14 +103,16 @@ class GameTrackerScreenController
   void addIncident(FootballMatchIncidentModel incident) {
     if (state.match?.league != null) {
       if (state.match!.league!.isFootballLeagues) {
-        final List<FootballMatchIncidentModel> incidents = [
-          ...?state.footballIncidents,
-          ...[incident],
-        ];
+        if (_lastPlayEventId != incident.eventId) {
+          final List<FootballMatchIncidentModel> incidents = [
+            ...?state.footballIncidents,
+            ...[incident],
+          ];
 
-        state = state.copyWith(footballIncidents: incidents);
-
-        filterFootballPlaysByCurrentDriveId(incident);
+          state = state.copyWith(footballIncidents: incidents);
+          filterFootballPlaysByCurrentDriveId(incident);
+          _lastPlayEventId = incident.eventId;
+        }
       }
     }
   }
@@ -173,7 +180,7 @@ class GameTrackerScreenController
     });
 
     /// group the list of incidents with drive id
-    footballPlays
+   footballPlays
         .groupListsBy((play) => play.driveId)
 
         /// add drive id and list of incidents
@@ -224,6 +231,7 @@ class GameTrackerScreenController
       league: null,
       basketballIncidents: null,
       footballIncidents: null,
+      pastFootballIncidents: null,
       selectedFootballPlaysList: null,
     );
   }
@@ -235,10 +243,9 @@ class GameTrackerScreenState with _$GameTrackerScreenState {
     List<MatchModel>? allMatches,
     SportLeague? league,
     MatchModel? match,
-    List<FootballMatchIncidentModel>? pastFootballIncidents,
-    List<BasketballMatchIncidentModel>? pastBasketballIncidents,
     List<FootballMatchIncidentModel>? footballIncidents,
     List<BasketballMatchIncidentModel>? basketballIncidents,
+    List<FootballMatchIncidentModel>? pastFootballIncidents,
     FootballMatchIncidentDriveListModel? selectedFootballPlaysList,
     @Default(false) bool matchIsDisabled,
     @Default(true) bool matchIsCovered,

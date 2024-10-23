@@ -109,7 +109,7 @@ class AllDrivesPlayTrayWidgetState
           );
         },
         trailing: _LastPlayTrayTrailingWidget(
-            isExpanded: isExpanded, isExpansionDisabled: isExpansionDisabled),
+            isExpanded: isExpanded, isExpansionDisabled: isExpansionDisabled,),
         title: Container(
           /// set a fixed height for collapsed last play tray
           height:
@@ -166,7 +166,7 @@ class AllDrivesPlayTrayWidgetState
 
 class _LastPlayTrayTrailingWidget extends ConsumerWidget {
   const _LastPlayTrayTrailingWidget(
-      {required this.isExpanded, required this.isExpansionDisabled});
+      {required this.isExpanded, required this.isExpansionDisabled,});
 
   final bool isExpanded;
   final bool isExpansionDisabled;

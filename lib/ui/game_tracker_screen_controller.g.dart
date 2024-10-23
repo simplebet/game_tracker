@@ -16,15 +16,6 @@ _$GameTrackerScreenStateImpl _$$GameTrackerScreenStateImplFromJson(
       match: json['match'] == null
           ? null
           : MatchModel.fromJson(json['match'] as Map<String, dynamic>),
-      pastFootballIncidents: (json['past_football_incidents'] as List<dynamic>?)
-          ?.map((e) =>
-              FootballMatchIncidentModel.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      pastBasketballIncidents: (json['past_basketball_incidents']
-              as List<dynamic>?)
-          ?.map((e) =>
-              BasketballMatchIncidentModel.fromJson(e as Map<String, dynamic>))
-          .toList(),
       footballIncidents: (json['football_incidents'] as List<dynamic>?)
           ?.map((e) =>
               FootballMatchIncidentModel.fromJson(e as Map<String, dynamic>))
@@ -32,6 +23,10 @@ _$GameTrackerScreenStateImpl _$$GameTrackerScreenStateImplFromJson(
       basketballIncidents: (json['basketball_incidents'] as List<dynamic>?)
           ?.map((e) =>
               BasketballMatchIncidentModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      pastFootballIncidents: (json['past_football_incidents'] as List<dynamic>?)
+          ?.map((e) =>
+              FootballMatchIncidentModel.fromJson(e as Map<String, dynamic>))
           .toList(),
       selectedFootballPlaysList: json['selected_football_plays_list'] == null
           ? null
@@ -47,14 +42,12 @@ Map<String, dynamic> _$$GameTrackerScreenStateImplToJson(
       'all_matches': instance.allMatches?.map((e) => e.toJson()).toList(),
       'league': _$SportLeagueEnumMap[instance.league],
       'match': instance.match?.toJson(),
-      'past_football_incidents':
-          instance.pastFootballIncidents?.map((e) => e.toJson()).toList(),
-      'past_basketball_incidents':
-          instance.pastBasketballIncidents?.map((e) => e.toJson()).toList(),
       'football_incidents':
           instance.footballIncidents?.map((e) => e.toJson()).toList(),
       'basketball_incidents':
           instance.basketballIncidents?.map((e) => e.toJson()).toList(),
+      'past_football_incidents':
+          instance.pastFootballIncidents?.map((e) => e.toJson()).toList(),
       'selected_football_plays_list':
           instance.selectedFootballPlaysList?.toJson(),
       'match_is_disabled': instance.matchIsDisabled,
